@@ -1,0 +1,102 @@
+[
+    {
+      "name": "Arsenal",
+      "stadium": "Emirates Stadium",
+      "reputation": 81
+    },
+    {
+      "name": "Aston Villa",
+      "stadium": "Villa Park",
+      "reputation": 69
+    },
+    {
+      "name": "Bournemouth",
+      "stadium": "Dean Court",
+      "reputation": 63
+    },
+    {
+      "name": "Brentford",
+      "stadium": "Brentford Community Stadium",
+      "reputation": 63
+    },
+    {
+      "name": "Brighton",
+      "stadium": "Falmer Stadium",
+      "reputation": 66
+    },
+    {
+      "name": "Burnley",
+      "stadium": "Turf Moor",
+      "reputation": 60
+    },
+    {
+      "name": "Chelsea",
+      "stadium": "Stamford Bridge",
+      "reputation": 88
+    },
+    {
+      "name": "Crystal Palace",
+      "stadium": "Selhurst Park",
+      "reputation": 66
+    },
+    {
+      "name": "Everton",
+      "stadium": "Goodison Park",
+      "reputation": 67
+    },
+    {
+      "name": "Fulham",
+      "stadium": "Craven Cottage",
+      "reputation": 64
+    },
+    {
+      "name": "Liverpool",
+      "stadium": "Anfield",
+      "reputation": 90
+    },
+    {
+      "name": "Luton Town",
+      "stadium": "Kenilworth Road",
+      "reputation": 56
+    },
+    {
+      "name": "Man City",
+      "stadium": "City of Manchester Stadium",
+      "reputation": 91
+    },
+    {
+      "name": "Man United",
+      "stadium": "Old Trafford",
+      "reputation": 84
+    },
+    {
+      "name": "Newcastle",
+      "stadium": "St. James' Park",
+      "reputation": 74
+    },
+    {
+      "name": "Nottm Forest",
+      "stadium": "City Ground",
+      "reputation": 62
+    },
+    {
+      "name": "Sheffield United",
+      "stadium": "Bramall Lane",
+      "reputation": 61
+    },
+    {
+      "name": "Tottenham",
+      "stadium": "Tottenham Hotspur Stadium",
+      "reputation": 81
+    },
+    {
+      "name": "West Ham",
+      "stadium": "London Stadium",
+      "reputation": 70
+    },
+    {
+      "name": "Wolves",
+      "stadium": "Molineux Stadium",
+      "reputation": 66
+    }
+  ]
