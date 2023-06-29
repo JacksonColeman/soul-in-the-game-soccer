@@ -1,2 +1,2 @@
 /// <reference types="vite/client" />
-declare module 'foo';
+declare module 'foobar.js';

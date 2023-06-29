@@ -1,6 +1,6 @@
 import { League } from "./League";
 import { Team } from "./Team";
-import { Player, PlayerOutfield, PlayerGoalkeeper } from "./Player";
+import { Player, PlayerOutfield } from "./Player";
 import poisson from '@stdlib/random-base-poisson';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -11,7 +11,7 @@ export class Matchup {
     played: boolean;
     homeScore: number|undefined;
     awayScore: number|undefined;
-    id:number = uuidv4();
+    id:number = parseInt(uuidv4());
     homeGoalscorers: Player[] = [];
     awayGoalscorers: Player[] = [];
 

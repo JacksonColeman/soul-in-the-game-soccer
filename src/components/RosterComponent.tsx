@@ -1,4 +1,4 @@
-import { Player, PlayerGoalkeeper, PlayerOutfield } from "../../classes/Player";
+import { PlayerGoalkeeper, PlayerOutfield } from "../../classes/Player";
 import { Team } from "../../classes/Team";
 import "../styles/RosterComponent.css"
 
@@ -29,7 +29,7 @@ type RosterProps = {
             </tr>
           </thead>
           <tbody>
-            {goalkeepers.map((goalkeeper, index) => (
+            {goalkeepers.map((goalkeeper) => (
               <tr key={goalkeeper.id}>
                 <td>{goalkeeper.position}</td>
                 <td>{goalkeeper.firstName.charAt(0)}. {goalkeeper.lastName}</td>
@@ -39,7 +39,7 @@ type RosterProps = {
               </tr>
             ))}
             <tr className="section-divider"></tr>
-            {defenders.map((defender, index) => (
+            {defenders.map((defender) => (
               <tr key={defender.id}>
                 <td>{defender.position}</td>
                 <td>{defender.firstName.charAt(0)}. {defender.lastName}</td>
@@ -49,7 +49,7 @@ type RosterProps = {
               </tr>
             ))}
             <tr className="section-divider"></tr>
-            {midfielders.map((midfielder, index) => (
+            {midfielders.map((midfielder) => (
               <tr key={midfielder.id}>
                 <td>{midfielder.position}</td>
                 <td>{midfielder.firstName.charAt(0)}. {midfielder.lastName}</td>
@@ -59,7 +59,7 @@ type RosterProps = {
               </tr>
             ))}
             <tr className="section-divider"></tr>
-            {forwards.map((forward, index) => (
+            {forwards.map((forward) => (
               <tr key={forward.id}>
                 <td>{forward.position}</td>
                 <td>{forward.firstName.charAt(0)}. {forward.lastName}</td>

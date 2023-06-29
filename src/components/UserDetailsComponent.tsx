@@ -1,10 +1,5 @@
 import React, { ChangeEvent, useState } from "react";
 
-interface UserDetails {
-  name: string;
-  difficulty: Difficulty;
-}
-
 enum Difficulty {
   Standard = "Standard",
   Hard = "Hard",

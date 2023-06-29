@@ -1,4 +1,3 @@
-import {useState} from "react";
 import { Matchup } from "../../classes/Matchup";
 import MatchupComponent from "./MatchupComponent";
 import '../styles/MatchweekComponent.css'

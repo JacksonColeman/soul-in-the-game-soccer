@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Team } from "../../classes/Team";
 import '../styles/TeamSelectionComponent.css'
 

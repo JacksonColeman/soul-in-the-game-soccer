@@ -1,4 +1,3 @@
-import { League } from './League';
 import {Player, PlayerGoalkeeper, PlayerOutfield} from './Player'
 
 export class Team {

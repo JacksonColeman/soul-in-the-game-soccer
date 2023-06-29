@@ -1,8 +1,6 @@
 import {useState, ChangeEvent} from "react";
-import { Matchup } from "../../classes/Matchup";
 import { League } from "../../classes/League";
 import User from "../../classes/User";
-import { Team } from "../../classes/Team";
 import MatchweekComponent from "./MatchweekComponent";
 import StandingsTableComponent from "./StandingsTableComponent";
 import '../styles/SeasonComponent.css'
@@ -30,7 +28,7 @@ interface SeasonProps {
 
     getGameDate();
 
-    const [currentYear, setCurrentYear] = useState(getGameDate().year);
+    const [currentYear] = useState(getGameDate().year);
     const [currentWeek, setCurrentWeek] = useState(getGameDate().week);
     const [schedule, setSchedule] = useState([...league.schedule]);
     const [played, setPlayed] = useState(schedule[currentWeek - 1][0].played);
@@ -42,11 +40,11 @@ interface SeasonProps {
     if(selectedTeam){setSelectedTeam(selectedTeam)};
   };
   
-    const handlePreviousWeek = () => {
-      if (currentWeek > 1) {
-        setCurrentWeek(currentWeek - 1);
-      }
-    };
+    // const handlePreviousWeek = () => {
+    //   if (currentWeek > 1) {
+    //     setCurrentWeek(currentWeek - 1);
+    //   }
+    // };
   
     const handleNextWeek = () => {
       if (currentWeek < schedule.length) {
