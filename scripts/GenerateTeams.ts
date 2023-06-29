@@ -1,7 +1,7 @@
 import { Team } from "../classes/Team"
 import { Player, PlayerGoalkeeper, PlayerOutfield } from "../classes/Player";
 import data from "../src/data/teams.json"
-import foobar from "foobar.js"
+import {firstName, lastName} from './GenerateNames.ts';
 
 export function generateTeams(): Team[]{
     const teams: Team[] = [];
@@ -46,7 +46,7 @@ function generateGoalkeeper(reputation: number): PlayerGoalkeeper{
     const averageGKP = Math.floor(reputation ** 0.99);
     const generatedGKP = generateRandomAttribute(averageGKP, 10)
     const GKage = generateRandomAge();
-    const GK = new PlayerGoalkeeper(foobar.firstName('male'), foobar.lastName(), GKage, 0,0,{goalkeeping: generatedGKP});
+    const GK = new PlayerGoalkeeper(firstName('male'), lastName(), GKage, 0,0,{goalkeeping: generatedGKP});
     return GK;
 }
 
@@ -56,7 +56,7 @@ function generateDefender(reputation: number){
     const generatedDEF = generateRandomAttribute(averageDEF, 10)
     const generatedATT = generateRandomAttribute(averageATT, 10)
     const DFage = generateRandomAge();
-    const DF = new PlayerOutfield(foobar.firstName('male'), foobar.lastName(), DFage,"DF",0,0, {attacking: generatedATT, defending: generatedDEF});
+    const DF = new PlayerOutfield(firstName('male'), lastName(), DFage,"DF",0,0, {attacking: generatedATT, defending: generatedDEF});
     return DF;
 }
 
@@ -66,7 +66,7 @@ function generateMidfielder(reputation: number){
     const generatedATT = generateRandomAttribute(averageATT, 10)
     const generatedDEF = generateRandomAttribute(averageDEF, 10)
     const MFage = generateRandomAge();
-    const MF = new PlayerOutfield(foobar.firstName('male'), foobar.lastName(), MFage, "MF",0,0, {attacking: generatedATT, defending: generatedDEF});
+    const MF = new PlayerOutfield(firstName('male'), lastName(), MFage, "MF",0,0, {attacking: generatedATT, defending: generatedDEF});
     return MF;
 }
 
@@ -76,7 +76,7 @@ function generateForward(reputation: number){
     const generatedATT = generateRandomAttribute(averageATT, 10)
     const generatedDEF = generateRandomAttribute(averageDEF, 10)
     const FWage = generateRandomAge();
-    const FW = new PlayerOutfield(foobar.firstName('male'), foobar.lastName(), FWage, "FW",0,0, {attacking: generatedATT, defending: generatedDEF});
+    const FW = new PlayerOutfield(firstName('male'), lastName(), FWage, "FW",0,0, {attacking: generatedATT, defending: generatedDEF});
     return FW;
 }
 

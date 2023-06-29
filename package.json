@@ -12,7 +12,6 @@
   "dependencies": {
     "@stdlib/random-base-poisson": "^0.0.6",
     "flatted": "^3.2.7",
-    "foobar.js": "^1.1.10",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "uuid": "^9.0.0"
