@@ -35,6 +35,7 @@ function App() {
     saveGameDate(2023,1);
     localStorage.setItem("user", JSON.stringify(updatedUser));
     setLoading(false); // Set loading to false once data is generated
+    window.location.reload();
   };
 
   useEffect(() => {
@@ -73,7 +74,6 @@ function App() {
     localStorage.removeItem("user");
     localStorage.removeItem("teamsData");
     localStorage.removeItem("scheduleData");
-    window.location.reload();
     generateNewGame();
   };
 
