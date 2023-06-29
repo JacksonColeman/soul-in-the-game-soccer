@@ -6,13 +6,20 @@ import User from '../classes/User'
 import SeasonComponent from './components/SeasonComponent'
 import TeamSelectionComponent from './components/TeamSelectionComponent'
 import UserDetailsComponent from './components/UserDetailsComponent'
-import {parse, stringify, toJSON, fromJSON} from 'flatted';
 import {storeLeagueData, rebuildLeague} from '../scripts/LeagueStorage';
 
 function App() {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<User | null>(null);
   const [league, setLeague] = useState<League | null>(null);
+
+  const saveGameDate = (year: number, week: number): void => {
+    const gameDate = {
+      year: year,
+      week: week
+    };
+    localStorage.setItem('gameDate', JSON.stringify(gameDate));
+  };
 
   enum Difficulty {
     Standard = "Standard",
@@ -25,6 +32,7 @@ function App() {
     const updatedUser = new User("", null, Difficulty.Standard);
     setUser(updatedUser);
     storeLeagueData(league); // Store the league data
+    saveGameDate(2023,1);
     localStorage.setItem("user", JSON.stringify(updatedUser));
     setLoading(false); // Set loading to false once data is generated
   };
@@ -83,7 +91,7 @@ function App() {
       )}
       {user?.selectedTeam && !user.name && <UserDetailsComponent onSubmit={handleUserDetailsSubmit} />}
       {user && user.name && league && (
-        <SeasonComponent user={user} league={league} onUserLogout={handleUserLogout} />
+        <SeasonComponent user={user} league={league} onUserLogout={handleUserLogout} saveGameDate={saveGameDate}/>
       )}
     </div>
   );

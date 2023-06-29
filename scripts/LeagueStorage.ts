@@ -10,6 +10,13 @@ export function storeLeagueData(league: League){
     name: team.name,
     stadium: team.stadium,
     reputation: team.reputation,
+    standingsInfo: {
+      wins: team.standingsInfo.wins,
+      losses: team.standingsInfo.losses,
+      draws: team.standingsInfo.draws,
+      goalsFor: team.standingsInfo.goalsFor,
+      goalsAgainst: team.standingsInfo.goalsAgainst,
+    },
     roster: team.roster.map((player) => {
       const playerData: any = {
         firstName: player.firstName,
@@ -53,7 +60,7 @@ export function storeLeagueData(league: League){
 export function rebuildLeague(teamsData: any[], scheduleData: any[]): League {
   // Rebuild teams
   const teams: Team[] = teamsData.map((teamData: any) => {
-    const { id, name, stadium, reputation, roster } = teamData;
+    const { id, name, stadium, reputation, roster, standingsInfo } = teamData;
 
     // Rebuild roster players
     const rosterPlayers: Player[] = roster.map((playerData: any) => {
@@ -75,7 +82,7 @@ export function rebuildLeague(teamsData: any[], scheduleData: any[]): League {
       return player;
     });
 
-    return new Team(id, name, stadium, reputation, rosterPlayers);
+    return new Team(id, name, stadium, reputation, rosterPlayers, standingsInfo);
   });
 
   // Create the league object

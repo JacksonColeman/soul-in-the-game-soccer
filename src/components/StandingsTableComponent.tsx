@@ -5,9 +5,10 @@ import '../styles/StandingsTableComponent.css'
 
 interface StandingsTableProps {
   league: League;
+  userTeamID: number;
 }
 
-const StandingsTableComponent: React.FC<StandingsTableProps> = ({ league }) => {
+const StandingsTableComponent: React.FC<StandingsTableProps> = ({ league , userTeamID}) => {
   // Sort teams by points in descending order
   const sortedTeams = [...league.teams].sort((a: Team, b: Team) => {
     if (a.points !== b.points) {
@@ -15,7 +16,7 @@ const StandingsTableComponent: React.FC<StandingsTableProps> = ({ league }) => {
     } else if (a.goalDiff !== b.goalDiff) {
       return b.goalDiff - a.goalDiff;
     } else {
-      return b.goalsFor - a.goalsFor;
+      return b.standingsInfo.goalsFor - a.standingsInfo.goalsFor;
     }
   });
 
@@ -44,15 +45,15 @@ const StandingsTableComponent: React.FC<StandingsTableProps> = ({ league }) => {
               index >= league.teams.length - 3 ? "relegation-row" :
               index >= 4 && index <= 5 ? "europa-league-row" :
               "neutral-row"
-            }`}
+            } ${team.id === userTeamID ? "user-team-row" : ""}`} // Add "user-team-row" class if the team ID matches the user's team ID
           >
-            <td>{team.name}</td>
-            <td className="stat-col">{team.wins + team.draws + team.losses}</td>
-            <td className="stat-col">{team.wins}</td>
-            <td className="stat-col">{team.draws}</td>
-            <td className="stat-col">{team.losses}</td>
-            <td className="stat-col">{team.goalsFor}</td>
-            <td className="stat-col">{team.goalsAgainst}</td>
+            <td className="team-name-col">{team.name}</td>
+            <td className="stat-col">{team.standingsInfo.wins + team.standingsInfo.draws + team.standingsInfo.losses}</td>
+            <td className="stat-col">{team.standingsInfo.wins}</td>
+            <td className="stat-col">{team.standingsInfo.draws}</td>
+            <td className="stat-col">{team.standingsInfo.losses}</td>
+            <td className="stat-col">{team.standingsInfo.goalsFor}</td>
+            <td className="stat-col">{team.standingsInfo.goalsAgainst}</td>
             <td className="stat-col">{team.goalDiff}</td>
             <td className="stat-col">{team.points}</td>
           </tr>

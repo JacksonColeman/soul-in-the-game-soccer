@@ -3,7 +3,7 @@ import { Team } from "../../classes/Team";
 import "../styles/RosterComponent.css"
 
 type RosterProps = {
-    team: Team | null;
+    team: Team | undefined;
   };
   const RosterComponent: React.FC<RosterProps> = ({ team }) => {
     if (!team) {

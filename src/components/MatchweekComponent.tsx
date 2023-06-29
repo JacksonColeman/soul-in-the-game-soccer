@@ -12,15 +12,6 @@ const MatchweekComponent: React.FC<MatchweekProps> = ({ matchups, week }) => {
     const [playedAll, setPlayedAll] = useState(matchups[0].played);
     const firstColMatchups = matchups.slice(0, 5);
     const secondColMatchups = matchups.slice(5, 10);
-
-    const handlePlayAllMatchups = () => {
-      matchups.forEach((matchup: Matchup) => {
-        if (!matchup.played){
-          matchup.playMatch();
-          setPlayedAll(true);
-        }
-      });
-    }
   
     return (
       <div className="matchweek-container">
@@ -37,7 +28,6 @@ const MatchweekComponent: React.FC<MatchweekProps> = ({ matchups, week }) => {
               ))}
           </div>
         </div>
-        <button onClick={handlePlayAllMatchups} disabled={playedAll}>Play All Matchups</button>
       </div>
     );
   };

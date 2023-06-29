@@ -43,21 +43,21 @@ export class Matchup {
       this.homeScore = hs; // Random score for the home team
       this.awayScore = as; // Random score for the away team
 
-      this.homeTeam.goalsFor += this.homeScore;
-      this.awayTeam.goalsFor += this.awayScore;
-      this.homeTeam.goalsAgainst += this.awayScore;
-      this.awayTeam.goalsAgainst += this.homeScore;
+      this.homeTeam.standingsInfo.goalsFor += this.homeScore;
+      this.awayTeam.standingsInfo.goalsFor += this.awayScore;
+      this.homeTeam.standingsInfo.goalsAgainst += this.awayScore;
+      this.awayTeam.standingsInfo.goalsAgainst += this.homeScore;
       
       // update standings 
       if (this.homeScore == this.awayScore){
-        this.homeTeam.draws++;
-        this.awayTeam.draws++;
+        this.homeTeam.standingsInfo.draws++;
+        this.awayTeam.standingsInfo.draws++;
       } else if (this.homeScore > this.awayScore){
-        this.homeTeam.wins++;
-        this.awayTeam.losses++;
+        this.homeTeam.standingsInfo.wins++;
+        this.awayTeam.standingsInfo.losses++;
       } else {
-        this.homeTeam.losses++;
-        this.awayTeam.wins++;
+        this.homeTeam.standingsInfo.losses++;
+        this.awayTeam.standingsInfo.wins++;
       }
 
       //update player stats

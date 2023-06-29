@@ -7,22 +7,18 @@ export class Team {
         public name: string, 
         public stadium: string,
         public reputation: number,
-        public roster: Player[]
+        public roster: Player[],
+        public standingsInfo: {wins:number, losses:number, draws:number, goalsFor:number, goalsAgainst:number}
     ) {}
 
     // standings info
-    wins = 0;
-    losses = 0;
-    draws = 0;
-    goalsFor = 0;
-    goalsAgainst = 0;
 
     get points():number{ 
-        return this.wins*3 + this.draws;
+        return this.standingsInfo.wins*3 + this.standingsInfo.draws;
     }
 
     get goalDiff():number{
-        return this.goalsFor - this.goalsAgainst;
+        return this.standingsInfo.goalsFor - this.standingsInfo.goalsAgainst;
     }
 
     addPlayer(player: Player): void {

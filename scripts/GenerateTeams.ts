@@ -9,7 +9,7 @@ export function generateTeams(): Team[]{
     data.map(teamInfo => {
         teamId++;
         const repAdjust = Math.floor(Math.random() * 7) - 3;
-        let n = new Team(teamId, teamInfo.name,teamInfo.stadium,teamInfo.reputation + repAdjust,[])
+        let n = new Team(teamId, teamInfo.name,teamInfo.stadium,teamInfo.reputation + repAdjust,[],{wins: 0,losses: 0,draws: 0, goalsFor: 0, goalsAgainst:0})
         n.roster = generateRoster(n);
         teams.push(n);
     })

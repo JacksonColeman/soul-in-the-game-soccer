@@ -46,3 +46,9 @@
   .neutral-row{
     background-color: whitesmoke;
   }
+
+  /* user team */
+
+  .user-team-row td{
+    font-weight: bold;
+  }
