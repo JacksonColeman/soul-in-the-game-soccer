@@ -2,18 +2,4 @@
 
 # Site settings
 title: Soul in the Game Soccer
-description: It's all about soul!
-baseurl: "/soul-in-the-game-soccer" # The subpath of your site, e.g. /blog
-
-# GitHub Pages configuration
-remote_theme: "mmistakes/minimal-mistakes" # Replace with your desired theme
-url: "https://jacksoncoleman.github.io" # Your GitHub Pages URL
-github_username: jacksoncoleman
-
-# Plugins
-plugins:
-  - jekyll-feed
-
-# Build settings
-markdown: kramdown
 theme: minima # Replace with your desired theme
