@@ -1,0 +1,11 @@
+.matchweek-column-container {
+    display: flex;
+    justify-content: center;
+  }
+
+.matchweek-column {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch; /* Makes all matchups stretch to the same height */
+  flex: 1; /* Distributes available space equally between columns */
+}

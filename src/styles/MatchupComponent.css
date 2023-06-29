@@ -1,0 +1,26 @@
+.matchup {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.team-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 4px;
+}
+
+.team-name {
+  font-weight: bold;
+}
+
+.team-score {
+  font-size: 18px;
+  font-weight: bold;
+}

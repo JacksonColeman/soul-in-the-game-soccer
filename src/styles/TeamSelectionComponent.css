@@ -1,0 +1,33 @@
+.team-grid {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .team-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .team-item button {
+    width: 140px;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    background-color: #eaeaea;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: 5px;
+  }
+  
+  button:hover {
+    background-color: #dcdcdc;
+  }

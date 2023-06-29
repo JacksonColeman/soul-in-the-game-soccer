@@ -1,0 +1,35 @@
+.user-bar {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    background-color: rgb(117, 166, 226);
+    padding: 10px;
+  }
+  
+  .user-name,
+  .user-team-name,
+  .divider {
+    color: white;
+  }
+
+  .divider{
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+
+  .user-team-name{
+    padding-right: 10px;
+  }
+  
+  .exit-button {
+    background-color: white;
+    color: blue;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+  }
+  
+  .exit-button:hover {
+    background-color: lightgray;
+  }
+  

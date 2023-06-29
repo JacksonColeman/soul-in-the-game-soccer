@@ -1,0 +1,20 @@
+.roster-container {
+    width: 100%;
+  }
+  
+  .roster-table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+  
+  .roster-table th,
+  .roster-table td {
+    padding: 8px;
+    text-align: left;
+    /* border-bottom: 1px solid #ddd; */
+  }
+  
+  .section-divider {
+    border-bottom: 1px solid #ddd;
+  }
+  
