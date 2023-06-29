@@ -25,7 +25,7 @@ const StandingsTableComponent: React.FC<StandingsTableProps> = ({ league , userT
       <thead>
         <tr>
           <th className="team-name-col">Team</th>
-          <th className="stat-col">GP</th>
+          <th className="stat-col">MP</th>
           <th className="stat-col">W</th>
           <th className="stat-col">D</th>
           <th className="stat-col">L</th>

@@ -9,7 +9,6 @@ interface MatchweekProps {
 }
 
 const MatchweekComponent: React.FC<MatchweekProps> = ({ matchups, week }) => {
-    const [playedAll, setPlayedAll] = useState(matchups[0].played);
     const firstColMatchups = matchups.slice(0, 5);
     const secondColMatchups = matchups.slice(5, 10);
   

@@ -32,8 +32,8 @@ interface SeasonProps {
 
     const [currentYear, setCurrentYear] = useState(getGameDate().year);
     const [currentWeek, setCurrentWeek] = useState(getGameDate().week);
-    const [played, setPlayed] = useState(false);
     const [schedule, setSchedule] = useState([...league.schedule]);
+    const [played, setPlayed] = useState(schedule[currentWeek - 1][0].played);
     const [selectedTeam, setSelectedTeam] = useState(league.teams.find((team) => team.id === user.selectedTeam.id))
 
   const handleTeamChange = (event: ChangeEvent<HTMLSelectElement>) => {
@@ -96,7 +96,7 @@ interface SeasonProps {
               Previous Week
             </button> */}
             <button onClick={handlePlayMatches} disabled={played}>Play Matches</button>
-            <button onClick={handleNextWeek} disabled={currentWeek === schedule.length}>
+            <button onClick={handleNextWeek} disabled={!played || currentWeek === schedule.length}>
               Next Week
             </button>
           </div>
