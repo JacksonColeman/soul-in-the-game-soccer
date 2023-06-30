@@ -11,7 +11,7 @@ export class Matchup {
     played: boolean;
     homeScore: number|undefined;
     awayScore: number|undefined;
-    id:number = parseInt(uuidv4());
+    id:string = uuidv4();
     homeGoalscorers: Player[] = [];
     awayGoalscorers: Player[] = [];
 

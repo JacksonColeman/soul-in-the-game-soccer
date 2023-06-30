@@ -3,13 +3,27 @@ import { Player, PlayerGoalkeeper, PlayerOutfield } from "../classes/Player";
 import data from "../src/data/teams.json"
 import {firstName, lastName} from './GenerateNames.ts';
 
-export function generateTeams(): Team[]{
+export function generateTeams(leagueStrength: string, userTeamStrength: string, userTeamID: number): Team[]{
+
     const teams: Team[] = [];
-    let teamId = 0;
     data.map(teamInfo => {
-        teamId++;
-        const repAdjust = Math.floor(Math.random() * 7) - 3;
-        let n = new Team(teamId, teamInfo.name,teamInfo.stadium,teamInfo.reputation + repAdjust,[],{wins: 0,losses: 0,draws: 0, goalsFor: 0, goalsAgainst:0})
+        // reputation changes based on leagueMode
+        let reputation: number;
+        if (leagueStrength == "Realistic" || (userTeamStrength == "Realistic" && teamInfo.id == userTeamID)){
+            reputation = teamInfo.reputation + Math.floor(Math.random() * 7) - 3;
+        } 
+        else if (leagueStrength == "Random"){
+            reputation = Math.floor(Math.random()*41) + 55;
+        } else {
+            reputation = teamInfo.reputation;
+        }
+
+        // 
+        if (teamInfo.id == userTeamID && userTeamStrength == "Challenge"){
+            reputation = 65;
+         }
+
+        let n = new Team(teamInfo.id, teamInfo.name,teamInfo.stadium,reputation,[],{wins: 0,losses: 0,draws: 0, goalsFor: 0, goalsAgainst:0})
         n.roster = generateRoster(n);
         teams.push(n);
     })

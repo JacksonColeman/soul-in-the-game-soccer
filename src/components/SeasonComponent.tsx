@@ -32,7 +32,9 @@ interface SeasonProps {
     const [currentWeek, setCurrentWeek] = useState(getGameDate().week);
     const [schedule, setSchedule] = useState([...league.schedule]);
     const [played, setPlayed] = useState(schedule[currentWeek - 1][0].played);
-    const [selectedTeam, setSelectedTeam] = useState(league.teams.find((team) => team.id === user.selectedTeam.id))
+    const [selectedTeam, setSelectedTeam] = useState(league.teams.find((team) => team.id === user.teamID))
+
+    const userTeam = league.getTeam(user.teamID);
 
   const handleTeamChange = (event: ChangeEvent<HTMLSelectElement>) => {
     const teamId = parseInt(event.target.value);
@@ -49,7 +51,8 @@ interface SeasonProps {
     const handleNextWeek = () => {
       if (currentWeek < schedule.length) {
         setCurrentWeek(currentWeek + 1);
-        saveGameDate(currentYear,currentWeek);
+        saveGameDate(currentYear,currentWeek+1);
+        storeLeagueData(league);
         setPlayed(false);
       }
     };
@@ -75,17 +78,18 @@ interface SeasonProps {
         updatedSchedule[currentWeek - 1] = updatedMatchups;
   
         setPlayed(true);
+        storeLeagueData(league);
         setSchedule(updatedSchedule);
       }
     };
   
     return (
       <div className="season-container">
-        <UserBarComponent user={user} onExitGame={onUserLogout} year={currentYear} week={currentWeek}/>
+        <UserBarComponent user={user} team={userTeam} onExitGame={onUserLogout} year={currentYear} week={currentWeek}/>
         <div className="season-container-grid">
           <div className="standings-wrapper grid-item">
             <h3>Standings</h3>
-            <StandingsTableComponent league={league} userTeamID={user.selectedTeam.id}/>
+            <StandingsTableComponent league={league} userTeamID={user.teamID}/>
           </div>
 
           <div className="fixtures-wrapper grid-item">

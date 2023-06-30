@@ -65,6 +65,10 @@ export class League{
 
     return allMatchups;
     }
+
+    getTeam(teamId: number): Team | undefined {
+      return this.teams.find((team) => team.id === teamId);
+    }
 }
     
         // shuffle the array of matchweeks

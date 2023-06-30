@@ -5,13 +5,42 @@ import {League} from '../classes/League'
 import User from '../classes/User'
 import SeasonComponent from './components/SeasonComponent'
 import TeamSelectionComponent from './components/TeamSelectionComponent'
-import UserDetailsComponent from './components/UserDetailsComponent'
 import {storeLeagueData, rebuildLeague} from '../scripts/LeagueStorage';
+import GameSetupComponent from './components/GameSetupComponent'
+import GameSettingsComponent from './components/GameSettingsComponent'
 
 function App() {
-  const [loading, setLoading] = useState(true);
+  const [gameState, setGameState] = useState('loading');
   const [user, setUser] = useState<User | null>(null);
   const [league, setLeague] = useState<League | null>(null);
+  const [leagueStrength, setLeagueStrength] = useState('');
+  const [userTeamStrength, setUserTeamStrength] = useState('');
+  const [managerName, setManagerName] = useState('');
+  const [userTeamID, setUserTeamID] = useState(0);
+
+  useEffect(() => {
+    const activeSession = sessionStorage.getItem("activeSession");
+    const storedUser = localStorage.getItem('user');
+    const storedTeamsData = localStorage.getItem('teamsData');
+    const storedScheduleData = localStorage.getItem('scheduleData');
+
+    const storedGameState = localStorage.getItem('gameState'); // Get stored game state
+
+    if (activeSession && storedGameState) {
+      setGameState(storedGameState); // Set game state from local storage
+    } else {
+      setGameState('setup');
+      localStorage.removeItem('gameState'); 
+    }
+
+    if (activeSession && storedUser && storedTeamsData && storedScheduleData) {
+      setUser(JSON.parse(storedUser));
+      const teamsData = JSON.parse(storedTeamsData);
+      const scheduleData = JSON.parse(storedScheduleData);
+      const restoredLeague = rebuildLeague(teamsData, scheduleData);
+      setLeague(restoredLeague);
+    }
+  }, []);
 
   const saveGameDate = (year: number, week: number): void => {
     const gameDate = {
@@ -21,24 +50,21 @@ function App() {
     localStorage.setItem('gameDate', JSON.stringify(gameDate));
   };
 
-  enum Difficulty {
-    Standard = "Standard",
-    Hard = "Hard",
-  }
-
-  const generateNewGame = () => {
-    const league = new League(generateTeams());
-    league.schedule = league.generateSchedule();
-    const updatedUser = new User("", null, Difficulty.Standard);
-    setUser(updatedUser);
-    storeLeagueData(league); // Store the league data
-    saveGameDate(2023,1);
-    localStorage.setItem("user", JSON.stringify(updatedUser));
-    setLoading(false); // Set loading to false once data is generated
-    window.location.reload();
+  const handleTeamSelect = (teamID: number) => {
+    setUserTeamID(teamID);
   };
 
-  useEffect(() => {
+  const handleUserLogout = () => {
+    setGameState('setup');
+    sessionStorage.removeItem("activeSession");
+  };
+
+  const handleNewGame = () => {
+    setGameState('settings');
+  };
+
+  const onContinueGame = () => {
+    console.log("calling");
     const storedUser = localStorage.getItem('user');
     const storedTeamsData = localStorage.getItem('teamsData');
     const storedScheduleData = localStorage.getItem('scheduleData');
@@ -49,36 +75,44 @@ function App() {
       const scheduleData = JSON.parse(storedScheduleData);
       const restoredLeague = rebuildLeague(teamsData, scheduleData);
       setLeague(restoredLeague);
-      setLoading(false);
-    } else {
-      generateNewGame();
+      setGameState('season');
+      localStorage.setItem("gameState", "season");
+      sessionStorage.setItem("activeSession", "true")
     }
-  }, []);
+  }
 
-  const handleTeamSelect = (selectedTeam: any) => {
-    const updatedUser = new User("", selectedTeam, Difficulty.Standard); // Set initial name and difficulty
-    setUser(updatedUser);
-    localStorage.setItem("user", JSON.stringify(updatedUser));
+  const onConfirmSettings = (leagueStrength: string, userTeamStrength: string,managerName:string) => {
+    setLeagueStrength(leagueStrength);
+    setUserTeamStrength(userTeamStrength);
+    setManagerName(managerName);
+    setGameState('teamSelection');
   };
 
-  const handleUserDetailsSubmit = (name: string, difficulty: Difficulty) => {
-    const updatedUser = new User(name, user?.selectedTeam, difficulty);
-    setUser(updatedUser);
-    localStorage.setItem("user", JSON.stringify(updatedUser));
-  };
+  const handleStartGame = () => {
+    createUser(managerName, userTeamID);
+    createLeague(leagueStrength, userTeamStrength, userTeamID);
+    saveGameDate(2023,1);
+    setGameState("season");
+    localStorage.setItem("gameState", "season");
+    sessionStorage.setItem("activeSession", "true")
+  }
 
-  const handleUserLogout = () => {
-    setLoading(true);
-    setUser(null);
-    setLeague(null);
-    localStorage.removeItem("user");
-    localStorage.removeItem("teamsData");
-    localStorage.removeItem("scheduleData");
-    generateNewGame();
-  };
+  const createUser = (managerName: string, userTeamID: number) => {
+    const newUser = new User(managerName, userTeamID);
+    localStorage.setItem("user", JSON.stringify(newUser));
+    setUser(newUser);
+  }
 
-  if (loading) {
-    return <div>Loading...</div>;
+  const createLeague = (leagueStrength: string, userTeamStrength: string, userTeamID: number) => {
+    const newLeague = new League(generateTeams(leagueStrength, userTeamStrength, userTeamID));
+    newLeague.schedule = newLeague.generateSchedule();
+    setLeague(newLeague);
+    storeLeagueData(newLeague);
+  }
+
+  if (gameState == "loading"){
+    return (<></>
+    )
   }
 
   return (
@@ -86,15 +120,16 @@ function App() {
       <h1>
         <i>Soul in the Game Soccer</i>
       </h1>
-      {!user?.selectedTeam && league && (
-        <TeamSelectionComponent teams={league.teams} onTeamSelect={handleTeamSelect} />
+      {gameState === 'setup' && (
+        <GameSetupComponent onNewGame={handleNewGame} onContinueGame={onContinueGame} />
       )}
-      {user?.selectedTeam && !user.name && <UserDetailsComponent onSubmit={handleUserDetailsSubmit} />}
-      {user && user.name && league && (
-        <SeasonComponent user={user} league={league} onUserLogout={handleUserLogout} saveGameDate={saveGameDate}/>
+      {gameState === 'settings' && <GameSettingsComponent onConfirmSettings={onConfirmSettings} />}
+      {gameState === 'teamSelection' && <TeamSelectionComponent onTeamSelect={handleTeamSelect} handleStartGame={handleStartGame}/>}
+      {gameState === 'season' && user && league && (
+        <SeasonComponent user={user} league={league} onUserLogout={handleUserLogout} saveGameDate={saveGameDate} />
       )}
     </div>
   );
 }
 
-export default App
+export default App;

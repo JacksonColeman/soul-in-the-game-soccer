@@ -1,19 +1,10 @@
-import {Team} from './Team'
-
-enum Difficulty {
-    Standard = "Standard",
-    Hard = "Hard",
-  }
-  
-  class User {
+class User {
     name: string;
-    selectedTeam: Team; // Replace 'any' with the appropriate type for the selected team
-    difficulty: Difficulty;
+    teamID: number; // Replace 'any' with the appropriate type for the selected team
   
-    constructor(name: string, selectedTeam: any, difficulty: Difficulty) {
+    constructor(name: string, teamID: number) {
       this.name = name;
-      this.selectedTeam = selectedTeam;
-      this.difficulty = difficulty;
+      this.teamID = teamID;
     }
   }
   

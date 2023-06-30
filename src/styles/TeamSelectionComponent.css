@@ -28,6 +28,18 @@
     margin: 5px;
   }
   
-  button:hover {
-    background-color: #dcdcdc;
+  .team-button{
+    background-color: #ffffff; /* Light button color */
+  color: #333333; /* Dark text color */
   }
+  
+  .team-button:hover {
+    background-color: #dddddd; 
+    color: #333333; /* Dark text color */
+  }
+  
+  .team-button.selected {
+    background-color: #2196f3;;
+    color: #ffffff; /* Light text color */
+  }
+  
