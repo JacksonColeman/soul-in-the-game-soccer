@@ -30,7 +30,7 @@ export class PlayerGoalkeeper extends Player {
     age: number,
     goals: number,
     matchesPlayed: number,
-    attributes: { goalkeeping: number }
+    attributes: {diving: number, handling: number, reflexes: number, physical: number}
   ) {
     super(firstName, lastName, age, 'GK', goals, matchesPlayed, attributes);
   }
@@ -39,6 +39,11 @@ export class PlayerGoalkeeper extends Player {
     super.progress(); // Increment age from the superclass
     // Perform unique operations specific to Goalkeeper subclass
     // ...
+  }
+
+  get goalkeeping(): number {
+    const gk = Math.floor((this.attributes.diving + this.attributes.handling + this.attributes.reflexes)/3);
+    return gk;
   }
 
   get rating(): number {
@@ -54,7 +59,7 @@ export class PlayerOutfield extends Player {
     position: string,
     goals: number,
     matchesPlayed: number,
-    attributes: { attacking: number; defending: number }
+    attributes: { attacking: number; playmaking: number, defending: number, physical: number}
   ) {
     super(firstName, lastName, age, position, goals, matchesPlayed, attributes);
   }

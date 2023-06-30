@@ -24,7 +24,13 @@ export class Team {
         this.roster.push(player);
       }
 
-    get teamOffenseTotal(): number{
+    get teamOffenseTotal():number{
+        console.log(this.name);
+        console.log(`Attacking total: ${this.teamAttackingTotal} | Playmaking total: ${this.teamPlaymakingTotal}`)
+        return (this.teamAttackingTotal + this.teamPlaymakingTotal)/2;
+    }
+
+    get teamAttackingTotal(): number{
         let sum = 0;
         for (const player of this.roster){
             if (player instanceof PlayerOutfield){
@@ -34,11 +40,21 @@ export class Team {
         return sum;
     }
 
+    get teamPlaymakingTotal(): number{
+        let sum = 0;
+        for (const player of this.roster){
+            if (player instanceof PlayerOutfield){
+                sum += player.attributes.playmaking;
+            }
+        }
+        return sum;
+    }
+
     get teamDefenseTotal(): number{
         let sum = 0;
         for (const player of this.roster){
             if (player instanceof PlayerGoalkeeper){
-                sum += player.attributes.goalkeeping;
+                sum += player.goalkeeping;
             }
             if (player instanceof PlayerOutfield){
                 sum += player.attributes.defending;

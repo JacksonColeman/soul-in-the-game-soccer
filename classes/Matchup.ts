@@ -26,16 +26,28 @@ export class Matchup {
 
     playMatch(): void {
       // get team offense/defense ratios
-      const ratioExponent = 1.618;
-      // console.log(this.homeTeam.roster);
-      const homeTeamOffenseRatio = (this.homeTeam.teamOffenseTotal / this.league.averageOffense) ** ratioExponent;
-      const homeTeamDefenseRatio = (this.league.averageDefense / this.homeTeam.teamDefenseTotal) ** ratioExponent;
-      const awayTeamOffenseRatio = (this.awayTeam.teamOffenseTotal / this.league.averageOffense) ** ratioExponent;
-      const awayTeamDefenseRatio = (this.league.averageDefense / this.awayTeam.teamDefenseTotal) ** ratioExponent;
+      const ratioExponent = 1;
+      // old
+      // const homeTeamOffenseRatio = (this.homeTeam.teamOffenseTotal / this.league.averageOffense) ** ratioExponent;
+      // const homeTeamDefenseRatio = (this.league.averageDefense / this.homeTeam.teamDefenseTotal) ** ratioExponent;
+      // const awayTeamOffenseRatio = (this.awayTeam.teamOffenseTotal / this.league.averageOffense) ** ratioExponent;
+      // const awayTeamDefenseRatio = (this.league.averageDefense / this.awayTeam.teamDefenseTotal) ** ratioExponent;
       // get means for home and away
-      const homeScoreMean = this.league.avgGoals * homeTeamOffenseRatio * awayTeamDefenseRatio * 1.05;
-      const awayScoreMean = this.league.avgGoals * awayTeamOffenseRatio * homeTeamDefenseRatio / 1.05;
+      // const homeScoreMean = this.league.avgGoals * homeTeamOffenseRatio * awayTeamDefenseRatio * 1.05;
+      // const awayScoreMean = this.league.avgGoals * awayTeamOffenseRatio * homeTeamDefenseRatio / 1.05;
 
+      // alternative
+      const homeTeamAttackRatio = (this.homeTeam.teamAttackingTotal / this.league.averageAttacking) ** ratioExponent;
+      const homeTeamPlaymakingRatio = (this.homeTeam.teamPlaymakingTotal / this.league.averagePlaymaking) ** ratioExponent;
+      const homeTeamDefenseRatio = (this.league.averageDefense / this.homeTeam.teamDefenseTotal) ** ratioExponent;
+      const awayTeamAttackRatio = (this.awayTeam.teamAttackingTotal / this.league.averageAttacking) ** ratioExponent;
+      const awayTeamPlaymakingRatio = (this.homeTeam.teamPlaymakingTotal / this.league.averagePlaymaking) ** ratioExponent;
+      const awayTeamDefenseRatio = (this.league.averageDefense / this.awayTeam.teamDefenseTotal) ** ratioExponent;
+
+      const homeScoreMean = this.league.avgGoals * homeTeamAttackRatio * homeTeamPlaymakingRatio * awayTeamDefenseRatio * 1.05;
+      const awayScoreMean = this.league.avgGoals * awayTeamAttackRatio * awayTeamPlaymakingRatio * homeTeamDefenseRatio * 0.95;
+      
+      // 
       // Logic to simulate the game and determine the outcome
       // You can customize this logic based on your simulation requirements
       const hs:number = poisson(homeScoreMean);
@@ -80,7 +92,7 @@ export class Matchup {
       ) as PlayerOutfield[];
   
       const goalscorers: Player[] = [];
-      const playerProbabilities = players.map((player) => player.attributes.attacking**3);
+      const playerProbabilities = players.map((player) => player.attributes.attacking**2);
       const totalProbability = playerProbabilities.reduce((total, probability) => total + probability, 0);
   
       for (let i = 0; i < n; i++) {
@@ -89,7 +101,7 @@ export class Matchup {
   
         for (let j = 0; j < players.length; j++) {
           const player = players[j];
-          randomValue -= player.attributes.attacking**3;
+          randomValue -= player.attributes.attacking**2;
           if (randomValue <= 0) {
             selectedPlayer = player;
             break;

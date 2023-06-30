@@ -13,10 +13,27 @@ export class League{
         }
         return sum / this.teams.length;
     }
+
+    get averageAttacking():number{
+      let sum = 0;
+      for (const team of this.teams){
+          sum += team.teamAttackingTotal;
+      }
+      return sum / this.teams.length;
+    }
+
     get averageDefense():number{
         let sum = 0;
         for (const team of this.teams){
             sum += team.teamDefenseTotal;
+        }
+        return sum / this.teams.length;
+    }
+
+    get averagePlaymaking():number{
+      let sum = 0;
+        for (const team of this.teams){
+            sum += team.teamPlaymakingTotal;
         }
         return sum / this.teams.length;
     }

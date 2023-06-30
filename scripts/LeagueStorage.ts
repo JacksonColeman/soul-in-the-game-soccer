@@ -28,11 +28,18 @@ export function storeLeagueData(league: League){
       };
 
       if (player instanceof PlayerGoalkeeper) {
-        playerData.attributes = { goalkeeping: player.attributes.goalkeeping };
+        playerData.attributes = { 
+          diving: player.attributes.diving,
+          handling: player.attributes.diving,
+          reflexes: player.attributes.diving,
+          physical: player.attributes.diving,
+        };
       } else if (player instanceof PlayerOutfield) {
         playerData.attributes = {
           attacking: player.attributes.attacking,
+          playmaking: player.attributes.playmaking,
           defending: player.attributes.defending,
+          physical: player.attributes.physical
         };
       }
 
@@ -69,13 +76,15 @@ export function rebuildLeague(teamsData: any[], scheduleData: any[]): League {
       // Determine player subclass based on position
       let player: Player;
       if (position === 'GK') {
-        const { goalkeeping } = attributes;
-        player = new PlayerGoalkeeper(firstName, lastName, age, goals, matchesPlayed, {goalkeeping});
+        const { diving, handling, reflexes, physical } = attributes;
+        player = new PlayerGoalkeeper(firstName, lastName, age, goals, matchesPlayed, {diving, handling, reflexes, physical});
       } else {
-        const { attacking, defending } = attributes;
+        const { attacking, playmaking, defending, physical } = attributes;
         player = new PlayerOutfield(firstName, lastName, age, position, goals, matchesPlayed, {
           attacking,
+          playmaking,
           defending,
+          physical
         });
       }
 
