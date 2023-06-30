@@ -1,4 +1,4 @@
-import {React, useEffect, useState} from 'react';
+import { useEffect, useState} from 'react';
 import '../styles/GameSetupComponent.css';
 import teams from "../data/teams.json";
 
