@@ -1,5 +1,6 @@
 import { League } from "./League";
 import { Team } from "./Team";
+import {Goal} from "./Goal";
 import { Player, PlayerOutfield } from "./Player";
 import poisson from '@stdlib/random-base-poisson';
 import { v4 as uuidv4 } from 'uuid';
@@ -12,6 +13,7 @@ export class Matchup {
     homeScore: number|undefined;
     awayScore: number|undefined;
     id:string = uuidv4();
+    goals: Goal[] = [];
     homeGoalscorers: Player[] = [];
     awayGoalscorers: Player[] = [];
 
@@ -26,27 +28,29 @@ export class Matchup {
 
     playMatch(): void {
       // get team offense/defense ratios
-      const ratioExponent = 1;
-      // old
-      // const homeTeamOffenseRatio = (this.homeTeam.teamOffenseTotal / this.league.averageOffense) ** ratioExponent;
-      // const homeTeamDefenseRatio = (this.league.averageDefense / this.homeTeam.teamDefenseTotal) ** ratioExponent;
-      // const awayTeamOffenseRatio = (this.awayTeam.teamOffenseTotal / this.league.averageOffense) ** ratioExponent;
-      // const awayTeamDefenseRatio = (this.league.averageDefense / this.awayTeam.teamDefenseTotal) ** ratioExponent;
-      // get means for home and away
-      // const homeScoreMean = this.league.avgGoals * homeTeamOffenseRatio * awayTeamDefenseRatio * 1.05;
-      // const awayScoreMean = this.league.avgGoals * awayTeamOffenseRatio * homeTeamDefenseRatio / 1.05;
 
-      // alternative
-      const homeTeamAttackRatio = (this.homeTeam.teamAttackingTotal / this.league.averageAttacking) ** ratioExponent;
-      const homeTeamPlaymakingRatio = (this.homeTeam.teamPlaymakingTotal / this.league.averagePlaymaking) ** ratioExponent;
-      const homeTeamDefenseRatio = (this.league.averageDefense / this.homeTeam.teamDefenseTotal) ** ratioExponent;
-      const awayTeamAttackRatio = (this.awayTeam.teamAttackingTotal / this.league.averageAttacking) ** ratioExponent;
-      const awayTeamPlaymakingRatio = (this.homeTeam.teamPlaymakingTotal / this.league.averagePlaymaking) ** ratioExponent;
-      const awayTeamDefenseRatio = (this.league.averageDefense / this.awayTeam.teamDefenseTotal) ** ratioExponent;
+      // calculate ratios of team attribute strength vs league average
+      const homeTeamAttackRatio = (this.homeTeam.teamAttackingTotal / this.league.averageAttacking);
+      const homeTeamPlaymakingRatio = (this.homeTeam.teamPlaymakingTotal / this.league.averagePlaymaking);
+      const homeTeamDefenseRatio = (this.league.averageDefense / this.homeTeam.teamDefenseTotal);
+      const homeTeamPhysicalRatio = (this.homeTeam.teamPhysicalTotal / this.league.averagePhysical);
 
-      const homeScoreMean = this.league.avgGoals * homeTeamAttackRatio * homeTeamPlaymakingRatio * awayTeamDefenseRatio * 1.05;
-      const awayScoreMean = this.league.avgGoals * awayTeamAttackRatio * awayTeamPlaymakingRatio * homeTeamDefenseRatio * 0.95;
+      //get offense and defense values from ratios
+      const homeTeamOffense = (homeTeamAttackRatio * .4 + homeTeamPlaymakingRatio * .4 + homeTeamPhysicalRatio*.2) ** 2;
+      const homeTeamDefense = (homeTeamDefenseRatio * .8 + (1/homeTeamPhysicalRatio) * .2) ** 1.5;
       
+      // for away teams
+      const awayTeamAttackRatio = (this.awayTeam.teamAttackingTotal / this.league.averageAttacking);
+      const awayTeamPlaymakingRatio = (this.awayTeam.teamPlaymakingTotal / this.league.averagePlaymaking);
+      const awayTeamDefenseRatio = (this.league.averageDefense / this.awayTeam.teamDefenseTotal);
+      const awayTeamPhysicalRatio = (this.awayTeam.teamPhysicalTotal / this.league.averagePhysical);
+
+      // get offense and defense values from ratios
+      const awayTeamOffense = (awayTeamAttackRatio * .4 + awayTeamPlaymakingRatio * .4 + awayTeamPhysicalRatio*.2);
+      const awayTeamDefense = (awayTeamDefenseRatio * .8 + (1/awayTeamPhysicalRatio) * .2);
+
+      const homeScoreMean = this.league.avgGoals * homeTeamOffense * awayTeamDefense *1.05;
+      const awayScoreMean = this.league.avgGoals * awayTeamOffense * homeTeamDefense * 0.95;      
       // 
       // Logic to simulate the game and determine the outcome
       // You can customize this logic based on your simulation requirements
@@ -74,47 +78,87 @@ export class Matchup {
 
       //update player stats
       for (const player of this.homeTeam.roster){
-        player.matchesPlayed++;
+        player.stats.matchesPlayed++;
       }
       for (const player of this.awayTeam.roster){
-        player.matchesPlayed++;
+        player.stats.matchesPlayed++;
       }
 
-      this.homeGoalscorers = this.selectGoalscorers(this.homeScore, this.homeTeam);
-      this.awayGoalscorers = this.selectGoalscorers(this.awayScore, this.awayTeam);
+      // update keeper stats
+      this.homeTeam.startingGoalkeeper.stats.goalsConceded += this.awayScore;
+      this.awayTeam.startingGoalkeeper.stats.goalsConceded += this.homeScore;
+
+      if (this.awayScore === 0 && this.homeTeam.startingGoalkeeper) {
+        this.homeTeam.startingGoalkeeper.stats.cleanSheets += 1;
+      }
+
+      if (this.homeScore === 0 && this.awayTeam.startingGoalkeeper) {
+        this.awayTeam.startingGoalkeeper.stats.cleanSheets += 1;
+      }
+      
+      // increment goals allowed
+      this.goals = this.goals.concat(this.createGoals(this.homeScore, this.homeTeam));
+      this.goals = this.goals.concat(this.createGoals(this.awayScore, this.awayTeam));
       // set match to played
       this.played = true;
     }
 
-    selectGoalscorers(n: number, team:Team): Player[] {
+    createGoals(n: number, team:Team): Goal[] {
       const players = team.roster.filter(
         (player) => player instanceof PlayerOutfield
       ) as PlayerOutfield[];
   
-      const goalscorers: Player[] = [];
-      const playerProbabilities = players.map((player) => player.attributes.attacking**2);
-      const totalProbability = playerProbabilities.reduce((total, probability) => total + probability, 0);
+      const goals: Goal[] = [];
+      const scorerProbabilities = players.map((player) => player.attributes.attacking ** 2);
+      const totalScorerProbability = scorerProbabilities.reduce((total, probability) => total + probability, 0);
+
   
       for (let i = 0; i < n; i++) {
-        let randomValue = Math.random() * totalProbability;
-        let selectedPlayer: Player | undefined;
-  
+        const minute = Math.floor(Math.random() * 90) + 1;
+    
+        let scorerRandomValue = Math.random() * totalScorerProbability;
+        let selectedScorer: PlayerOutfield | undefined;
+    
         for (let j = 0; j < players.length; j++) {
           const player = players[j];
-          randomValue -= player.attributes.attacking**2;
-          if (randomValue <= 0) {
-            selectedPlayer = player;
+          scorerRandomValue -= player.attributes.attacking ** 2;
+          if (scorerRandomValue <= 0) {
+            selectedScorer = player;
+            selectedScorer.stats.goals++;
             break;
           }
         }
   
-        if (selectedPlayer) {
-          selectedPlayer.goals++;
-          goalscorers.push(selectedPlayer);
+        if (selectedScorer) {
+          const filteredPlayers = players.filter((player) => player !== selectedScorer);
+          const assisterProbabilities = filteredPlayers.map((player) => player.attributes.playmaking ** 2);
+          const totalAssisterProbability = assisterProbabilities.reduce((total, probability) => total + probability, 0);
+    
+          let selectedAssister: PlayerOutfield | undefined;
+          if (Math.random() < 0.2) {
+            selectedAssister = undefined; // No assister
+          } else {
+            let assisterRandomValue = Math.random() * totalAssisterProbability;
+    
+            for (let j = 0; j < filteredPlayers.length; j++) {
+              const player = filteredPlayers[j];
+              assisterRandomValue -= player.attributes.playmaking ** 2;
+              if (assisterRandomValue <= 0) {
+                selectedAssister = player;
+                selectedAssister.stats.assists++;
+                break;
+              }
+            }
+          }
+    
+          const homeTeam = team === this.homeTeam;
+    
+          const goal = new Goal(minute, selectedScorer, selectedAssister, homeTeam);
+          goals.push(goal);
         }
       }
   
-      return goalscorers;
+      return goals;
     }
   }
 

@@ -52,3 +52,22 @@
   .user-team-row td{
     font-weight: bold;
   }
+
+  /* */
+
+  .team-name-col {
+  width: 120px;
+  position: relative; /* Add relative positioning */
+}
+
+.team-link {
+  display: inline-block;
+  width: 100%;
+  height: 100%;
+  text-decoration: none;
+  color: inherit;
+}
+
+.team-name-col:hover .team-link {
+  text-decoration: underline; /* Apply underline style on hover */
+}

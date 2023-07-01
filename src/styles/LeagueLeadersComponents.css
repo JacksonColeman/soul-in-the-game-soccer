@@ -1,0 +1,23 @@
+.league-leaders-container {
+    text-align: center;
+  }
+  
+  h4 {
+    margin: 0;
+  }
+
+  .leaders-table {
+    margin: 0 auto;
+    border-collapse: collapse;
+  }
+  
+  .leaders-table td,
+  .leaders-table th {
+    padding: 8px;
+  }
+  
+  .leaders-table th {
+    font-weight: bold;
+    background-color: #f9f9f9;
+  }
+  

@@ -6,9 +6,10 @@ import '../styles/StandingsTableComponent.css'
 interface StandingsTableProps {
   league: League;
   userTeamID: number;
+  onTeamSelect: (n: number) => void;
 }
 
-const StandingsTableComponent: React.FC<StandingsTableProps> = ({ league , userTeamID}) => {
+const StandingsTableComponent: React.FC<StandingsTableProps> = ({ league , userTeamID, onTeamSelect}) => {
   // Sort teams by points in descending order
   const sortedTeams = [...league.teams].sort((a: Team, b: Team) => {
     if (a.points !== b.points) {
@@ -45,9 +46,15 @@ const StandingsTableComponent: React.FC<StandingsTableProps> = ({ league , userT
               index >= league.teams.length - 3 ? "relegation-row" :
               index >= 4 && index <= 5 ? "europa-league-row" :
               "neutral-row"
-            } ${team.id === userTeamID ? "user-team-row" : ""}`} // Add "user-team-row" class if the team ID matches the user's team ID
+            } ${team.id === userTeamID ? "user-team-row" : ""}
+            ${team.id === userTeamID ? "user-team-row" : ""}`}
+           // Call the onTeamSelect function with the team object when clicked`} // Add "user-team-row" class if the team ID matches the user's team ID
           >
-            <td className="team-name-col">{team.name}</td>
+            <td className="team-name-col" onClick={() => onTeamSelect(team.id)}>
+              <a href="#!" className="team-link">
+                {team.name}
+              </a>
+            </td>
             <td className="stat-col">{team.standingsInfo.wins + team.standingsInfo.draws + team.standingsInfo.losses}</td>
             <td className="stat-col">{team.standingsInfo.wins}</td>
             <td className="stat-col">{team.standingsInfo.draws}</td>

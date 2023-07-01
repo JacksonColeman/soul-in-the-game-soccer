@@ -1,77 +1,24 @@
-import { PlayerGoalkeeper, PlayerOutfield } from "../../classes/Player";
-import { Team } from "../../classes/Team";
-import "../styles/RosterComponent.css"
+import React from 'react';
+import { Team } from '../../classes/Team';
+import { Player } from '../../classes/Player';
+import '../styles/RosterComponent.css';
+import PlayerComponent from './PlayerComponent';
 
 type RosterProps = {
-    team: Team | undefined;
-  };
-  const RosterComponent: React.FC<RosterProps> = ({ team }) => {
-    if (!team) {
-        return <div>No team selected</div>;
-      }
+  team: Team;
+};
 
-    const goalkeepers = team.roster.filter((player) => player.position === 'GK') as PlayerGoalkeeper[];
-    const defenders = team.roster.filter((player) => player.position === 'DF') as PlayerOutfield[];
-    const midfielders = team.roster.filter((player) => player.position === 'MF') as PlayerOutfield[];
-    const forwards = team.roster.filter((player) => player.position === 'FW') as PlayerOutfield[];
-   
-    return (
-      <div className="roster-container">
-        <h3>{team.name} Roster</h3>
-        <table className="roster-table">
-          <thead>
-            <tr>
-              <th>Position</th>
-              <th>Name</th>
-              <th>Age</th>
-              <th>MP</th>
-              <th>Goals</th>
-            </tr>
-          </thead>
-          <tbody>
-            {goalkeepers.map((goalkeeper) => (
-              <tr key={goalkeeper.id}>
-                <td>{goalkeeper.position}</td>
-                <td>{goalkeeper.firstName.charAt(0)}. {goalkeeper.lastName}</td>
-                <td>{goalkeeper.age}</td>
-                <td>{goalkeeper.matchesPlayed}</td>
-                <td>{goalkeeper.goals}</td>
-              </tr>
-            ))}
-            <tr className="section-divider"></tr>
-            {defenders.map((defender) => (
-              <tr key={defender.id}>
-                <td>{defender.position}</td>
-                <td>{defender.firstName.charAt(0)}. {defender.lastName}</td>
-                <td>{defender.age}</td>
-                <td>{defender.matchesPlayed}</td>
-                <td>{defender.goals}</td>
-              </tr>
-            ))}
-            <tr className="section-divider"></tr>
-            {midfielders.map((midfielder) => (
-              <tr key={midfielder.id}>
-                <td>{midfielder.position}</td>
-                <td>{midfielder.firstName.charAt(0)}. {midfielder.lastName}</td>
-                <td>{midfielder.age}</td>
-                <td>{midfielder.matchesPlayed}</td>
-                <td>{midfielder.goals}</td>
-              </tr>
-            ))}
-            <tr className="section-divider"></tr>
-            {forwards.map((forward) => (
-              <tr key={forward.id}>
-                <td>{forward.position}</td>
-                <td>{forward.firstName.charAt(0)}. {forward.lastName}</td>
-                <td>{forward.age}</td>
-                <td>{forward.matchesPlayed}</td>
-                <td>{forward.goals}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    );
-  };
-  
-  export default RosterComponent;
+const RosterComponent: React.FC<RosterProps> = ({ team }) => {
+  return (
+    <div>
+      <h3>{team.name} Roster</h3>
+      <>
+      {team.roster.map((player: Player) => (
+        <PlayerComponent key={player.id} player={player} />
+      ))}
+      </>
+    </div>
+  )
+};
+
+export default RosterComponent;

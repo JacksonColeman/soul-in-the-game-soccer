@@ -67,7 +67,7 @@ function generateGoalkeeper(reputation: number, age:number): PlayerGoalkeeper{
     const generatedHAN = generateRandomAttribute(averageGKP, 20) - ageDiscount;
     const generatedREF = generateRandomAttribute(averageGKP, 20) - ageDiscount;
     const generatedPHY = generateRandomAttribute(averagePHY, 25) - ageDiscount;
-    const GK = new PlayerGoalkeeper(firstName('male'), lastName(), age, 0,0,{diving: generatedDIV, handling: generatedHAN, reflexes: generatedREF, physical: generatedPHY});
+    const GK = new PlayerGoalkeeper(firstName('male'), lastName(), age, {diving: generatedDIV, handling: generatedHAN, reflexes: generatedREF, physical: generatedPHY});
     return GK;
 }
 
@@ -84,7 +84,7 @@ function generateDefender(reputation: number, age:number){
     const generatedPLY = generateRandomAttribute(averagePLY, 20)
     const generatedATT = generateRandomAttribute(averageATT, 20)
     const generatedPHY = generateRandomAttribute(averagePHY, 25);
-    const DF = new PlayerOutfield(firstName('male'), lastName(), age,"DF",0,0, {attacking: generatedATT, playmaking: generatedPLY, defending: generatedDEF, physical: generatedPHY});
+    const DF = new PlayerOutfield(firstName('male'), lastName(), age,"DF",{attacking: generatedATT, playmaking: generatedPLY, defending: generatedDEF, physical: generatedPHY});
     return DF;
 }
 
@@ -101,7 +101,7 @@ function generateMidfielder(reputation: number, age:number){
     const generatedPLY = generateRandomAttribute(averagePLY, 20)
     const generatedDEF = generateRandomAttribute(averageDEF, 20)
     const generatedPHY = generateRandomAttribute(averagePHY, 25);
-    const MF = new PlayerOutfield(firstName('male'), lastName(), age, "MF",0,0, {attacking: generatedATT, playmaking: generatedPLY, defending: generatedDEF, physical: generatedPHY});
+    const MF = new PlayerOutfield(firstName('male'), lastName(), age, "MF",{attacking: generatedATT, playmaking: generatedPLY, defending: generatedDEF, physical: generatedPHY});
     return MF;
 }
 
@@ -119,7 +119,7 @@ function generateForward(reputation: number, age:number){
     const generatedDEF = generateRandomAttribute(averageDEF, 20)
     const generatedPHY = generateRandomAttribute(averagePHY, 25);
     //create player
-    const FW = new PlayerOutfield(firstName('male'), lastName(), age, "FW",0,0, {attacking: generatedATT, playmaking: generatedPLY, defending: generatedDEF, physical: generatedPHY});
+    const FW = new PlayerOutfield(firstName('male'), lastName(), age, "FW",{attacking: generatedATT, playmaking: generatedPLY, defending: generatedDEF, physical: generatedPHY});
     return FW;
 }
 

@@ -14,6 +14,7 @@
   .grid-item {
     border-right: 1px solid #ccc;
     padding: 10px;
+    padding-top: 0px;
   }
   
   .grid-item:last-child {
@@ -38,3 +39,4 @@
     padding-right: 25px;
     padding-left: 25px;
   }
+

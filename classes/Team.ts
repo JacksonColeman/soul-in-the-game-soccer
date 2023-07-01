@@ -8,8 +8,12 @@ export class Team {
         public reputation: number,
         public roster: Player[],
         public standingsInfo: {wins:number, losses:number, draws:number, goalsFor:number, goalsAgainst:number}
-    ) {}
+    ) {
+    }
 
+    get startingLineup(): Player[]{
+        return this.roster
+    }
     // standings info
 
     get points():number{ 
@@ -24,17 +28,20 @@ export class Team {
         this.roster.push(player);
       }
 
-    get teamOffenseTotal():number{
-        console.log(this.name);
-        console.log(`Attacking total: ${this.teamAttackingTotal} | Playmaking total: ${this.teamPlaymakingTotal}`)
-        return (this.teamAttackingTotal + this.teamPlaymakingTotal)/2;
-    }
-
     get teamAttackingTotal(): number{
         let sum = 0;
         for (const player of this.roster){
-            if (player instanceof PlayerOutfield){
-                sum += player.attributes.attacking;
+            if (player.position == "GK"){
+                0;
+            }
+            if (player.position == "DF"){
+                sum += player.attributes.attacking * 0.125;
+            }
+            if (player.position == "MF"){
+                sum += player.attributes.attacking * 0.5;
+            }
+            if (player.position == "FW"){
+                sum += player.attributes.attacking * 1;
             }
         }
         return sum;
@@ -43,8 +50,17 @@ export class Team {
     get teamPlaymakingTotal(): number{
         let sum = 0;
         for (const player of this.roster){
-            if (player instanceof PlayerOutfield){
-                sum += player.attributes.playmaking;
+            if (player.position == "GK"){
+                0;
+            }
+            if (player.position == "DF"){
+                sum += player.attributes.playmaking * 0.25;
+            }
+            if (player.position == "MF"){
+                sum += player.attributes.playmaking * 1;
+            }
+            if (player.position == "FW"){
+                sum += player.attributes.playmaking * 0.5;
             }
         }
         return sum;
@@ -54,14 +70,39 @@ export class Team {
         let sum = 0;
         for (const player of this.roster){
             if (player instanceof PlayerGoalkeeper){
-                sum += player.goalkeeping;
+                sum += player.goalkeeping * 2;
             }
-            if (player instanceof PlayerOutfield){
-                sum += player.attributes.defending;
+            if (player.position == "DF"){
+                sum += player.attributes.defending * 1;
+            }
+            if (player.position == "MF"){
+                sum += player.attributes.defending * 0.5;
+            }
+            if (player.position == "FW"){
+                sum += player.attributes.defending * 0.125;
             }
         }
         return sum;
     }
+
+    get teamPhysicalTotal(): number{
+        let sum = 0;
+        for (const player of this.roster){
+            if (player instanceof PlayerOutfield){
+                sum += player.attributes.physical;
+            }
+        }
+        return sum;
+    }
+
+    get startingGoalkeeper(): PlayerGoalkeeper {
+        for (const player of this.startingLineup) {
+          if (player instanceof PlayerGoalkeeper) {
+            return player;
+          }
+        }
+        throw new Error("No starting goalkeeper found"); // Throw an error if no goalkeeper is found
+      }
 
     // teamOffenseRatio(league: League): number{
     //     return (this.teamOffenseTotal / league.averageOffense) ** 2;

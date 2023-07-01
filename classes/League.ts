@@ -6,14 +6,6 @@ export class League{
     public avgGoals = 1.43;
     schedule: Matchup[][] = [];
 
-    get averageOffense():number{
-        let sum = 0;
-        for (const team of this.teams){
-            sum += team.teamOffenseTotal;
-        }
-        return sum / this.teams.length;
-    }
-
     get averageAttacking():number{
       let sum = 0;
       for (const team of this.teams){
@@ -34,6 +26,14 @@ export class League{
       let sum = 0;
         for (const team of this.teams){
             sum += team.teamPlaymakingTotal;
+        }
+        return sum / this.teams.length;
+    }
+
+    get averagePhysical():number{
+      let sum = 0;
+        for (const team of this.teams){
+            sum += team.teamPhysicalTotal;
         }
         return sum / this.teams.length;
     }

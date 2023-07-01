@@ -1,0 +1,90 @@
+.player-box {
+  display: flex;
+  flex-direction: column;
+  width: 400px;
+  background-color: #eaeaea;
+  border: 1px solid #ccc;
+  padding: 5px;
+  padding-left:10px;
+  margin: auto;
+  margin-bottom: 10px;
+}
+
+.player-box > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  text-align: left; /* Added left alignment */
+}
+
+.player-info {
+  display: flex;
+  align-items: center;
+}
+
+.player-name {
+  font-weight: bold;
+  /* font-size: 15px; */
+  width: 40%;
+  white-space: nowrap;
+  overflow:scroll;
+  /* text-overflow: ellipsis; */
+}
+
+.player-age,
+.player-position {
+  width: 20%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-left: 10px;
+}
+
+.player-details {
+  margin-top: 10px;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+
+.player-details.show {
+  max-height: 1000px; /* Adjust this value to your needs */
+}
+
+.player-details.show .player-attributes,
+.player-details.show .player-stats {
+  display: flex;
+  justify-content: space-between;
+}
+
+.player-details .player-attributes,
+.player-details .player-stats {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  margin-top: 10px;
+}
+
+.player-details .player-attributes-1,
+.player-details .player-attributes-2 {
+  display: flex;
+}
+
+.player-details div {
+  margin-bottom: 5px;
+}
+
+.player-details .player-attributes-1 div,
+.player-details .player-attributes-2 div {
+  flex: 1;
+}
+
+.player-details .player-attributes-1 div:first-child,
+.player-details .player-attributes-2 div:first-child {
+  margin-right: 10px;
+}
+
+.player-details button {
+  width: 20%;
+  margin-top: 10px;
+  cursor: pointer;
+}

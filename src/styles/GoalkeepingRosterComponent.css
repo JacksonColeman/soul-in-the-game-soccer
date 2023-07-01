@@ -1,0 +1,9 @@
+.goalkeeping-roster-container {
+    display: flex;
+    justify-content: center;
+  }
+  
+  .goalkeeping-roster-table {
+    /* Add any additional styling for the table if needed */
+  }
+  

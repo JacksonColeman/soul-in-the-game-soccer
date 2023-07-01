@@ -4,7 +4,7 @@ import { Matchup } from '../classes/Matchup';
 import { Team } from '../classes/Team';
 
 // Storing Teams array
-export function storeLeagueData(league: League){
+export function storeLeagueData(league: League) {
   const teamsData = league.teams.map((team) => ({
     id: team.id,
     name: team.name,
@@ -17,49 +17,29 @@ export function storeLeagueData(league: League){
       goalsFor: team.standingsInfo.goalsFor,
       goalsAgainst: team.standingsInfo.goalsAgainst,
     },
-    roster: team.roster.map((player) => {
-      const playerData: any = {
-        firstName: player.firstName,
-        lastName: player.lastName,
-        age: player.age,
-        position: player.position,
-        goals: player.goals,
-        matchesPlayed: player.matchesPlayed,
-      };
-
-      if (player instanceof PlayerGoalkeeper) {
-        playerData.attributes = { 
-          diving: player.attributes.diving,
-          handling: player.attributes.diving,
-          reflexes: player.attributes.diving,
-          physical: player.attributes.diving,
-        };
-      } else if (player instanceof PlayerOutfield) {
-        playerData.attributes = {
-          attacking: player.attributes.attacking,
-          playmaking: player.attributes.playmaking,
-          defending: player.attributes.defending,
-          physical: player.attributes.physical
-        };
-      }
-
-      return playerData;
-    }),
+    roster: team.roster.map((player) => ({
+      firstName: player.firstName,
+      lastName: player.lastName,
+      age: player.age,
+      position: player.position,
+      attributes: player.attributes,
+      stats: player.stats,
+    })),
   }));
 
   localStorage.setItem('teamsData', JSON.stringify(teamsData));
 
-   // Storing Schedule array
-   const scheduleData = league.schedule.map((week) =>
-   week.map((matchup) => ({
-     homeTeamID: matchup.homeTeam.id,
-     awayTeamID: matchup.awayTeam.id,
-     homeScore: matchup.homeScore,
-     awayScore: matchup.awayScore,
-     played: matchup.played,
-     id: matchup.id,
-   }))
- );
+  // Storing Schedule array
+  const scheduleData = league.schedule.map((week) =>
+    week.map((matchup) => ({
+      homeTeamID: matchup.homeTeam.id,
+      awayTeamID: matchup.awayTeam.id,
+      homeScore: matchup.homeScore,
+      awayScore: matchup.awayScore,
+      played: matchup.played,
+      id: matchup.id,
+    }))
+  );
 
   localStorage.setItem('scheduleData', JSON.stringify(scheduleData));
 }
@@ -71,21 +51,16 @@ export function rebuildLeague(teamsData: any[], scheduleData: any[]): League {
 
     // Rebuild roster players
     const rosterPlayers: Player[] = roster.map((playerData: any) => {
-      const { firstName, lastName, age, position, goals, matchesPlayed, attributes } = playerData;
+      const { firstName, lastName, age, position, attributes, stats } = playerData;
 
       // Determine player subclass based on position
       let player: Player;
       if (position === 'GK') {
-        const { diving, handling, reflexes, physical } = attributes;
-        player = new PlayerGoalkeeper(firstName, lastName, age, goals, matchesPlayed, {diving, handling, reflexes, physical});
+        player = new PlayerGoalkeeper(firstName, lastName, age, attributes);
+        player.stats = stats;
       } else {
-        const { attacking, playmaking, defending, physical } = attributes;
-        player = new PlayerOutfield(firstName, lastName, age, position, goals, matchesPlayed, {
-          attacking,
-          playmaking,
-          defending,
-          physical
-        });
+        player = new PlayerOutfield(firstName, lastName, age, position, attributes);
+        player.stats = stats;
       }
 
       return player;
