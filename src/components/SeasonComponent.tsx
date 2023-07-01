@@ -30,7 +30,7 @@ interface SeasonProps {
 
     getGameDate();
 
-    const [currentYear] = useState(getGameDate().year);
+    const [currentYear, setCurrentYear] = useState(getGameDate().year);
     const [currentWeek, setCurrentWeek] = useState(getGameDate().week);
     const [schedule, setSchedule] = useState([...league.schedule]);
     const [played, setPlayed] = useState(schedule[currentWeek - 1][0].played);
@@ -94,6 +94,18 @@ interface SeasonProps {
       handlePlayMatches();
       handleNextWeek();
     }
+
+    const handleNewYear = () => {
+      league.newYear(currentYear);
+      setCurrentYear(currentYear+1);
+      setCurrentWeek(1);
+      saveGameDate(currentYear+1,1);
+      // pro/rel
+      league.schedule = league.generateSchedule();
+      storeLeagueData(league);
+      setSchedule(league.schedule);
+      setPlayed(false);
+    }
   
     return (
       <div className="season-container">
@@ -128,6 +140,7 @@ interface SeasonProps {
               Next Week
             </button>
             <button onClick={playAndAdvance}>Play and Advance</button>
+            {currentWeek == schedule.length && <button onClick={handleNewYear}>New Year!</button>}
           </div>
 
           <div className="roster-wrapper grid-item">

@@ -24,6 +24,7 @@ export function storeLeagueData(league: League) {
       position: player.position,
       attributes: player.attributes,
       stats: player.stats,
+      careerStats: player.careerStats
     })),
   }));
 
@@ -48,25 +49,28 @@ export function rebuildLeague(teamsData: any[], scheduleData: any[]): League {
   // Rebuild teams
   const teams: Team[] = teamsData.map((teamData: any) => {
     const { id, name, stadium, reputation, roster, standingsInfo } = teamData;
+    const team = new Team(id, name, stadium, reputation, [], standingsInfo);
 
-    // Rebuild roster players
-    const rosterPlayers: Player[] = roster.map((playerData: any) => {
-      const { firstName, lastName, age, position, attributes, stats } = playerData;
+    // Rebuild roster
+    roster.map((playerData: any) => {
+      const { firstName, lastName, age, position, attributes, stats, careerStats } = playerData;
 
       // Determine player subclass based on position
       let player: Player;
       if (position === 'GK') {
-        player = new PlayerGoalkeeper(firstName, lastName, age, attributes);
+        player = new PlayerGoalkeeper(team, firstName, lastName, age, attributes);
         player.stats = stats;
+        player.careerStats = careerStats;
       } else {
-        player = new PlayerOutfield(firstName, lastName, age, position, attributes);
+        player = new PlayerOutfield(team, firstName, lastName, age, position, attributes);
         player.stats = stats;
+        player.careerStats = careerStats;
       }
 
-      return player;
+      team.addPlayer(player);
     });
 
-    return new Team(id, name, stadium, reputation, rosterPlayers, standingsInfo);
+    return team;
   });
 
   // Create the league object

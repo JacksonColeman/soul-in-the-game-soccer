@@ -7,8 +7,20 @@ export class Team {
         public stadium: string,
         public reputation: number,
         public roster: Player[],
-        public standingsInfo: {wins:number, losses:number, draws:number, goalsFor:number, goalsAgainst:number}
+        public standingsInfo: {wins:number, losses:number, draws:number, goalsFor:number, goalsAgainst:number} =
+        {wins:0, losses:0, draws:0, goalsFor:0, goalsAgainst:0}
     ) {
+    }
+
+    resetStandingsInfo(): void{
+        this.standingsInfo = {wins:0, losses:0, draws:0, goalsFor:0, goalsAgainst:0}
+    }
+
+    newYear(year:number): void{
+        this.resetStandingsInfo();
+        for (const player of this.roster){
+            player.progress(year);
+        }
     }
 
     get startingLineup(): Player[]{

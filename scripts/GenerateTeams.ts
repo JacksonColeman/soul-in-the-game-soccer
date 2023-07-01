@@ -23,7 +23,7 @@ export function generateTeams(leagueStrength: string, userTeamStrength: string, 
             reputation = 65;
          }
 
-        let n = new Team(teamInfo.id, teamInfo.name,teamInfo.stadium,reputation,[],{wins: 0,losses: 0,draws: 0, goalsFor: 0, goalsAgainst:0})
+        let n = new Team(teamInfo.id, teamInfo.name,teamInfo.stadium,reputation,[])
         n.roster = generateRoster(n);
         teams.push(n);
     })
@@ -33,21 +33,21 @@ export function generateTeams(leagueStrength: string, userTeamStrength: string, 
 export function generateRoster(team: Team): Player[]{
     const roster: Player[] = [];
     // goalkeepers
-    const GK = generateGoalkeeper(team.reputation, generateRandomAge());
+    const GK = generateGoalkeeper(team, team.reputation, generateRandomAge());
     roster.push(GK);
     // defenders
     for (let i = 0; i < 4; i++){
-        let DF = generateDefender(team.reputation, generateRandomAge());
+        let DF = generateDefender(team, team.reputation, generateRandomAge());
         roster.push(DF);
     }
     // midfielders
     for (let i = 0; i < 4; i++){
-        let MF = generateMidfielder(team.reputation, generateRandomAge());
+        let MF = generateMidfielder(team, team.reputation, generateRandomAge());
         roster.push(MF);
     }
     // forward
     for (let i = 0; i < 2; i++){
-        let FW = generateForward(team.reputation, generateRandomAge());
+        let FW = generateForward(team, team.reputation, generateRandomAge());
         roster.push(FW);
     }
 
@@ -56,7 +56,7 @@ export function generateRoster(team: Team): Player[]{
 
 // each team should have 1 goalkeeper, 4 defenders, 4 midfielders, 2 forwards (just to start)
 
-function generateGoalkeeper(reputation: number, age:number): PlayerGoalkeeper{
+function generateGoalkeeper(team: Team | undefined, reputation: number, age:number): PlayerGoalkeeper{
     // discount player attributes further from prime
     const ageDiscount = Math.abs(age - 28);
     // generate attribute means from reputation
@@ -67,11 +67,11 @@ function generateGoalkeeper(reputation: number, age:number): PlayerGoalkeeper{
     const generatedHAN = generateRandomAttribute(averageGKP, 20) - ageDiscount;
     const generatedREF = generateRandomAttribute(averageGKP, 20) - ageDiscount;
     const generatedPHY = generateRandomAttribute(averagePHY, 25) - ageDiscount;
-    const GK = new PlayerGoalkeeper(firstName('male'), lastName(), age, {diving: generatedDIV, handling: generatedHAN, reflexes: generatedREF, physical: generatedPHY});
+    const GK = new PlayerGoalkeeper(team, firstName('male'), lastName(), age, {diving: generatedDIV, handling: generatedHAN, reflexes: generatedREF, physical: generatedPHY});
     return GK;
 }
 
-function generateDefender(reputation: number, age:number){
+function generateDefender(team: Team | undefined,reputation: number, age:number){
     // discount player attributes further from prime
     const ageDiscount = Math.abs(age - 27);
     // generate attribute means from reputation
@@ -84,11 +84,11 @@ function generateDefender(reputation: number, age:number){
     const generatedPLY = generateRandomAttribute(averagePLY, 20)
     const generatedATT = generateRandomAttribute(averageATT, 20)
     const generatedPHY = generateRandomAttribute(averagePHY, 25);
-    const DF = new PlayerOutfield(firstName('male'), lastName(), age,"DF",{attacking: generatedATT, playmaking: generatedPLY, defending: generatedDEF, physical: generatedPHY});
+    const DF = new PlayerOutfield(team, firstName('male'), lastName(), age,"DF",{attacking: generatedATT, playmaking: generatedPLY, defending: generatedDEF, physical: generatedPHY});
     return DF;
 }
 
-function generateMidfielder(reputation: number, age:number){
+function generateMidfielder(team: Team | undefined,reputation: number, age:number){
     // discount player attributes further from prime
     const ageDiscount = Math.abs(age - 27);
     // generate attribute means from reputation
@@ -101,11 +101,11 @@ function generateMidfielder(reputation: number, age:number){
     const generatedPLY = generateRandomAttribute(averagePLY, 20)
     const generatedDEF = generateRandomAttribute(averageDEF, 20)
     const generatedPHY = generateRandomAttribute(averagePHY, 25);
-    const MF = new PlayerOutfield(firstName('male'), lastName(), age, "MF",{attacking: generatedATT, playmaking: generatedPLY, defending: generatedDEF, physical: generatedPHY});
+    const MF = new PlayerOutfield(team, firstName('male'), lastName(), age, "MF",{attacking: generatedATT, playmaking: generatedPLY, defending: generatedDEF, physical: generatedPHY});
     return MF;
 }
 
-function generateForward(reputation: number, age:number){
+function generateForward(team: Team | undefined,reputation: number, age:number){
     // discount player attributes further from prime
     const ageDiscount = Math.abs(age - 27);
     // generate attribute means from reputation
@@ -119,7 +119,7 @@ function generateForward(reputation: number, age:number){
     const generatedDEF = generateRandomAttribute(averageDEF, 20)
     const generatedPHY = generateRandomAttribute(averagePHY, 25);
     //create player
-    const FW = new PlayerOutfield(firstName('male'), lastName(), age, "FW",{attacking: generatedATT, playmaking: generatedPLY, defending: generatedDEF, physical: generatedPHY});
+    const FW = new PlayerOutfield(team, firstName('male'), lastName(), age, "FW",{attacking: generatedATT, playmaking: generatedPLY, defending: generatedDEF, physical: generatedPHY});
     return FW;
 }
 

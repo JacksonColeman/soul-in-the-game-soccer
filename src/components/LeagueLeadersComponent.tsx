@@ -58,7 +58,7 @@ const LeagueLeadersComponent: React.FC<LeagueLeadersComponentProps> = ({
           {goalLeaders.map((player: Player) => (
             <tr key={player.id}>
               <td>{`${player.firstName} ${player.lastName}`}</td>
-              <td>{player.getTeam(league)?.name || "-"}</td>
+              <td>{player.team?.name || "-"}</td>
               <td>{player.stats.goals}</td>
             </tr>
           ))}
@@ -70,7 +70,7 @@ const LeagueLeadersComponent: React.FC<LeagueLeadersComponentProps> = ({
           {assistLeaders.map((player: Player) => (
             <tr key={player.id}>
               <td>{`${player.firstName} ${player.lastName}`}</td>
-              <td>{player.getTeam(league)?.name || "-"}</td>
+              <td>{player.team?.name || "-"}</td>
               <td>{player.stats.assists}</td>
             </tr>
           ))}
@@ -82,7 +82,7 @@ const LeagueLeadersComponent: React.FC<LeagueLeadersComponentProps> = ({
           {cleanSheetLeaders.map((player: Player) => (
             <tr key={player.id}>
               <td>{`${player.firstName} ${player.lastName}`}</td>
-              <td>{player.getTeam(league)?.name || "-"}</td>
+              <td>{player.team?.name || "-"}</td>
               <td>{player instanceof PlayerGoalkeeper && player.stats.cleanSheets}</td>
             </tr>
           ))}

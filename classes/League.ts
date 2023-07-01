@@ -86,6 +86,12 @@ export class League{
     getTeam(teamId: number): Team | undefined {
       return this.teams.find((team) => team.id === teamId);
     }
+
+    newYear(year:number):void{
+      for (const team of this.teams){
+        team.newYear(year);
+      }
+    }
 }
     
         // shuffle the array of matchweeks

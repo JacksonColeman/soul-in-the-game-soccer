@@ -1,11 +1,11 @@
 import { v4 as uuidv4 } from 'uuid';
-import { League } from './League';
 import { Team } from './Team';
 
 export class Player {
   public id = uuidv4();
 
   constructor(
+    public team: Team | undefined,
     public firstName: string,
     public lastName: string,
     public age: number,
@@ -19,33 +19,29 @@ export class Player {
     assists: 0
   }
 
-  progress(): void {
+  careerStats = {};
+
+  progress(year:number): void {
     this.age += 1;
+    // add stats to careerStats
+    
     // Unique operations for each subclass can be implemented here
   }
 
   get overallRating(): number {
     return 0;
   }
-
-  getTeam(league: League): Team | undefined {
-    for (const team of league.teams) {
-      if (team.roster.includes(this)) {
-        return team;
-      }
-    }
-    return undefined;
-  }
 }
 
 export class PlayerGoalkeeper extends Player {
   constructor(
+    team: Team | undefined,
     firstName: string,
     lastName: string,
     age: number,
     attributes: { diving: number, handling: number, reflexes: number, physical: number },
   ) {
-    super(firstName, lastName, age, 'GK', attributes);
+    super(team, firstName, lastName, age, 'GK', attributes);
   }
 
   stats: { matchesPlayed: number, goals: number, assists: number, goalsConceded: number, cleanSheets: number} = {
@@ -56,10 +52,21 @@ export class PlayerGoalkeeper extends Player {
     cleanSheets: 0
   }
 
+  careerStats: { [year: number]: { teamName: string, matchesPlayed: number, goals: number, assists: number, goalsConceded: number, cleanSheets: number } } = {};
 
-  progress(): void {
-    super.progress(); // Increment age from the superclass
-    // Perform unique operations specific to Goalkeeper subclass
+  progress(year:number): void {
+    super.progress(year); // Increment age from the superclass
+    const teamName = this.team?.name || '-';
+    this.careerStats[year] = { teamName, ...this.stats };
+    // reset stats
+    this.stats = {
+      matchesPlayed: 0,
+      goals: 0,
+      assists: 0,
+      goalsConceded: 0,
+      cleanSheets: 0
+    }
+    // Perform unique operations specific to Outfield subclass
     // ...
   }
 
@@ -75,6 +82,7 @@ export class PlayerGoalkeeper extends Player {
 
 export class PlayerOutfield extends Player {
   constructor(
+    team: Team | undefined,
     firstName: string,
     lastName: string,
     age: number,
@@ -82,7 +90,7 @@ export class PlayerOutfield extends Player {
     attributes: { attacking: number, playmaking: number, defending: number, physical: number },
     
   ) {
-    super(firstName, lastName, age, position, attributes);
+    super(team, firstName, lastName, age, position, attributes);
   }
 
   stats: { matchesPlayed: number, goals: number, assists: number} = {
@@ -117,8 +125,18 @@ export class PlayerOutfield extends Player {
     return 0;
   }
 
-  progress(): void {
-    super.progress(); // Increment age from the superclass
+  careerStats: { [year: number]: { teamName: string, matchesPlayed: number, goals: number, assists: number } } = {};
+
+  progress(year:number): void {
+    super.progress(year); // Increment age from the superclass
+    const teamName = this.team?.name || '-';
+    this.careerStats[year] = { teamName, ...this.stats };
+    // reset stats
+    this.stats = {
+      matchesPlayed: 0,
+      goals: 0,
+      assists: 0
+    }
     // Perform unique operations specific to Outfield subclass
     // ...
   }
