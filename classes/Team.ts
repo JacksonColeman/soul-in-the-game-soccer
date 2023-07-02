@@ -12,6 +12,8 @@ export class Team {
     ) {
     }
 
+    user = false;
+
     resetStandingsInfo(): void{
         this.standingsInfo = {wins:0, losses:0, draws:0, goalsFor:0, goalsAgainst:0}
     }
@@ -23,9 +25,49 @@ export class Team {
         }
     }
 
-    get startingLineup(): Player[]{
-        return this.roster
+    positionQuotas: { [position: string]: number } = {
+        DF: 4,
+        MF: 3,
+        FW: 3,
+      };
+
+    get startingLineup(): Player[] {
+
+  const sortedPlayers = this.roster.sort((a, b) => b.overallRating - a.overallRating);
+  const lineup: Player[] = [];
+
+  // Select the goalkeeper
+  const goalkeeper = sortedPlayers.find(player => player.position === 'GK');
+  if (goalkeeper) {
+    lineup.push(goalkeeper);
+  }
+
+  const positionQuotas = this.positionQuotas;
+
+  const filledPositions: { [position: string]: number } = {
+    GK: 1,
+    DF: 0,
+    MF: 0,
+    FW: 0,
+  };
+
+  // Select players for each position until the lineup has 11 players
+  for (const player of sortedPlayers) {
+    if (lineup.length >= 11) {
+      break;
     }
+
+    if (player !== goalkeeper) {
+      if (filledPositions[player.position] < positionQuotas[player.position]) {
+        lineup.push(player);
+        filledPositions[player.position]++;
+      }
+    }
+  }
+
+  return lineup;
+}    
+      
     // standings info
 
     get points():number{ 
@@ -42,7 +84,7 @@ export class Team {
 
     get teamAttackingTotal(): number{
         let sum = 0;
-        for (const player of this.roster){
+        for (const player of this.startingLineup){
             if (player.position == "GK"){
                 0;
             }
@@ -61,7 +103,7 @@ export class Team {
 
     get teamPlaymakingTotal(): number{
         let sum = 0;
-        for (const player of this.roster){
+        for (const player of this.startingLineup){
             if (player.position == "GK"){
                 0;
             }
@@ -80,7 +122,7 @@ export class Team {
 
     get teamDefenseTotal(): number{
         let sum = 0;
-        for (const player of this.roster){
+        for (const player of this.startingLineup){
             if (player instanceof PlayerGoalkeeper){
                 sum += player.goalkeeping * 2;
             }
@@ -99,7 +141,7 @@ export class Team {
 
     get teamPhysicalTotal(): number{
         let sum = 0;
-        for (const player of this.roster){
+        for (const player of this.startingLineup){
             if (player instanceof PlayerOutfield){
                 sum += player.attributes.physical;
             }

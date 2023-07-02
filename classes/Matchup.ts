@@ -77,10 +77,10 @@ export class Matchup {
       }
 
       //update player stats
-      for (const player of this.homeTeam.roster){
+      for (const player of this.homeTeam.startingLineup){
         player.stats.matchesPlayed++;
       }
-      for (const player of this.awayTeam.roster){
+      for (const player of this.awayTeam.startingLineup){
         player.stats.matchesPlayed++;
       }
 
@@ -104,7 +104,7 @@ export class Matchup {
     }
 
     createGoals(n: number, team:Team): Goal[] {
-      const players = team.roster.filter(
+      const players = team.startingLineup.filter(
         (player) => player instanceof PlayerOutfield
       ) as PlayerOutfield[];
   

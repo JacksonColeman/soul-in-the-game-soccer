@@ -1,64 +1,15 @@
 import { Team } from "../classes/Team"
-import { Player, PlayerGoalkeeper, PlayerOutfield } from "../classes/Player";
-import data from "../src/data/teams.json"
-import {firstName, lastName} from './GenerateNames.ts';
-import generateStartingRoster from './GenerateStartingRoster.ts'
+import { PlayerGoalkeeper, PlayerOutfield } from "../classes/Player";
+import {firstName, lastName} from './GenerateNames';
 
-export function generateTeams(leagueStrength: string, userTeamStrength: string, userTeamID: number): Team[]{
 
-    const teams: Team[] = [];
-    data.map(teamInfo => {
-        // reputation changes based on leagueMode
-        let reputation: number;
-        if (leagueStrength == "Realistic" || (userTeamStrength == "Realistic" && teamInfo.id == userTeamID)){
-            reputation = teamInfo.reputation + Math.floor(Math.random() * 7) - 3;
-        } 
-        else if (leagueStrength == "Random"){
-            reputation = Math.floor(Math.random()*41) + 55;
-        } else {
-            reputation = teamInfo.reputation;
-        }
-
-        // 
-        if (teamInfo.id == userTeamID && userTeamStrength == "Challenge"){
-            reputation = 65;
-         }
-
-        let n = new Team(teamInfo.id, teamInfo.name,teamInfo.stadium,reputation,[])
-        n.roster = generateStartingRoster(n);
-        teams.push(n);
-    })
-    return teams;
+function generateBoundedAge(min:number,max:number): number {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-export function generateRoster(team: Team): Player[]{
-    const roster: Player[] = [];
-    // goalkeepers
-    const GK = generateGoalkeeper(team, team.reputation, generateRandomAge());
-    roster.push(GK);
-    // defenders
-    for (let i = 0; i < 4; i++){
-        let DF = generateDefender(team, team.reputation, generateRandomAge());
-        roster.push(DF);
-    }
-    // midfielders
-    for (let i = 0; i < 4; i++){
-        let MF = generateMidfielder(team, team.reputation, generateRandomAge());
-        roster.push(MF);
-    }
-    // forward
-    for (let i = 0; i < 2; i++){
-        let FW = generateForward(team, team.reputation, generateRandomAge());
-        roster.push(FW);
-    }
-
-    return roster;
-}
-
-// each team should have 1 goalkeeper, 4 defenders, 4 midfielders, 2 forwards (just to start)
-
-function generateGoalkeeper(team: Team | undefined, reputation: number, age:number): PlayerGoalkeeper{
+export function generateGoalkeeper(team: Team | undefined, reputation: number, ageMin:number, ageMax:number): PlayerGoalkeeper{
     // discount player attributes further from prime
+    const age = generateBoundedAge(ageMin, ageMax);
     const ageDiscount = Math.abs(age - 28);
     // generate attribute means from reputation
     const averageGKP = Math.floor(reputation ** 0.99);
@@ -72,8 +23,9 @@ function generateGoalkeeper(team: Team | undefined, reputation: number, age:numb
     return GK;
 }
 
-function generateDefender(team: Team | undefined,reputation: number, age:number){
+export function generateDefender(team: Team | undefined,reputation: number, ageMin:number, ageMax:number){
     // discount player attributes further from prime
+    const age = generateBoundedAge(ageMin, ageMax);
     const ageDiscount = Math.abs(age - 27);
     // generate attribute means from reputation
     const averageDEF = Math.floor(reputation ** 0.99) - ageDiscount;
@@ -89,8 +41,9 @@ function generateDefender(team: Team | undefined,reputation: number, age:number)
     return DF;
 }
 
-function generateMidfielder(team: Team | undefined,reputation: number, age:number){
+export function generateMidfielder(team: Team | undefined,reputation: number, ageMin:number, ageMax:number){
     // discount player attributes further from prime
+    const age = generateBoundedAge(ageMin, ageMax);
     const ageDiscount = Math.abs(age - 27);
     // generate attribute means from reputation
     const averageATT = Math.floor(reputation ** 0.94) - ageDiscount;
@@ -106,8 +59,9 @@ function generateMidfielder(team: Team | undefined,reputation: number, age:numbe
     return MF;
 }
 
-function generateForward(team: Team | undefined,reputation: number, age:number){
+export function generateForward(team: Team | undefined,reputation: number, ageMin:number, ageMax:number){
     // discount player attributes further from prime
+    const age = generateBoundedAge(ageMin, ageMax);
     const ageDiscount = Math.abs(age - 27);
     // generate attribute means from reputation
     const averageATT = Math.floor(reputation ** 0.99) - ageDiscount;
@@ -129,7 +83,3 @@ function generateRandomAttribute(average: number, variability: number): number {
     const max = Math.min(99, average + variability);
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
-
-function generateRandomAge(): number{
-    return Math.floor(Math.random() * (17)) + 18;
-}

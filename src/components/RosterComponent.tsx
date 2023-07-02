@@ -11,9 +11,9 @@ type RosterProps = {
 const RosterComponent: React.FC<RosterProps> = ({ team }) => {
   return (
     <div>
-      <h3>{team.name} Roster</h3>
+      <h3>{team.name} Starters</h3>
       <>
-      {team.roster.map((player: Player) => (
+      {team.startingLineup.map((player: Player) => (
         <PlayerComponent key={player.id} player={player} />
       ))}
       </>

@@ -5,10 +5,12 @@ import MatchweekComponent from "./MatchweekComponent";
 import StandingsTableComponent from "./StandingsTableComponent";
 import '../styles/SeasonComponent.css'
 import RosterComponent from "./RosterComponent";
+import Formation from "./FormationComponent";
 import UserBarComponent from "./UserBarComponent";
 import { storeLeagueData } from "../../scripts/LeagueStorage";
 // import TeamTotalsUnderTheHood from "./TeamTotalsUnderTheHood";
 import LeagueLeadersComponent from "./LeagueLeadersComponent"
+import FormationComponent from "./FormationComponent";
 
 interface SeasonProps {
   user: User;
@@ -139,12 +141,12 @@ interface SeasonProps {
             <button onClick={handleNextWeek} disabled={!played || currentWeek === schedule.length}>
               Next Week
             </button>
-            <button onClick={playAndAdvance}>Play and Advance</button>
-            {currentWeek == schedule.length && <button onClick={handleNewYear}>New Year!</button>}
+            <button onClick={playAndAdvance} disabled={played}>Play and Advance</button>
+            {currentWeek == schedule.length && played && <button onClick={handleNewYear}>New Year!</button>}
           </div>
 
           <div className="roster-wrapper grid-item">
-          {selectedTeam ?<RosterComponent team={selectedTeam} key={currentWeek} /> : null}
+          {selectedTeam ?<FormationComponent team={selectedTeam} key={currentWeek} /> : null}
         </div>
         </div>
       </div>

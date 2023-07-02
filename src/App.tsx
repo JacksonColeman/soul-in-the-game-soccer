@@ -106,6 +106,7 @@ function App() {
   const createLeague = (leagueStrength: string, userTeamStrength: string, userTeamID: number) => {
     const newLeague = new League(generateTeams(leagueStrength, userTeamStrength, userTeamID));
     newLeague.schedule = newLeague.generateSchedule();
+    newLeague.getTeam(userTeamID).user = true;
     setLeague(newLeague);
     storeLeagueData(newLeague);
   }

@@ -1,6 +1,7 @@
 import { useEffect, useState} from 'react';
 import '../styles/GameSetupComponent.css';
 import teams from "../data/teams.json";
+import {getGameDate} from '../../scripts/GetSetDate'
 
 type GameSetupProps = {
   onNewGame: () => void;
@@ -10,6 +11,7 @@ type GameSetupProps = {
 const GameSetupComponent: React.FC<GameSetupProps> = ({ onNewGame, onContinueGame }) => {
   const [userName, setUserName] = useState('');
   const [teamName, setTeamName] = useState('');
+  const [gameDate, setGameDate] = useState({year:0,week:0})
 
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
@@ -22,6 +24,7 @@ const GameSetupComponent: React.FC<GameSetupProps> = ({ onNewGame, onContinueGam
       if (team) {
         setTeamName(team.name);
       }
+      setGameDate(getGameDate());
     }
   }, []);
 
@@ -40,6 +43,7 @@ const GameSetupComponent: React.FC<GameSetupProps> = ({ onNewGame, onContinueGam
       <b>Continue Game</b>
       <div>
         <p>{userName}<br/>{teamName}</p>
+        <p>{gameDate.year} Week {gameDate.week}</p>
       </div>
     </>
   ) : (

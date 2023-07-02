@@ -83,8 +83,12 @@ export class League{
     return allMatchups;
     }
 
-    getTeam(teamId: number): Team | undefined {
-      return this.teams.find((team) => team.id === teamId);
+    getTeam(teamID: number): Team {
+      const gotTeam = this.teams.find((team) => team.id === teamID);
+      if (gotTeam){
+        return gotTeam;
+      }
+      throw new Error(`No team with ID ${teamID} found`); // Throw an error if no goalkeeper is found
     }
 
     newYear(year:number):void{
