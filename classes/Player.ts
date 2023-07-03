@@ -23,7 +23,8 @@ export class Player {
   ) {
   }
 
-
+  injured = false;
+  injuryTime = 0;
 
   stats: { matchesPlayed: number, goals: number, assists: number} = {
     matchesPlayed: 0,
@@ -42,6 +43,23 @@ export class Player {
   get overallRating(): number {
     return 0;
   }
+
+  injuryUpdate(){
+    // BASIC VERSION, ADD BETTER INJURY PROBABILITY LATER
+    if (this.injured){
+      console.log("update");
+      this.injuryTime--;
+      if (this.injuryTime == 0){
+        this.injured = false;
+      }
+    }
+
+    if (!this.injured && Math.random() < 0.05){
+      this.injured = true;
+      this.injuryTime = Math.floor(Math.random() * 10);
+    }
+  }
+
 }
 
 export class PlayerGoalkeeper extends Player {
@@ -94,7 +112,6 @@ export class PlayerGoalkeeper extends Player {
   get overallRating(): number {
     return this.goalkeeping;
   }
-
   
 }
 

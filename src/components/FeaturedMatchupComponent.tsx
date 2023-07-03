@@ -11,15 +11,12 @@ const MatchupComponent: React.FC<MatchupProps> = ({ matchup }) => {
   return (
     <div className="matchup">
       <div className="team-info">
-        <div className="home-team-container">
-          <span className="home-team-name">{homeTeam.name}</span>
-        </div>
-        <div className = "team-score-container">
-          {played && <span className="jteam-score">{homeScore} - {awayScore}</span>}
-        </div>
-        <div className="away-team">
-          <span className="away-team-name">{awayTeam.name}</span>
-        </div>
+        <span className="team-name">{homeTeam.name}</span>
+        {played && <span className="team-score">{homeScore}</span>}
+      </div>
+      <div className="team-info">
+        <span className="team-name">{awayTeam.name}</span>
+        {played && <span className="team-score">{awayScore}</span>}
       </div>
     </div>
   );

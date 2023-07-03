@@ -25,6 +25,9 @@
     height: 40px;
     background-color: #fff;
     border: 1px solid #ccc;
+    margin: 2px;
+    margin-left: 5px;
+    margin-right: 5px;
   }
   
   .formation-goalkeeper {
@@ -40,7 +43,7 @@
   }
 
   .formation-forward {
-    background-color: palevioletred;
+    background-color: rgb(226, 197, 206);
   }
   
   

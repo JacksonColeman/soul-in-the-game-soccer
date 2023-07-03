@@ -24,7 +24,9 @@ export function storeLeagueData(league: League) {
       position: player.position,
       attributes: player.attributes,
       stats: player.stats,
-      careerStats: player.careerStats
+      careerStats: player.careerStats,
+      injured: player.injured,
+      injuryTime: player.injuryTime
     })),
   }));
 
@@ -53,19 +55,19 @@ export function rebuildLeague(teamsData: any[], scheduleData: any[]): League {
 
     // Rebuild roster
     roster.map((playerData: any) => {
-      const { firstName, lastName, age, position, attributes, stats, careerStats } = playerData;
+      const { firstName, lastName, age, position, attributes, stats, careerStats, injured, injuryTime } = playerData;
 
       // Determine player subclass based on position
       let player: Player;
       if (position === 'GK') {
         player = new PlayerGoalkeeper(team, firstName, lastName, age, attributes);
-        player.stats = stats;
-        player.careerStats = careerStats;
       } else {
         player = new PlayerOutfield(team, firstName, lastName, age, position, attributes);
-        player.stats = stats;
-        player.careerStats = careerStats;
       }
+      player.stats = stats;
+      player.careerStats = careerStats;
+      player.injured = injured;
+      player.injuryTime = injuryTime;
 
       team.addPlayer(player);
     });

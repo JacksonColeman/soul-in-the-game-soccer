@@ -1,4 +1,5 @@
 import {Player, PlayerGoalkeeper, PlayerOutfield} from './Player'
+import { generateGoalkeeper, generateDefender, generateMidfielder, generateForward} from '../scripts/GeneratePlayers';
 
 export class Team {
     constructor(
@@ -14,6 +15,8 @@ export class Team {
 
     user = false;
 
+    extraReserves: Player[] = []; // extra players for injury crises
+
     resetStandingsInfo(): void{
         this.standingsInfo = {wins:0, losses:0, draws:0, goalsFor:0, goalsAgainst:0}
     }
@@ -25,48 +28,145 @@ export class Team {
         }
     }
 
+    handleInjuries(){
+      for (const player of this.roster){
+        if (player.injured){
+          player.injuryTime--;
+          if (player.injuryTime == 0){
+            player.injured = false;
+          }
+        }
+      }
+      // very basic
+      for (const player of this.startingLineup){
+        if (player instanceof PlayerGoalkeeper && Math.random() < 0.01){
+          player.injured = true;
+          player.injuryTime = Math.floor(Math.random() * 10) + 1;
+        } else
+        if (!player.injured && Math.random() < 0.05){
+          player.injured = true;
+          player.injuryTime = Math.floor(Math.random() * 10) + 1;
+        }
+      }
+      for (const player of this.extraReserves){
+        player.injured = false;
+        player.injuryTime = 0;
+      }
+    }
+
     positionQuotas: { [position: string]: number } = {
+        GK: 1,
         DF: 4,
         MF: 3,
         FW: 3,
       };
 
     get startingLineup(): Player[] {
+      const healthyPlayers = this.roster.filter(p => !p.injured);
+      const sortedPlayers = healthyPlayers.sort((a, b) => b.overallRating - a.overallRating);
+      const lineup: Player[] = [];
 
-  const sortedPlayers = this.roster.sort((a, b) => b.overallRating - a.overallRating);
-  const lineup: Player[] = [];
+      // Select the goalkeeper
 
-  // Select the goalkeeper
-  const goalkeeper = sortedPlayers.find(player => player.position === 'GK');
-  if (goalkeeper) {
-    lineup.push(goalkeeper);
-  }
+      const positionQuotas = this.positionQuotas;
 
-  const positionQuotas = this.positionQuotas;
+      const filledPositions: { [position: string]: number } = {
+        GK: 0,
+        DF: 0,
+        MF: 0,
+        FW: 0,
+      };
 
-  const filledPositions: { [position: string]: number } = {
-    GK: 1,
-    DF: 0,
-    MF: 0,
-    FW: 0,
-  };
+      // Select players for each position until the lineup has 11 players
+      for (const player of sortedPlayers) {
+        if (lineup.length >= 11) {
+          break;
+        }
 
-  // Select players for each position until the lineup has 11 players
-  for (const player of sortedPlayers) {
-    if (lineup.length >= 11) {
-      break;
+        if (filledPositions[player.position] < positionQuotas[player.position]) {
+          lineup.push(player);
+          filledPositions[player.position]++;
+        }
+      }
+
+      if (lineup.length < 11){
+        console.log(`${this.name} cannot fill lineup — calling up youth player(s)`)
+        for (let pos in filledPositions){
+          while (filledPositions[pos] < positionQuotas[pos]){
+            const playersInExtraReserves = this.extraReserves.filter(p => p.position === pos && !p.injured && !lineup.includes(p));
+            while (playersInExtraReserves.length > 0 && filledPositions[pos] < positionQuotas[pos]){
+              let extraPlayer = playersInExtraReserves.shift();
+              if (extraPlayer){lineup.push(extraPlayer)};
+              filledPositions[pos]++;
+            }
+            if (pos == "GK"){
+              for (let i = 0; i < positionQuotas[pos] - filledPositions[pos]; i++){
+                const gk = generateGoalkeeper(this, this.reputation*0.66,16,16);
+                this.extraReserves.push(gk);
+                lineup.push(gk);
+                filledPositions[pos]++;
+              }
+            }
+            if (pos == "DF"){
+              for (let i = 0; i < positionQuotas[pos] - filledPositions[pos]; i++){
+                const df = generateDefender(this, this.reputation*0.66,16,16);
+                this.extraReserves.push(df);
+                lineup.push(df);
+                filledPositions[pos]++;
+              }
+            }
+            if (pos == "MF"){
+              for (let i = 0; i < positionQuotas[pos] - filledPositions[pos]; i++){
+                const mf = generateMidfielder(this, this.reputation*0.66,16,16);
+                this.extraReserves.push(mf);
+                lineup.push(mf);
+                filledPositions[pos]++;
+              }
+            }
+            if (pos == "FW"){
+              for (let i = 0; i < positionQuotas[pos] - filledPositions[pos]; i++){
+                const fw = generateForward(this, this.reputation*0.8,16,16);
+                this.extraReserves.push(fw);
+                lineup.push(fw);
+                filledPositions[pos]++;
+              }
+            }
+          }
+        }
+      }
+      return lineup;
+  }    
+
+get subsBench(): Player[] {
+    const lineupPlayers = this.startingLineup;
+    const nonLineupPlayers = this.roster.filter(p => !lineupPlayers.includes(p) && !p.injured)
+    const sortedPlayers = nonLineupPlayers.sort((a, b) => b.overallRating - a.overallRating);
+    const subsBench: Player[] = [];
+  
+    // Select the best players for the subs bench
+    const goalkeeper = sortedPlayers.find(player => player.position === 'GK');
+    if (goalkeeper) {
+        subsBench.push(goalkeeper);
     }
 
-    if (player !== goalkeeper) {
-      if (filledPositions[player.position] < positionQuotas[player.position]) {
-        lineup.push(player);
-        filledPositions[player.position]++;
+    for (const player of sortedPlayers) {
+      if (subsBench.length >= 9) {
+        break;
+      }
+  
+      if (player.position === 'GK' && subsBench.some(p => p.position === 'GK')) {
+        // Skip adding another goalkeeper if one is already on the subs bench
+        continue;
+      }
+  
+      if (!lineupPlayers.includes(player)) {
+        subsBench.push(player);
       }
     }
+  
+    return subsBench;
   }
-
-  return lineup;
-}    
+  
       
     // standings info
 

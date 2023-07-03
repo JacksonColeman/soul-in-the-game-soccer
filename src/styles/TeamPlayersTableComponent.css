@@ -1,0 +1,47 @@
+.players-table {
+    border-collapse: collapse;
+    border: 1px solid #ccc;
+    width: 100%;
+  }
+  
+  .players-table th,
+  .players-table td {
+    border-bottom: 1px solid #ccc;
+  }
+  
+  .players-table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+  }
+
+  .players-table tr {
+    background-color: whitesmoke;
+  }
+
+  .injured {
+    color: red;
+  }
+
+  .stat-col {
+    width: 30px; /* Adjust the width as needed */
+    padding: 1px;
+  }
+
+  .tabs {
+    display: flex;
+    margin-bottom: 10px;
+  }
+  
+  .tab {
+    flex-grow: 1;
+    padding: 6px;
+    text-align: center;
+    background-color: #f2f2f2;
+    cursor: pointer;
+    border: none;
+    outline: none;
+  }
+  
+  .tab.active {
+    background-color: #ddd;
+  }

@@ -6,6 +6,10 @@
     width: 25px; /* Adjust the width as needed */
   }
 
+  .player-name-col {
+    width: 120px; /* Adjust the width as needed */
+  }
+
   .standings-table {
     border-collapse: collapse;
     border: 1px solid #ccc;

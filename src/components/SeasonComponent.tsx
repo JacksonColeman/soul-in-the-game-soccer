@@ -11,6 +11,7 @@ import { storeLeagueData } from "../../scripts/LeagueStorage";
 // import TeamTotalsUnderTheHood from "./TeamTotalsUnderTheHood";
 import LeagueLeadersComponent from "./LeagueLeadersComponent"
 import FormationComponent from "./FormationComponent";
+import TeamPlayersTableComponent from "./TeamPlayersTableComponent";
 
 interface SeasonProps {
   user: User;
@@ -108,6 +109,16 @@ interface SeasonProps {
       setSchedule(league.schedule);
       setPlayed(false);
     }
+
+    const handleAdvance = () => {
+      if (currentWeek == schedule.length && played){
+        handleNewYear();
+      } else if (!played) {
+        handlePlayMatches();
+      } else {
+        handleNextWeek();
+      }
+    }
   
     return (
       <div className="season-container">
@@ -133,20 +144,22 @@ interface SeasonProps {
           </div>
 
           <div className="fixtures-wrapper grid-item">
-            <MatchweekComponent key={currentWeek} matchups={schedule[currentWeek - 1]} week={currentWeek}/>
-            {/* <button onClick={handlePreviousWeek} disabled={currentWeek === 1}>
-              Previous Week
-            </button> */}
-            <button onClick={handlePlayMatches} disabled={played}>Play Matches</button>
+          {/* <FormationComponent team={selectedTeam} key={currentWeek} /> */}
+            <MatchweekComponent key={currentWeek} matchups={schedule[currentWeek - 1]} week={currentWeek} userTeamID={user.teamID}/>
+            <button onClick={handleAdvance}>Advance</button>
+          </div>
+
+          <div className="roster-wrapper grid-item">
+            <h3>{selectedTeam.name} Roster</h3>
+          
+          <TeamPlayersTableComponent team={selectedTeam}/>
+          {/* <button onClick={handlePlayMatches} disabled={played}>Play Matches</button>
             <button onClick={handleNextWeek} disabled={!played || currentWeek === schedule.length}>
               Next Week
             </button>
             <button onClick={playAndAdvance} disabled={played}>Play and Advance</button>
-            {currentWeek == schedule.length && played && <button onClick={handleNewYear}>New Year!</button>}
-          </div>
-
-          <div className="roster-wrapper grid-item">
-          {selectedTeam ?<FormationComponent team={selectedTeam} key={currentWeek} /> : null}
+            {currentWeek == schedule.length && played && <button onClick={handleNewYear}>New Year!</button>} */}
+            <FormationComponent team={selectedTeam}/>
         </div>
         </div>
       </div>

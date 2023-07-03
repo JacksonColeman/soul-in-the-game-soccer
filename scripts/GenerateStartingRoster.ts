@@ -51,7 +51,7 @@ export default function generateStartingRoster(team: Team): Player[]{
         roster.push(youthFW);
     }
     // prime forwards
-    for (let i = 0; i < 2; i++){
+    for (let i = 0; i < 3; i++){
         let primeFW = generateForward(team, team.reputation, 24,30);
         roster.push(primeFW);
     }

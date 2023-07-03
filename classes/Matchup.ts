@@ -100,6 +100,11 @@ export class Matchup {
       this.goals = this.goals.concat(this.createGoals(this.homeScore, this.homeTeam));
       this.goals = this.goals.concat(this.createGoals(this.awayScore, this.awayTeam));
       // set match to played
+      
+      // handle injuries
+      this.homeTeam.handleInjuries();
+      this.awayTeam.handleInjuries();
+
       this.played = true;
     }
 
