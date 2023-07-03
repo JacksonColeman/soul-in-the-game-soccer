@@ -197,7 +197,7 @@ function progressAttribute(attribute: Attribute, attributeValue: number, age: nu
   if (age < 26){
     // create an attribute development system
     const developmentRate = {
-      [Attribute.Physical]: 0.5,
+      [Attribute.Physical]: 1,
       [Attribute.Attacking]: 1,
       [Attribute.Defending]: 1,
       [Attribute.Playmaking]: 1,
@@ -205,14 +205,12 @@ function progressAttribute(attribute: Attribute, attributeValue: number, age: nu
       [Attribute.Handling]: 1,
       [Attribute.Reflexes]: 1,
     };
-    // const yearsBeforePrime = 26-age;
-    const development = Math.floor((Math.random()*4 - 1) * developmentRate[attribute]);
+    const expectedDevelopment = 1 + (26 - age)/4;
+    const developmentMultiplier = Math.random() * 1.5 + 0.5;
+    const development = Math.floor(expectedDevelopment * developmentMultiplier * developmentRate[attribute]);
     return Math.min(99, attributeValue + development);
   }
   if (age > 29){
-    const declineYear = age - 29;
-    const meanDecline = (declineYear);
-    const randomFactor = Math.random() * 0.5 + 0.75;
     const attributeDeclineRates = {
       [Attribute.Physical]: 1.5,
       [Attribute.Attacking]: 1,
@@ -222,8 +220,11 @@ function progressAttribute(attribute: Attribute, attributeValue: number, age: nu
       [Attribute.Handling]: 0.5,
       [Attribute.Reflexes]: 0.5,
     }
+
+    const expectedDecline = 1 + (age - 29)/2;
+    const declineMultiplier = Math.random() * 1.5 + 0.5;
     const attributeDeclineRate = attributeDeclineRates[attribute];
-    const decline =  Math.floor(meanDecline * randomFactor * attributeDeclineRate);
+    const decline =  Math.floor(expectedDecline * declineMultiplier * attributeDeclineRate);
     return Math.max(10, attributeValue - decline);
   }
   return attributeValue;

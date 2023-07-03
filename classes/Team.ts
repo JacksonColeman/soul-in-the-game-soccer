@@ -16,6 +16,22 @@ export class Team {
 
     extraReserves: Player[] = []; // extra players for injury crises
 
+    autophagy(){
+      const newPlayers: Player[] = [];
+      this.roster = this.roster.filter(player => {
+        if (player.age > 30 && player.overallRating < (this.reputation**.99)/2) {
+          const newPosition = player.position;
+          const newPlayer = generatePlayer(this, newPosition, this.reputation ** 0.99, 17, 21);
+          newPlayers.push(newPlayer);
+          console.log(`${this.name} replaced ${player.lastName} (${player.overallRating}) with ${newPlayer.lastName} (${newPlayer.overallRating}). Attribute change of ${newPlayer.overallRating - player.overallRating}`);
+          return false; // Remove the player from the roster
+        }
+        return true; // Keep the player in the roster
+      });
+      this.roster = this.roster.concat(newPlayers); //add new players
+    }
+
+
     resetStandingsInfo(): void{
         this.standingsInfo = {wins:0, losses:0, draws:0, goalsFor:0, goalsAgainst:0}
     }
@@ -25,6 +41,7 @@ export class Team {
         for (const player of this.roster){
             player.progress(year);
         }
+        this.autophagy();
     }
 
     handleInjuries(){
@@ -62,7 +79,12 @@ export class Team {
 
     get startingLineup(): Player[] {
       const healthyPlayers = this.roster.filter(p => !p.injured);
-      const sortedPlayers = healthyPlayers.sort((a, b) => b.overallRating - a.overallRating);
+      const sortedPlayers = healthyPlayers.sort((a, b) => {
+        if (a.overallRating === b.overallRating) {
+          return a.age - b.age; // Younger player gets priority when overall ratings are equal
+        }
+        return b.overallRating - a.overallRating;
+      });
       const lineup: Player[] = [];
 
       // Select the goalkeeper
@@ -139,7 +161,12 @@ export class Team {
 get subsBench(): Player[] {
     const lineupPlayers = this.startingLineup;
     const nonLineupPlayers = this.roster.filter(p => !lineupPlayers.includes(p) && !p.injured)
-    const sortedPlayers = nonLineupPlayers.sort((a, b) => b.overallRating - a.overallRating);
+    const sortedPlayers = nonLineupPlayers.sort((a, b) => {
+      if (a.overallRating === b.overallRating) {
+        return a.age - b.age; // Younger player gets priority when overall ratings are equal
+      }
+      return b.overallRating - a.overallRating;
+    });
     const subsBench: Player[] = [];
   
     // Select the best players for the subs bench
