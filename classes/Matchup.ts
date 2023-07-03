@@ -105,6 +105,9 @@ export class Matchup {
       this.homeTeam.handleInjuries();
       this.awayTeam.handleInjuries();
 
+      // reputation update
+      updateReputation(this.homeTeam, this.awayTeam, this.homeScore, this.awayScore);
+
       this.played = true;
     }
 
@@ -168,3 +171,32 @@ export class Matchup {
   }
 
 
+// DYNAMIC REPUTATION ELO SYSTEM
+const K_FACTOR = 1;
+
+const calculateWinProbability = (teamAReputation: number, teamBReputation: number) => {
+  const ratingDifference = teamBReputation - teamAReputation;
+  return 1 / (1 + 10 ** (-ratingDifference / 50));
+};
+
+const updateReputation = (teamA: Team, teamB: Team, teamAScore: number, teamBScore: number) => {
+  const expectedWinProbabilityA = calculateWinProbability(
+    teamB.reputation,
+    teamA.reputation
+  );
+  const expectedWinProbabilityB = calculateWinProbability(
+    teamA.reputation,
+    teamB.reputation
+  );
+
+  const actualWinProbabilityA = teamAScore > teamBScore ? 1 : teamAScore === teamBScore ? 0.5 : 0;
+  const actualWinProbabilityB = 1 - actualWinProbabilityA;
+
+  const updatedReputationA =
+  teamA.reputation + K_FACTOR * (actualWinProbabilityA - expectedWinProbabilityA);
+  const updatedReputationB =
+  teamB.reputation + K_FACTOR * (actualWinProbabilityB - expectedWinProbabilityB);
+
+  teamA.reputation = Math.max(10, Math.min(99, updatedReputationA));
+  teamB.reputation = Math.max(10, Math.min(99, updatedReputationB));
+};

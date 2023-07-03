@@ -21,6 +21,18 @@ interface SeasonProps {
 }
   
   const SeasonComponent: React.FC<SeasonProps> = ({ user, league, onUserLogout, saveGameDate }) => {
+
+    // check if relegated
+    try{
+      league.getTeam(user.teamID);
+    }
+    catch(err){
+      if(league.relegatesTo){league = league.relegatesTo};
+    }
+      
+
+    
+    
     
     const getGameDate = () => {
       const storedGameDate = localStorage.getItem('gameDate');
