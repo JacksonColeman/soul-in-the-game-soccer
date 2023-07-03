@@ -4,8 +4,14 @@ import { Matchup } from '../classes/Matchup';
 import { Team } from '../classes/Team';
 
 // Storing Teams array
-export function storeLeagueData(league: League) {
-  const teamsData = league.teams.map((team) => ({
+export function packageLeagueData(league: League) {
+  const name = league.name;
+  const id = league.id;
+  const relegatesToID = league.relegatesToID;
+
+  let teamsData = null;
+  if (league.teams){
+  let teamsData = league.teams.map((team) => ({
     id: team.id,
     name: team.name,
     stadium: team.stadium,
@@ -29,11 +35,12 @@ export function storeLeagueData(league: League) {
       injuryTime: player.injuryTime
     })),
   }));
+}
 
-  localStorage.setItem('teamsData', JSON.stringify(teamsData));
-
-  // Storing Schedule array
-  const scheduleData = league.schedule.map((week) =>
+  // Schedule array
+  let scheduleData = null;
+  if (league.schedule){
+  let scheduleData = league.schedule.map((week) =>
     week.map((matchup) => ({
       homeTeamID: matchup.homeTeam.id,
       awayTeamID: matchup.awayTeam.id,
@@ -43,11 +50,13 @@ export function storeLeagueData(league: League) {
       id: matchup.id,
     }))
   );
+  } 
 
-  localStorage.setItem('scheduleData', JSON.stringify(scheduleData));
+  const leagueItem = {name, id, teamsData, scheduleData, relegatesToID};
+  return leagueItem;
 }
 
-export function rebuildLeague(teamsData: any[], scheduleData: any[]): League {
+export function rebuildLeague(name: "bob", teamsData: any[], scheduleData: any[]): League {
   // Rebuild teams
   const teams: Team[] = teamsData.map((teamData: any) => {
     const { id, name, stadium, reputation, roster, standingsInfo } = teamData;
@@ -76,7 +85,7 @@ export function rebuildLeague(teamsData: any[], scheduleData: any[]): League {
   });
 
   // Create the league object
-  const league: League = new League(teams, undefined);
+  const league: League = new League(1);
 
   // Rebuild schedule
   const schedule: Matchup[][] = scheduleData.map((weekData: any[]) =>

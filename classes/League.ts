@@ -1,13 +1,27 @@
 import { Team } from "./Team";
 import { Matchup } from "./Matchup";
 import {ProRel} from '../scripts/ProRel'
+import leaguesData from "../src/data/teams.json"
 
 export class League{
-    constructor(
-      public teams: Team[],
-      public relegatesTo: League | undefined
-      ) {
-    }
+
+    public name!: string;
+    public id!: number;
+    public teams: Team[] = [];
+    public relegatesToID!: number | undefined;
+
+    constructor(public leagueID: number) {
+      const leagueData = leaguesData.find(league => league.id === leagueID);
+      if (leagueData) {
+          this.name = leagueData.name;
+          this.id = leagueData.id;
+          // relegates to league
+          if (leagueData.relegatesTo){ 
+            this.relegatesToID = leagueData.relegatesTo;
+          } else {this.relegatesToID = undefined;}
+      }
+  }
+
 
     public avgGoals = 1.43;
     schedule: Matchup[][] = [];
@@ -19,6 +33,10 @@ export class League{
           matchup.playMatch();
         }
       }
+    }
+
+    addTeam(team: Team){
+      this.teams.push(team);
     }
 
     playAllMatches(){
@@ -116,18 +134,18 @@ export class League{
       throw new Error(`No team with ID ${teamID} found`); // Throw an error if no goalkeeper is found
     }
 
-    newYear(year:number):void{
-      if (this.relegatesTo){
-        ProRel(this, this.relegatesTo, 3);
-        // for now process championship turnover here
-        for (const team of this.relegatesTo.teams){
-          team.newYear(year);
-        }
-      }
-      for (const team of this.teams){
-        team.newYear(year);
-      }
-    }
+    // newYear(year:number):void{
+    //   if (this.relegatesTo){
+    //     ProRel(this, this.relegatesTo, 3);
+    //     // for now process championship turnover here
+    //     for (const team of this.relegatesTo.teams){
+    //       team.newYear(year);
+    //     }
+    //   }
+    //   for (const team of this.teams){
+    //     team.newYear(year);
+    //   }
+    // }
 }
     
         // shuffle the array of matchweeks

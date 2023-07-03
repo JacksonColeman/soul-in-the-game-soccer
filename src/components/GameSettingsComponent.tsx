@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import '../styles/GameSettingsComponent.css'
 
 type GameSettingsProps = {
-  onConfirmSettings: (leagueStrength: string, userTeamStrength: string, managerName: string) => void;
+  onConfirmSettings: (managerName: string) => void;
 };
 
 const GameSettings: React.FC<GameSettingsProps> = ({ onConfirmSettings }) => {
@@ -25,8 +25,8 @@ const GameSettings: React.FC<GameSettingsProps> = ({ onConfirmSettings }) => {
   };
 
   const handleConfirmSettings = () => {
-    if (leagueStrength && userTeamStrength && managerName) {
-      onConfirmSettings(leagueStrength, userTeamStrength, managerName);
+    if (managerName) {
+      onConfirmSettings(managerName);
     }
   };
 
@@ -40,7 +40,7 @@ const GameSettings: React.FC<GameSettingsProps> = ({ onConfirmSettings }) => {
             <input type="text" value={managerName} onChange={handleManagerNameChange} />
           </label>
         </div>
-        <div className="setting">
+        {/* <div className="setting">
           <label>
             League Strength:
             <div className="button-group">
@@ -77,7 +77,7 @@ const GameSettings: React.FC<GameSettingsProps> = ({ onConfirmSettings }) => {
               </button>
             </div>
           </label>
-        </div>
+        </div> */}
         <button onClick={handleConfirmSettings}>Confirm Settings</button>
       </div>
     </div>

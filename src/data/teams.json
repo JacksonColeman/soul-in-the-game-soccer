@@ -2,6 +2,7 @@
 {
   "name": "Premier League",
   "id": 1,
+  "relegatesTo": 2,
   "teams": [
     {
       "id": 1,
@@ -128,6 +129,7 @@
 {
   "name": "EFL Championship",
   "id": 2,
+  "relegatesTo": null,
   "teams": [
     {
       "id": 21,
