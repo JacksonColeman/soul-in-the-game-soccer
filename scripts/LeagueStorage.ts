@@ -76,7 +76,7 @@ export function rebuildLeague(teamsData: any[], scheduleData: any[]): League {
   });
 
   // Create the league object
-  const league: League = new League(teams);
+  const league: League = new League(teams, undefined);
 
   // Rebuild schedule
   const schedule: Matchup[][] = scheduleData.map((weekData: any[]) =>

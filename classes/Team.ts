@@ -31,7 +31,6 @@ export class Team {
       this.roster = this.roster.concat(newPlayers); //add new players
     }
 
-
     resetStandingsInfo(): void{
         this.standingsInfo = {wins:0, losses:0, draws:0, goalsFor:0, goalsAgainst:0}
     }

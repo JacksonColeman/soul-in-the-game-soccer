@@ -72,26 +72,41 @@ interface SeasonProps {
       saveGameDate(currentYear, currentWeek);
     };
 
+    // const handlePlayMatches = () => {
+    //   const currentMatchups = schedule[currentWeek - 1];
+    //   const shouldUpdate = currentMatchups.some((matchup) => !matchup.played);
+  
+    //   if (shouldUpdate) {
+    //     const updatedMatchups = currentMatchups.map((matchup) => {
+    //       if (!matchup.played) {
+    //         matchup.playMatch();
+    //       }
+    //       return matchup;
+    //     });
+  
+    //     const updatedSchedule = [...schedule];
+    //     updatedSchedule[currentWeek - 1] = updatedMatchups;
+  
+    //     setPlayed(true);
+    //     storeLeagueData(league);
+    //     setSchedule(updatedSchedule);
+    //   }
+    // };
+
     const handlePlayMatches = () => {
-      const currentMatchups = schedule[currentWeek - 1];
-      const shouldUpdate = currentMatchups.some((matchup) => !matchup.played);
-  
-      if (shouldUpdate) {
-        const updatedMatchups = currentMatchups.map((matchup) => {
-          if (!matchup.played) {
-            matchup.playMatch();
-          }
-          return matchup;
-        });
-  
-        const updatedSchedule = [...schedule];
-        updatedSchedule[currentWeek - 1] = updatedMatchups;
-  
-        setPlayed(true);
-        storeLeagueData(league);
-        setSchedule(updatedSchedule);
-      }
-    };
+      league.playWeekMatches(currentWeek);
+      setPlayed(true);
+      storeLeagueData(league);
+    }
+
+    const handlePlayFullSeason = () => {
+      league.playAllMatches();
+      league.relegatesTo?.playAllMatches();
+      console.log(league.relegatesTo);
+      setCurrentWeek(league.schedule.length);
+      saveGameDate(currentYear, league.schedule.length);
+      setPlayed(true);
+    }
 
     const playAndAdvance = () => {
       handlePlayMatches();
@@ -105,6 +120,7 @@ interface SeasonProps {
       saveGameDate(currentYear+1,1);
       // pro/rel
       league.schedule = league.generateSchedule();
+      if (league.relegatesTo) league.relegatesTo.schedule = league.relegatesTo?.generateSchedule();
       storeLeagueData(league);
       setSchedule(league.schedule);
       setPlayed(false);
@@ -147,6 +163,7 @@ interface SeasonProps {
           {/* <FormationComponent team={selectedTeam} key={currentWeek} /> */}
             <MatchweekComponent key={currentWeek} matchups={schedule[currentWeek - 1]} week={currentWeek} userTeamID={user.teamID}/>
             <button onClick={handleAdvance}>Advance</button>
+            <button onClick={handlePlayFullSeason}>Play Full Season</button>
           </div>
 
           <div className="roster-wrapper grid-item">

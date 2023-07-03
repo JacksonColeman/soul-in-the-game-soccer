@@ -1,10 +1,15 @@
 import React, { useState } from "react";
 import '../styles/TeamSelectionComponent.css';
-import teams from "../data/teams.json";
+import leaguesData from "../data/teams.json";
 
 interface TeamSelectionProps {
   onTeamSelect: (selectedTeamId: number) => void;
   handleStartGame: () => void;
+}
+
+const teams = leaguesData.find(league => league.id == 1)?.teams;
+if (!teams){
+  throw new Error("Error retrieving teams. Moo!")
 }
 
 const TeamSelectionComponent: React.FC<TeamSelectionProps> = ({ onTeamSelect, handleStartGame }) => {

@@ -1,4 +1,8 @@
 [
+{
+  "name": "Premier League",
+  "id": 1,
+  "teams": [
     {
       "id": 1,
       "name": "Arsenal",
@@ -120,3 +124,155 @@
       "reputation": 66
     }
   ]
+},
+{
+  "name": "EFL Championship",
+  "id": 2,
+  "teams": [
+    {
+      "id": 21,
+      "name": "Birmingham",
+      "stadium": "St Andrew's",
+      "reputation": 56
+    },
+    {
+      "id": 22,
+      "name": "Blackburn Rovers",
+      "stadium": "Ewood Park",
+      "reputation": 58
+    },
+    {
+      "id": 23,
+      "name": "Bristol City",
+      "stadium": "Ashton Gate Stadium",
+      "reputation": 58
+    },
+    {
+      "id": 24,
+      "name": "Cardiff City",
+      "stadium": "Cardiff City Stadium",
+      "reputation": 58
+    },
+    {
+      "id": 25,
+      "name": "Coventry",
+      "stadium": "Coventry Building Society Arena",
+      "reputation": 55
+    },
+    {
+      "id": 26,
+      "name": "Huddersfield",
+      "stadium": "Kirklees Stadium",
+      "reputation": 58
+    },
+    {
+      "id": 27,
+      "name": "Hull City",
+      "stadium": "MKM Stadium",
+      "reputation": 57
+    },
+    {
+      "id": 28,
+      "name": "Ipswich Town",
+      "stadium": "Portman Road",
+      "reputation": 53
+    },
+    {
+      "id": 29,
+      "name": "Leeds United",
+      "stadium": "Elland Road",
+      "reputation": 66
+    },
+    {
+      "id": 30,
+      "name": "Leicester City",
+      "stadium": "King Power Stadium",
+      "reputation": 73
+    },
+    {
+      "id": 31,
+      "name": "Middlesbrough",
+      "stadium": "Riverside Stadium",
+      "reputation": 59
+    },
+    {
+      "id": 32,
+      "name": "Millwall",
+      "stadium": "The Den",
+      "reputation": 56
+    },
+    {
+      "id": 33,
+      "name": "Norwich City",
+      "stadium": "Carrow Road",
+      "reputation": 61
+    },
+    {
+      "id": 34,
+      "name": "Plymouth Argyle",
+      "stadium": "Home Park",
+      "reputation": 52
+    },
+    {
+      "id": 35,
+      "name": "Preston",
+      "stadium": "Deepdale",
+      "reputation": 58
+    },
+    {
+      "id": 36,
+      "name": "QPR",
+      "stadium": "Loftus Road",
+      "reputation": 58
+    },
+    {
+      "id": 37,
+      "name": "Rotherham",
+      "stadium": "New York Stadium",
+      "reputation": 52
+    },
+    {
+      "id": 38,
+      "name": "Sheffield Wednesday",
+      "stadium": "Hillsborough Stadium",
+      "reputation": 55
+    },
+    {
+      "id": 39,
+      "name": "Southampton",
+      "stadium": "St Mary's Stadium",
+      "reputation": 66
+    },
+    {
+      "id": 40,
+      "name": "Stoke City",
+      "stadium": "bet365 Stadium",
+      "reputation": 58
+    },
+    {
+      "id": 41,
+      "name": "Sunderland",
+      "stadium": "Stadium of Light",
+      "reputation": 59
+    },
+    {
+      "id": 42,
+      "name": "Swansea",
+      "stadium": "Swansea.com Stadium",
+      "reputation": 59
+    },
+    {
+      "id": 43,
+      "name": "Watford",
+      "stadium": "Vicarage Road",
+      "reputation": 61
+    },
+    {
+      "id": 44,
+      "name": "West Brom",
+      "stadium": "The Hawthorns",
+      "reputation": 60
+    }
+  ]
+}
+]

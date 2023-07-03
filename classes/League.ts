@@ -1,10 +1,35 @@
 import { Team } from "./Team";
 import { Matchup } from "./Matchup";
+import {ProRel} from '../scripts/ProRel'
 
 export class League{
-    constructor(public teams: Team[]) {}
+    constructor(
+      public teams: Team[],
+      public relegatesTo: League | undefined
+      ) {
+    }
+
     public avgGoals = 1.43;
     schedule: Matchup[][] = [];
+
+    playWeekMatches(week: number){
+      const weekMatchups = this.schedule[week - 1];
+      for (const matchup of weekMatchups){
+        if (!matchup.played) {
+          matchup.playMatch();
+        }
+      }
+    }
+
+    playAllMatches(){
+      for (const week of this.schedule){
+        for (const matchup of week){
+          if (!matchup.played) {
+            matchup.playMatch();
+          }
+        }
+      }
+    }
 
     get averageAttacking():number{
       let sum = 0;
@@ -92,6 +117,13 @@ export class League{
     }
 
     newYear(year:number):void{
+      if (this.relegatesTo){
+        ProRel(this, this.relegatesTo, 3);
+        // for now process championship turnover here
+        for (const team of this.relegatesTo.teams){
+          team.newYear(year);
+        }
+      }
       for (const team of this.teams){
         team.newYear(year);
       }

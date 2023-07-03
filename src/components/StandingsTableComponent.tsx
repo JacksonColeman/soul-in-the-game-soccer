@@ -11,6 +11,11 @@ interface StandingsTableProps {
 
 const StandingsTableComponent: React.FC<StandingsTableProps> = ({ league , userTeamID, onTeamSelect}) => {
   // Sort teams by points in descending order
+
+  // uncomment to view championship
+  // if(league.relegatesTo)league = league.relegatesTo;
+  // userTeamID=league.teams[0].id;
+
   const sortedTeams = [...league.teams].sort((a: Team, b: Team) => {
     if (a.points !== b.points) {
       return b.points - a.points;

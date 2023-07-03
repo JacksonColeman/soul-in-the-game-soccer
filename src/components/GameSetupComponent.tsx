@@ -1,12 +1,14 @@
 import { useEffect, useState} from 'react';
 import '../styles/GameSetupComponent.css';
-import teams from "../data/teams.json";
+import leaguesData from "../data/teams.json";
 import {getGameDate} from '../../scripts/GetSetDate'
 
 type GameSetupProps = {
   onNewGame: () => void;
   onContinueGame: () => void;
 };
+
+const teams = leaguesData.find(league => league.id == 1)?.teams;
 
 const GameSetupComponent: React.FC<GameSetupProps> = ({ onNewGame, onContinueGame }) => {
   const [userName, setUserName] = useState('');
@@ -20,7 +22,7 @@ const GameSetupComponent: React.FC<GameSetupProps> = ({ onNewGame, onContinueGam
       setUserName(user.name);
 
       // Find the team name based on the user's teamID
-      const team = teams.find((team) => team.id === user.teamID);
+      const team = teams?.find((team) => team.id === user.teamID);
       if (team) {
         setTeamName(team.name);
       }

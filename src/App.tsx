@@ -104,11 +104,19 @@ function App() {
   }
 
   const createLeague = (leagueStrength: string, userTeamStrength: string, userTeamID: number) => {
-    const newLeague = new League(generateTeams(leagueStrength, userTeamStrength, userTeamID));
+    const championship = generateChampionship();
+    const newLeague = new League(generateTeams(1,leagueStrength, userTeamStrength, userTeamID), championship);
+    newLeague.relegatesTo = championship;
     newLeague.schedule = newLeague.generateSchedule();
     newLeague.getTeam(userTeamID).user = true;
     setLeague(newLeague);
     storeLeagueData(newLeague);
+  }
+
+  const generateChampionship = () => {
+    const championship = new League(generateTeams(2,undefined,undefined,undefined),undefined);
+    championship.schedule = championship.generateSchedule();
+    return championship;
   }
 
   if (gameState == "loading"){
