@@ -10,6 +10,14 @@ enum Attribute {
   Handling = "handling",
   Reflexes = "reflexes",
 }
+
+export enum PlayerPosition {
+  GK = 'GK',
+  DF = 'DF',
+  MF = 'MF',
+  FW = 'FW',
+}
+
 export class Player {
   public id = uuidv4();
 
@@ -18,7 +26,7 @@ export class Player {
     public firstName: string,
     public lastName: string,
     public age: number,
-    public position: string,
+    public position: PlayerPosition,
     public attributes: any, // Generic attributes object
   ) {
   }
@@ -70,7 +78,7 @@ export class PlayerGoalkeeper extends Player {
     age: number,
     attributes: { diving: number, handling: number, reflexes: number, physical: number },
   ) {
-    super(team, firstName, lastName, age, 'GK', attributes);
+    super(team, firstName, lastName, age, PlayerPosition.GK, attributes);
   }
 
   stats: { matchesPlayed: number, goals: number, assists: number, goalsConceded: number, cleanSheets: number} = {
@@ -121,7 +129,7 @@ export class PlayerOutfield extends Player {
     firstName: string,
     lastName: string,
     age: number,
-    position: string,
+    position: PlayerPosition,
     attributes: { attacking: number, playmaking: number, defending: number, physical: number },
     
   ) {

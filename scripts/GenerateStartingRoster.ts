@@ -1,63 +1,63 @@
 import { Team } from "../classes/Team";
-import { Player } from "../classes/Player";
-import { generateGoalkeeper, generateDefender, generateMidfielder, generateForward} from "./GeneratePlayers";
+import { Player, PlayerPosition } from "../classes/Player";
+import { generatePlayer} from "./GeneratePlayers";
 
 export default function generateStartingRoster(team: Team): Player[]{
     const roster: Player[] = [];
     // goalkeepers
-    const youthGK = generateGoalkeeper(team, team.reputation, 17,23);
-    const primeGK = generateGoalkeeper(team, team.reputation, 24,30);
-    const vetGK = generateGoalkeeper(team, team.reputation, 31,35);
+    const youthGK = generatePlayer(team, PlayerPosition.GK, team.reputation, 17,23);
+    const primeGK = generatePlayer(team, PlayerPosition.GK, team.reputation, 24,30);
+    const vetGK = generatePlayer(team, PlayerPosition.GK, team.reputation, 31,35);
     roster.push(youthGK, primeGK, vetGK);
 
     // defenders
     // youth defenders
     for (let i = 0; i < 2; i++){
-        let youthDF = generateDefender(team, team.reputation, 17,23);
+        let youthDF = generatePlayer(team, PlayerPosition.DF, team.reputation, 17,23);
         roster.push(youthDF);
     }
     // prime defenders
     for (let i = 0; i < 4; i++){
-        let primeDF = generateDefender(team, team.reputation, 24,30);
+        let primeDF = generatePlayer(team, PlayerPosition.DF, team.reputation, 24,30);
         roster.push(primeDF);
     }
     // vet defenders
     for (let i = 0; i < 2; i++){
-        let vetDF = generateDefender(team, team.reputation, 31,35);
+        let vetDF = generatePlayer(team, PlayerPosition.DF, team.reputation, 31,35);
         roster.push(vetDF);
     }
 
     //midfielders
     // youth defenders
     for (let i = 0; i < 2; i++){
-        let youthMF = generateMidfielder(team, team.reputation, 17,23);
+        let youthMF = generatePlayer(team, PlayerPosition.MF, team.reputation, 17,23);
         roster.push(youthMF);
     }
     // prime midfielders
     for (let i = 0; i < 4; i++){
-        let primeMF = generateMidfielder(team, team.reputation, 24,30);
+        let primeMF = generatePlayer(team, PlayerPosition.MF, team.reputation, 24,30);
         roster.push(primeMF);
     }
     // vet midfielders
     for (let i = 0; i < 2; i++){
-        let vetMF = generateMidfielder(team, team.reputation, 31,35);
+        let vetMF = generatePlayer(team, PlayerPosition.MF, team.reputation, 31,35);
         roster.push(vetMF);
     }
 
     // forwards
     // youth defenders
     for (let i = 0; i < 2; i++){
-        let youthFW = generateForward(team, team.reputation, 17,23);
+        let youthFW = generatePlayer(team, PlayerPosition.FW, team.reputation, 17,23);
         roster.push(youthFW);
     }
     // prime forwards
     for (let i = 0; i < 3; i++){
-        let primeFW = generateForward(team, team.reputation, 24,30);
+        let primeFW = generatePlayer(team, PlayerPosition.FW, team.reputation, 24,30);
         roster.push(primeFW);
     }
     // vet forwards
     for (let i = 0; i < 1; i++){
-        let vetFW = generateForward(team, team.reputation, 31,35);
+        let vetFW = generatePlayer(team, PlayerPosition.FW, team.reputation, 31,35);
         roster.push(vetFW);
     }
 

@@ -1,6 +1,5 @@
-import {Player, PlayerGoalkeeper, PlayerOutfield} from './Player'
-import { generateGoalkeeper, generateDefender, generateMidfielder, generateForward} from '../scripts/GeneratePlayers';
-
+import {Player, PlayerGoalkeeper, PlayerOutfield, PlayerPosition} from './Player'
+import { generatePlayer} from '../scripts/GeneratePlayers';
 export class Team {
     constructor(
         public id: number,
@@ -39,11 +38,11 @@ export class Team {
       }
       // very basic
       for (const player of this.startingLineup){
-        if (player instanceof PlayerGoalkeeper && Math.random() < 0.01){
+        if (player instanceof PlayerGoalkeeper && Math.random() < 0.005){
           player.injured = true;
           player.injuryTime = Math.floor(Math.random() * 10) + 1;
         } else
-        if (!player.injured && Math.random() < 0.05){
+        if (!player.injured && Math.random() < 0.01){
           player.injured = true;
           player.injuryTime = Math.floor(Math.random() * 10) + 1;
         }
@@ -54,11 +53,11 @@ export class Team {
       }
     }
 
-    positionQuotas: { [position: string]: number } = {
-        GK: 1,
-        DF: 4,
-        MF: 3,
-        FW: 3,
+    positionQuotas: { [position in PlayerPosition]: number } = {
+        [PlayerPosition.GK]: 1,
+        [PlayerPosition.DF]: 4,
+        [PlayerPosition.MF]: 3,
+        [PlayerPosition.FW]: 3,
       };
 
     get startingLineup(): Player[] {
@@ -70,11 +69,11 @@ export class Team {
 
       const positionQuotas = this.positionQuotas;
 
-      const filledPositions: { [position: string]: number } = {
-        GK: 0,
-        DF: 0,
-        MF: 0,
-        FW: 0,
+      const filledPositions: { [position in PlayerPosition]: number } = {
+        [PlayerPosition.GK]: 0,
+        [PlayerPosition.DF]: 0,
+        [PlayerPosition.MF]: 0,
+        [PlayerPosition.FW]: 0,
       };
 
       // Select players for each position until the lineup has 11 players
@@ -92,40 +91,40 @@ export class Team {
       if (lineup.length < 11){
         console.log(`${this.name} cannot fill lineup — calling up youth player(s)`)
         for (let pos in filledPositions){
-          while (filledPositions[pos] < positionQuotas[pos]){
+          while (filledPositions[pos as PlayerPosition] < positionQuotas[pos as PlayerPosition]){
             const playersInExtraReserves = this.extraReserves.filter(p => p.position === pos && !p.injured && !lineup.includes(p));
-            while (playersInExtraReserves.length > 0 && filledPositions[pos] < positionQuotas[pos]){
+            while (playersInExtraReserves.length > 0 && filledPositions[pos as PlayerPosition] < positionQuotas[pos as PlayerPosition]){
               let extraPlayer = playersInExtraReserves.shift();
               if (extraPlayer){lineup.push(extraPlayer)};
-              filledPositions[pos]++;
+              filledPositions[pos as PlayerPosition]++;
             }
-            if (pos == "GK"){
+            if (pos == PlayerPosition.GK){
               for (let i = 0; i < positionQuotas[pos] - filledPositions[pos]; i++){
-                const gk = generateGoalkeeper(this, this.reputation*0.66,16,16);
+                const gk = generatePlayer(this, pos, this.reputation*0.66,16,16);
                 this.extraReserves.push(gk);
                 lineup.push(gk);
                 filledPositions[pos]++;
               }
             }
-            if (pos == "DF"){
+            if (pos == PlayerPosition.DF){
               for (let i = 0; i < positionQuotas[pos] - filledPositions[pos]; i++){
-                const df = generateDefender(this, this.reputation*0.66,16,16);
+                const df = generatePlayer(this, pos, this.reputation*0.66,16,16);
                 this.extraReserves.push(df);
                 lineup.push(df);
                 filledPositions[pos]++;
               }
             }
-            if (pos == "MF"){
+            if (pos == PlayerPosition.MF){
               for (let i = 0; i < positionQuotas[pos] - filledPositions[pos]; i++){
-                const mf = generateMidfielder(this, this.reputation*0.66,16,16);
+                const mf = generatePlayer(this, pos, this.reputation*0.66,16,16);
                 this.extraReserves.push(mf);
                 lineup.push(mf);
                 filledPositions[pos]++;
               }
             }
-            if (pos == "FW"){
+            if (pos == PlayerPosition.FW){
               for (let i = 0; i < positionQuotas[pos] - filledPositions[pos]; i++){
-                const fw = generateForward(this, this.reputation*0.8,16,16);
+                const fw = generatePlayer(this, pos, this.reputation*0.8,16,16);
                 this.extraReserves.push(fw);
                 lineup.push(fw);
                 filledPositions[pos]++;
@@ -144,7 +143,7 @@ get subsBench(): Player[] {
     const subsBench: Player[] = [];
   
     // Select the best players for the subs bench
-    const goalkeeper = sortedPlayers.find(player => player.position === 'GK');
+    const goalkeeper = sortedPlayers.find(player => player.position === PlayerPosition.GK);
     if (goalkeeper) {
         subsBench.push(goalkeeper);
     }
@@ -154,7 +153,7 @@ get subsBench(): Player[] {
         break;
       }
   
-      if (player.position === 'GK' && subsBench.some(p => p.position === 'GK')) {
+      if (player.position === 'GK' && subsBench.some(p => p.position === PlayerPosition.GK)) {
         // Skip adding another goalkeeper if one is already on the subs bench
         continue;
       }
@@ -185,16 +184,16 @@ get subsBench(): Player[] {
     get teamAttackingTotal(): number{
         let sum = 0;
         for (const player of this.startingLineup){
-            if (player.position == "GK"){
+            if (player.position == PlayerPosition.GK){
                 0;
             }
-            if (player.position == "DF"){
+            if (player.position == PlayerPosition.DF){
                 sum += player.attributes.attacking * 0.125;
             }
-            if (player.position == "MF"){
+            if (player.position == PlayerPosition.MF){
                 sum += player.attributes.attacking * 0.5;
             }
-            if (player.position == "FW"){
+            if (player.position == PlayerPosition.FW){
                 sum += player.attributes.attacking * 1;
             }
         }
@@ -204,16 +203,16 @@ get subsBench(): Player[] {
     get teamPlaymakingTotal(): number{
         let sum = 0;
         for (const player of this.startingLineup){
-            if (player.position == "GK"){
+            if (player.position == PlayerPosition.GK){
                 0;
             }
-            if (player.position == "DF"){
+            if (player.position == PlayerPosition.DF){
                 sum += player.attributes.playmaking * 0.25;
             }
-            if (player.position == "MF"){
+            if (player.position == PlayerPosition.MF){
                 sum += player.attributes.playmaking * 1;
             }
-            if (player.position == "FW"){
+            if (player.position == PlayerPosition.FW){
                 sum += player.attributes.playmaking * 0.5;
             }
         }
@@ -226,13 +225,13 @@ get subsBench(): Player[] {
             if (player instanceof PlayerGoalkeeper){
                 sum += player.goalkeeping * 2;
             }
-            if (player.position == "DF"){
+            if (player.position == PlayerPosition.DF){
                 sum += player.attributes.defending * 1;
             }
-            if (player.position == "MF"){
+            if (player.position == PlayerPosition.MF){
                 sum += player.attributes.defending * 0.5;
             }
-            if (player.position == "FW"){
+            if (player.position == PlayerPosition.FW){
                 sum += player.attributes.defending * 0.125;
             }
         }
@@ -257,13 +256,4 @@ get subsBench(): Player[] {
         }
         throw new Error("No starting goalkeeper found"); // Throw an error if no goalkeeper is found
       }
-
-    // teamOffenseRatio(league: League): number{
-    //     return (this.teamOffenseTotal / league.averageOffense) ** 2;
-    // }
-
-    // teamDefenseRatio(league: League): number{
-    //     return (league.averageDefense / this.teamDefenseTotal) ** 2;
-    // }
-    
 }
