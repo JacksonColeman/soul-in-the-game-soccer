@@ -85,6 +85,6 @@ function generateAgeDiscount(age: number): number {
     } else {
     ageDiscount = age - 29; // Positive age difference beyond 29
     }
-    ageDiscount = ageDiscount ** 1.4;
+    ageDiscount = Math.floor(ageDiscount ** 1.4);
     return ageDiscount;
 }

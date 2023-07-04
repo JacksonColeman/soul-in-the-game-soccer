@@ -9,6 +9,7 @@ import GameSetupComponent from './components/GameSetupComponent'
 import GameSettingsComponent from './components/GameSettingsComponent'
 import generateUniverse from '../scripts/GenerateUniverse';
 import {Universe, GameState, getStoredUniverse} from '../classes/Universe'
+import SeasonComponentSimplified from './components/SeasonComponentSimplified'
 
 function App() {
   const [universe, setUniverse] = useState<Universe | null>(null);
@@ -17,7 +18,14 @@ function App() {
   const [userTeamID, setUserTeamID] = useState(0);
   const [user, setUser] = useState<User | null>(null);
 
+  const [reloads, setReloads] = useState(0);
+
+  const handleReloads = () => {
+    setReloads(reloads + 1);
+  }
+
   useEffect(() => {
+    console.log("calling useEffect")
     const activeSession = sessionStorage.getItem('activeSession');
     const storedUniverseExists = localStorage.getItem('universe');
 
@@ -25,6 +33,9 @@ function App() {
       // Continue the stored game
       const storedUniverse = getStoredUniverse();
       setUser(storedUniverse.user || null);
+      if (storedUniverse.user){
+        setUserTeamID(storedUniverse.user.teamID);
+      }
       setUniverse(storedUniverse);
       setGameState(storedUniverse.gameState);
       if (!activeSession){
@@ -38,8 +49,6 @@ function App() {
 
   const onNewGame = () => {
     setGameState(GameState.Settings);
-    setUniverse(generateUniverse());
-    universe ? universe.gameState = GameState.Settings : null;
   }
 
   const handleTeamSelect = (teamID: number) => {
@@ -47,18 +56,19 @@ function App() {
     };
 
   const handleStartGame = () => {
+    const newUniverse = generateUniverse();
     const user = new User(managerName, userTeamID);
-    universe ? universe.user = user : null;
-    universe?.saveUniverse();
+    newUniverse.user = user ;
+    newUniverse.gameState = GameState.Season;
+    newUniverse.saveUniverse();
+    setUniverse(newUniverse);
     setGameState(GameState.Season);
-    universe ? universe.gameState = GameState.Season : null;
     sessionStorage.setItem('activeSession', 'true');
   }
   
   const onConfirmSettings = (managerName:string) => {
     setManagerName(managerName);
     setGameState(GameState.Selection);
-    universe ? universe.gameState = GameState.Selection : null;
   };
 
   const handleUserLogout = () => {
@@ -68,6 +78,18 @@ function App() {
 
     const handleContinueGame = () => {
       universe ? setGameState(universe.gameState) : null;
+    }
+
+    const handleNewYear = () => {
+      if (universe){universe.handleNewYear()};
+    };
+
+    const getUserLeague = () => {
+      const league = universe?.getLeagueByTeamID(userTeamID);
+      if (!(league instanceof League)){
+        throw new Error(`Error finding user league at id ${userTeamID}`)
+      }
+      return league;
     }
 
   return (
@@ -81,7 +103,8 @@ function App() {
 
        {gameState === GameState.Settings && <GameSettingsComponent onConfirmSettings={onConfirmSettings} />}
        {gameState === GameState.Selection && <TeamSelectionComponent onTeamSelect={handleTeamSelect} handleStartGame={handleStartGame}/>}
-       {gameState === GameState.Season && universe && <SeasonComponent universe={universe} handleUserLogout={handleUserLogout}/>}
+       {/* {gameState === GameState.Season && universe && <SeasonComponent universe={universe} handleUserLogout={handleUserLogout} handleNewYear={handleNewYear}/>} */}
+       {gameState === GameState.Season && universe && <SeasonComponentSimplified universe={universe} league={getUserLeague()} handleUserLogout={handleUserLogout} handleReloads={handleReloads}/>}
 
     </div>
   )

@@ -18,25 +18,37 @@ export class Universe {
     gameState: GameState = GameState.Start;
     year: number = 2023;
     week: number = 1;
+    playedCurrentWeek: boolean = false;
   
     constructor() {
       this.leagues = [];
     }
 
+    get userLeague(): League | undefined{
+        if (this.user){
+            return this.getLeagueByTeamID(this.user.teamID);
+        }
+    }
+
     playWeekMatches(){
         for (const league of this.leagues){
-            league.playWeekMatches(this.week);
+            if (this.week <= league.schedule.length){
+                league.playWeekMatches(this.week);
+            }
         }
+        this.playedCurrentWeek = true;
     }
 
     playAllMatches(){
         for (const league of this.leagues){
             league.playAllMatches();
         }
+        this.playedCurrentWeek = true;
     }
 
     handleNextWeek(){
         this.week++;
+        this.playedCurrentWeek = false;
     }
 
     handleNewYear(){
@@ -46,6 +58,7 @@ export class Universe {
         }
         this.year++;
         this.week = 1;
+        this.playedCurrentWeek = false;
     }
 
     handleRelegation(){
@@ -67,8 +80,10 @@ export class Universe {
         }
     }
 
-    getLeagueByID(leagueID: number){
-        return this.leagues.find((league) => league.id === leagueID);
+    getLeagueByID(leagueID: number): League{
+        const lg = this.leagues.find((league) => league.id === leagueID);
+        if (!lg){throw new Error("league does not exist")}
+        return lg;
     }
 
     getLeagueByTeamID(teamID: number){

@@ -21,8 +21,10 @@ const StandingsTableComponent: React.FC<StandingsTableProps> = ({ league , userT
       return b.points - a.points;
     } else if (a.goalDiff !== b.goalDiff) {
       return b.goalDiff - a.goalDiff;
-    } else {
+    } else if (a.standingsInfo.goalsFor !== b.standingsInfo.goalsFor) {
       return b.standingsInfo.goalsFor - a.standingsInfo.goalsFor;
+    } else {
+      return a.name.localeCompare(b.name);
     }
   });
 

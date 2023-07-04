@@ -1,133 +1,113 @@
-import {useState} from "react";
+import React, { useState } from "react";
 import { League } from "../../classes/League";
 import MatchweekComponent from "./MatchweekComponent";
 import StandingsTableComponent from "./StandingsTableComponent";
-import '../styles/SeasonComponent.css'
 import UserBarComponent from "./UserBarComponent";
-// import TeamTotalsUnderTheHood from "./TeamTotalsUnderTheHood";
-import LeagueLeadersComponent from "./LeagueLeadersComponent"
+import LeagueLeadersComponent from "./LeagueLeadersComponent";
 import FormationComponent from "./FormationComponent";
 import TeamPlayersTableComponent from "./TeamPlayersTableComponent";
 import { Universe } from "../../classes/Universe";
 
+import "../styles/SeasonComponent.css";
+
 interface SeasonProps {
   universe: Universe;
   handleUserLogout: () => void;
+  handleNewYear: () => void;
 }
 
-const SeasonComponent: React.FC<SeasonProps> = ({ universe, handleUserLogout }) => {
-  
+const SeasonComponent: React.FC<SeasonProps> = ({
+  universe,
+  handleUserLogout,
+  handleNewYear
+}) => {
   const { user, year, week } = universe;
-  // make sure user exists
+
   if (!user) {
     throw new Error("No user!");
   }
 
-  // get correct league;
-  const league = universe.getLeagueByTeamID(user.teamID);
-
-  // make sure league exists
+  const [league, setLeague] = useState(universe.userLeague);
   if (!league) {
-    throw new Error("No user!");
+    throw new Error("No league!");
   }
 
   const [currentYear, setCurrentYear] = useState(year);
   const [currentWeek, setCurrentWeek] = useState(week);
   const [schedule, setSchedule] = useState(league.schedule);
   const [played, setPlayed] = useState(schedule[currentWeek - 1][0].played);
-  const [showStandings, setShowStandings] = useState(true)
+  const [showStandings, setShowStandings] = useState(true);
 
   const [selectedTeam, setSelectedTeam] = useState(league.getTeam(user.teamID));
   const userTeam = league.getTeam(user.teamID);
 
   const onTeamSelect = (id: number) => {
-    const selectedTeam = league.getTeam(id);
-    console.log(selectedTeam.name)
-    setSelectedTeam(selectedTeam);
+    const selectedTeam = universe.getTeamByID(id);
+    selectedTeam ? setSelectedTeam(selectedTeam) : null;
   };
 
-      const toggleStandingsView = () => {
-      setShowStandings(!showStandings);
-    };
+  const toggleStandingsView = () => {
+    setShowStandings(!showStandings);
+  };
 
-    const handleNextWeek = () => {
-      if (currentWeek < schedule.length) {
-        setCurrentWeek(currentWeek + 1);
-        universe.handleNextWeek();
-        setSelectedTeam(league.getTeam(user.teamID));
-        setPlayed(false)
-      }
-    };
-
-    const handleNewYear = () => {
-        universe.handleNewYear();
-        setCurrentYear(currentYear+1);
-        setCurrentWeek(1);
-        // pro/rel
-        console.log(league.schedule);
-        setSchedule(league.schedule);
-        setPlayed(false);
+  const handleNextWeek = () => {
+    if (currentWeek < schedule.length) {
+      setCurrentWeek(currentWeek + 1);
+      universe.handleNextWeek();
+      setSelectedTeam(league.getTeam(user.teamID));
+      setPlayed(false);
     }
+  };
 
-    const handlePlayMatches = () => {
-      universe.playWeekMatches();
-      setPlayed(true);
-    }
-
-    const handleAdvance = () => {
-      if (currentWeek == schedule.length && played){
-        handleNewYear();
-      } else if (!played) {
-        handlePlayMatches();
-      } else {
-        handleNextWeek();
-      }
-      universe.saveUniverse();
-    }
-
-    const handlePlayFullSeason = () => {
-          league.playAllMatches();
-          setCurrentWeek(league.schedule.length);
-          universe.week = league.schedule.length;
-          setPlayed(true);
-        }
   
+
+  const handlePlayMatches = () => {
+    universe.playWeekMatches();
+    setPlayed(true);
+  };
+
+  const handleAdvance = () => {
+    if (currentWeek === schedule.length && played) {
+      handleNewYear();
+    } else if (!played) {
+      handlePlayMatches();
+    } else {
+      handleNextWeek();
+    }
+    universe.saveUniverse();
+  };
+
+  const handlePlayFullSeason = () => {
+    universe.playAllMatches();
+    setCurrentWeek(league.schedule.length);
+    universe.week = league.schedule.length;
+    setPlayed(true);
+  };
+
   return (
     <div className="season-container">
-      <UserBarComponent user={user} team={userTeam} onExitGame={handleUserLogout} year={currentYear} week={currentWeek}/>
-      <div className="season-container-grid">
-        <div className="standings-wrapper grid-item">
-        <h3>{showStandings ? "Standings" : "League Leaders"}</h3>
-          {showStandings ? (
-            <StandingsTableComponent
-              league={league}
-              userTeamID={user.teamID}
-              onTeamSelect={onTeamSelect}
-            />
-          ) : (
-            <div>
-            <LeagueLeadersComponent league={league} />
-            {/* <TeamTotalsUnderTheHood league={league}/> */}
-            </div>
-          )}
-          <a href="/#" onClick={toggleStandingsView}>
-            {showStandings ? "League Leaders" : "Standings"}
-          </a>
-        </div>
+      <UserBarComponent
+        user={user}
+        team={userTeam}
+        onExitGame={handleUserLogout}
+        year={currentYear}
+        week={currentWeek}
+      />
+      
 
         <div className="fixtures-wrapper grid-item">
-          <MatchweekComponent key={currentWeek} matchups={schedule[currentWeek - 1]} week={currentWeek} userTeamID={user.teamID}/>
+          <MatchweekComponent
+            key={currentWeek}
+            matchups={schedule[currentWeek - 1]}
+            week={currentWeek}
+            userTeamID={user.teamID}
+          />
           <button onClick={handleAdvance}>Advance</button>
           <button onClick={handlePlayFullSeason}>Play Full Season</button>
         </div>
 
-        <div className="roster-wrapper grid-item">
-          <h3>{selectedTeam.name} Roster</h3>
-          <TeamPlayersTableComponent team={selectedTeam}/>
-          <FormationComponent team={selectedTeam}/>
+
       </div>
-      </div>
-    </div>
   );
 };
 
