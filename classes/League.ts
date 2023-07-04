@@ -134,18 +134,13 @@ export class League{
       throw new Error(`No team with ID ${teamID} found`); // Throw an error if no goalkeeper is found
     }
 
-    // newYear(year:number):void{
-    //   if (this.relegatesTo){
-    //     ProRel(this, this.relegatesTo, 3);
-    //     // for now process championship turnover here
-    //     for (const team of this.relegatesTo.teams){
-    //       team.newYear(year);
-    //     }
-    //   }
-    //   for (const team of this.teams){
-    //     team.newYear(year);
-    //   }
-    // }
+    newYear(year:number):void{
+      // year = year about to pass;
+      for (const team of this.teams){
+        team.newYear(year);
+      }
+      this.schedule = this.generateSchedule();
+    }
 }
     
         // shuffle the array of matchweeks

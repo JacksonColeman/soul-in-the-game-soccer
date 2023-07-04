@@ -1,34 +1,40 @@
-import { useEffect, useState} from 'react';
+import { useEffect, useState } from 'react';
 import '../styles/GameSetupComponent.css';
 import leaguesData from "../data/teams.json";
-import {getGameDate} from '../../scripts/GetSetDate'
+import { Universe } from '../../classes/Universe';
 
 type GameSetupProps = {
+  universe: Universe | null;
   onNewGame: () => void;
   onContinueGame: () => void;
 };
 
 const teams = leaguesData.find(league => league.id == 1)?.teams;
 
-const GameSetupComponent: React.FC<GameSetupProps> = ({ onNewGame, onContinueGame }) => {
+const GameSetupComponent: React.FC<GameSetupProps> = ({ universe, onNewGame, onContinueGame }) => {
   const [userName, setUserName] = useState('');
   const [teamName, setTeamName] = useState('');
-  const [gameDate, setGameDate] = useState({year:0,week:0})
+  const [gameDate, setGameDate] = useState({ year: 0, week: 0 });
 
   useEffect(() => {
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) {
-      const user = JSON.parse(storedUser);
-      setUserName(user.name);
+    if (universe) {
+      const user = universe.user;
+      setGameDate({
+        year: universe.year,
+        week: universe.week
+      });
 
-      // Find the team name based on the user's teamID
-      const team = teams?.find((team) => team.id === user.teamID);
-      if (team) {
-        setTeamName(team.name);
+      if (user) {
+        setUserName(user.name);
+
+        // Find the team name based on the user's teamID
+        const team = teams?.find((team) => team.id === user.teamID);
+        if (team) {
+          setTeamName(team.name);
+        }
       }
-      setGameDate(getGameDate());
     }
-  }, []);
+  }, [universe]);
 
   const handleNewGame = () => {
     onNewGame();
@@ -40,17 +46,6 @@ const GameSetupComponent: React.FC<GameSetupProps> = ({ onNewGame, onContinueGam
 
   const storedUser = localStorage.getItem('user');
   const user = storedUser ? JSON.parse(storedUser) : null;
-  const continueButtonText = user ? (
-    <>
-      <b>Continue Game</b>
-      <div>
-        <p>{userName}<br/>{teamName}</p>
-        <p>{gameDate.year} Week {gameDate.week}</p>
-      </div>
-    </>
-  ) : (
-    'Continue Game'
-  );
 
   return (
     <div className="game-setup-container">
@@ -58,9 +53,23 @@ const GameSetupComponent: React.FC<GameSetupProps> = ({ onNewGame, onContinueGam
         <button className="game-setup-button" onClick={handleNewGame}>
           <b>Start New Game</b>
         </button>
-          <button className="game-setup-button" onClick={handleContinueGame} disabled={!user}>
-            {continueButtonText}
-          </button>
+        <button className="game-setup-button" onClick={handleContinueGame} disabled={!universe}>
+          <>
+            <b>Continue Game</b>
+            {universe && (
+              <div>
+                <p>
+                  {userName}
+                  <br />
+                  {teamName}
+                </p>
+                <p>
+                  {gameDate.year} Week {gameDate.week}
+                </p>
+              </div>
+            )}
+          </>
+        </button>
       </div>
     </div>
   );

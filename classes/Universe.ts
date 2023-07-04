@@ -3,6 +3,7 @@ import User from "./User";
 import { Player, PlayerGoalkeeper, PlayerOutfield } from "./Player";
 import { Matchup } from "./Matchup";
 import { Team } from "./Team";
+import { ProRel } from "../scripts/ProRel";
 
 export enum GameState{
     Start = "start",
@@ -14,7 +15,7 @@ export enum GameState{
 export class Universe {
     leagues: League[];
     user: User | undefined;
-    gameState: GameState | undefined;
+    gameState: GameState = GameState.Start;
     year: number = 2023;
     week: number = 1;
   
@@ -28,8 +29,33 @@ export class Universe {
         }
     }
 
+    playAllMatches(){
+        for (const league of this.leagues){
+            league.playAllMatches();
+        }
+    }
+
     handleNextWeek(){
         this.week++;
+    }
+
+    handleNewYear(){
+        this.handleRelegation();
+        for (const league of this.leagues){
+            league.newYear(this.year);
+        }
+        this.year++;
+        this.week = 1;
+    }
+
+    handleRelegation(){
+        for (const league of this.leagues){
+            const relegatesToID = league.relegatesToID;
+            if (relegatesToID){
+                const lowerTier = this.getLeagueByID(relegatesToID);
+                if (lowerTier){ProRel(league,lowerTier,3)}
+            }
+        }
     }
 
     getTeamByID(teamID: number){
@@ -92,7 +118,7 @@ export class Universe {
     }
 }
 
-export function getUniverse(): Universe{
+export function getStoredUniverse(): Universe{
     console.log("getting universe");
     const storedUniverse = localStorage.getItem('universe');
 
@@ -123,11 +149,9 @@ export function getUniverse(): Universe{
             newUniverse.gameState = gameState;
         }
 
-        console.log(newUniverse);
         return newUniverse;
     }
-
-    throw new Error("no universe exists");
+    throw new Error("Universe does not exist");
 }
 
 // package and unpackage league
@@ -145,7 +169,6 @@ function packageLeagueData(league: League) {
     }));
 
     // Schedule data
-    console.log(league.schedule);
     const scheduleData = league.schedule?.map((week) =>
         week.map((matchup) => ({
             homeTeamID: matchup.homeTeam.id,

@@ -5,33 +5,40 @@ import {League} from '../classes/League'
 import User from '../classes/User'
 import SeasonComponent from './components/SeasonComponent'
 import TeamSelectionComponent from './components/TeamSelectionComponent'
-import { rebuildLeague} from '../scripts/LeagueStorage';
 import GameSetupComponent from './components/GameSetupComponent'
 import GameSettingsComponent from './components/GameSettingsComponent'
 import generateUniverse from '../scripts/GenerateUniverse';
-import {Universe, GameState, getUniverse} from '../classes/Universe'
+import {Universe, GameState, getStoredUniverse} from '../classes/Universe'
 
 function App() {
-  const [universe, setUniverse] = useState(new Universe())
+  const [universe, setUniverse] = useState<Universe | null>(null);
   const [gameState, setGameState] = useState(GameState.Start);
   const [managerName, setManagerName] = useState('');
   const [userTeamID, setUserTeamID] = useState(0);
+  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
-    const activeSession = sessionStorage.getItem("activeSession");
-    const storedUniverse = localStorage.getItem('universe');
+    const activeSession = sessionStorage.getItem('activeSession');
+    const storedUniverseExists = localStorage.getItem('universe');
 
-    if (activeSession && storedUniverse){ 
-      setUniverse(getUniverse())
-      setGameState(GameState.Season);
+    if (storedUniverseExists) {
+      // Continue the stored game
+      const storedUniverse = getStoredUniverse();
+      setUser(storedUniverse.user || null);
+      setUniverse(storedUniverse);
+      setGameState(storedUniverse.gameState);
+      if (!activeSession){
+        setGameState(GameState.Start);
+      }
     } else {
-      setUniverse(generateUniverse());
-      sessionStorage.setItem("activeSession", "true");
+      // Start a new game
+      setGameState(GameState.Start);
     }
-  }, [])
+  }, []);
 
   const onNewGame = () => {
     setGameState(GameState.Settings);
+    setUniverse(generateUniverse());
     universe ? universe.gameState = GameState.Settings : null;
   }
 
@@ -45,6 +52,7 @@ function App() {
     universe?.saveUniverse();
     setGameState(GameState.Season);
     universe ? universe.gameState = GameState.Season : null;
+    sessionStorage.setItem('activeSession', 'true');
   }
   
   const onConfirmSettings = (managerName:string) => {
@@ -55,9 +63,12 @@ function App() {
 
   const handleUserLogout = () => {
       setGameState(GameState.Start);
-      universe ? universe.gameState = GameState.Start : null;
       sessionStorage.removeItem("activeSession");
     };
+
+    const handleContinueGame = () => {
+      universe ? setGameState(universe.gameState) : null;
+    }
 
   return (
     <div>
@@ -65,7 +76,7 @@ function App() {
         <i>Soul in the Game Soccer</i>
       </h1>
       {gameState === GameState.Start && (
-        <GameSetupComponent onNewGame={onNewGame} onContinueGame={()=>{}} />
+        <GameSetupComponent universe={universe} onNewGame={onNewGame} onContinueGame={handleContinueGame} />
        )}
 
        {gameState === GameState.Settings && <GameSettingsComponent onConfirmSettings={onConfirmSettings} />}

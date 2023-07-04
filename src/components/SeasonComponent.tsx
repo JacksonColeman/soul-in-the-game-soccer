@@ -1,11 +1,8 @@
 import {useState} from "react";
 import { League } from "../../classes/League";
-import User from "../../classes/User";
 import MatchweekComponent from "./MatchweekComponent";
 import StandingsTableComponent from "./StandingsTableComponent";
 import '../styles/SeasonComponent.css'
-import RosterComponent from "./RosterComponent";
-import Formation from "./FormationComponent";
 import UserBarComponent from "./UserBarComponent";
 // import TeamTotalsUnderTheHood from "./TeamTotalsUnderTheHood";
 import LeagueLeadersComponent from "./LeagueLeadersComponent"
@@ -62,6 +59,16 @@ const SeasonComponent: React.FC<SeasonProps> = ({ universe, handleUserLogout }) 
       }
     };
 
+    const handleNewYear = () => {
+        universe.handleNewYear();
+        setCurrentYear(currentYear+1);
+        setCurrentWeek(1);
+        // pro/rel
+        console.log(league.schedule);
+        setSchedule(league.schedule);
+        setPlayed(false);
+    }
+
     const handlePlayMatches = () => {
       universe.playWeekMatches();
       setPlayed(true);
@@ -69,7 +76,7 @@ const SeasonComponent: React.FC<SeasonProps> = ({ universe, handleUserLogout }) 
 
     const handleAdvance = () => {
       if (currentWeek == schedule.length && played){
-        null
+        handleNewYear();
       } else if (!played) {
         handlePlayMatches();
       } else {
@@ -77,6 +84,13 @@ const SeasonComponent: React.FC<SeasonProps> = ({ universe, handleUserLogout }) 
       }
       universe.saveUniverse();
     }
+
+    const handlePlayFullSeason = () => {
+          league.playAllMatches();
+          setCurrentWeek(league.schedule.length);
+          universe.week = league.schedule.length;
+          setPlayed(true);
+        }
   
   return (
     <div className="season-container">
@@ -104,7 +118,7 @@ const SeasonComponent: React.FC<SeasonProps> = ({ universe, handleUserLogout }) 
         <div className="fixtures-wrapper grid-item">
           <MatchweekComponent key={currentWeek} matchups={schedule[currentWeek - 1]} week={currentWeek} userTeamID={user.teamID}/>
           <button onClick={handleAdvance}>Advance</button>
-          {/* <button onClick={p => (p)}>Play Full Season</button> */}
+          <button onClick={handlePlayFullSeason}>Play Full Season</button>
         </div>
 
         <div className="roster-wrapper grid-item">
