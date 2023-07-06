@@ -1,0 +1,12 @@
+.tactics-container{
+    display: flex;
+}
+
+.player-card.selected {
+    background-color: yellow;
+  }
+  
+  .player-card.highlight {
+    background-color: lightgreen;
+  }
+  

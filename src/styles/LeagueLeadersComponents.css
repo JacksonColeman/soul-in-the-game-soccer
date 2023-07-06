@@ -1,23 +1,56 @@
 .league-leaders-container {
-    text-align: center;
-  }
-  
-  h4 {
-    margin: 0;
-  }
+  font-family: Arial, sans-serif;
+  max-width: 400px;
+  height: 600px;
+  max-height: 600px;
+  overflow: scroll;
+  margin: 0 auto;
+}
 
-  .leaders-table {
-    margin: 0 auto;
-    border-collapse: collapse;
-  }
+.league-leaders {
+  margin-bottom: 20px;
+}
+
+.stats-list {
+  list-style-type: none;
+  padding: 0;
+  width: 200px;
+  margin: auto;
+}
+
+.stats-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background-color: #f5f5f5;
+  border-radius: 5px;
+  margin-bottom: 10px;
   
-  .leaders-table td,
-  .leaders-table th {
-    padding: 8px;
-  }
-  
-  .leaders-table th {
-    font-weight: bold;
-    background-color: #f9f9f9;
-  }
-  
+}
+
+.stats-row-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.stats-row-player-name {
+  font-size: 16px;
+  overflow-y: scroll;
+  max-width: 160px;
+}
+
+.stats-row-player-team-name {
+  font-size: 12px;
+  color: #666;
+  text-align: left;
+}
+
+.stats-row-stat {
+  font-weight: bold;
+  font-size: 16px;
+}
+
+h4{
+  margin: 0;
+}

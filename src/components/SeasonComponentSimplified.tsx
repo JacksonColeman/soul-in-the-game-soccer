@@ -1,26 +1,27 @@
 import { Universe } from "../../classes/Universe";
 import { League } from "../../classes/League";
-import UserBarComponent from "./UserBarComponent";
-import MatchweekComponent from "./MatchweekComponent";
-import FixtureControlsComponent from "./FixtureControlsComponent";
-import RosterComponent from "./RosterComponent";
-
-import "../styles/SeasonComponent.css";
-import StandingsContainerComponent from "./StandingsContainerComponent";
+import LeagueOverviewComponent from "./LeagueOverviewComponent";
 import { useState } from "react";
+import PreMatchComponent from "./PrematchComponent";
+import PostMatchComponent from "./PostMatchComponent";
+import "../styles/SeasonComponent.css";
 
 interface SeasonProps {
   universe: Universe,
   league: League,
-  handleUserLogout: () => void;
-  handleReloads: () => void;
+  seasonState: SeasonComponentState,
+}
+
+enum SeasonComponentState {
+  Overview,
+  PreMatch,
+  PostMatch,
 }
 
 const SeasonComponentSimplified: React.FC<SeasonProps> = ({
   universe,
   league,
-  handleUserLogout,
-  handleReloads
+  seasonState,
 }) => {
   const { user, year, week } = universe;
 
@@ -31,6 +32,7 @@ const SeasonComponentSimplified: React.FC<SeasonProps> = ({
 
   const [selectedTeam, setSelectedTeam] = useState(league.getTeam(user.teamID));
   
+
   const resetSelectedTeam = () => {
     setSelectedTeam(league.getTeam(user.teamID));
   }
@@ -40,37 +42,27 @@ const SeasonComponentSimplified: React.FC<SeasonProps> = ({
     selectedTeam ? setSelectedTeam(selectedTeam) : null;
   };
 
+  let componentToRender;
+  switch (seasonState) {
+    case SeasonComponentState.Overview:
+      componentToRender = <LeagueOverviewComponent universe={universe} leagueID={league.id} />;
+      break;
+    case SeasonComponentState.PreMatch:
+      componentToRender = <PreMatchComponent team={league.getTeam(user.teamID)} />;
+      break;
+    case SeasonComponentState.PostMatch:
+      componentToRender = <PostMatchComponent universe={universe} league={league} user={user} />;
+      break;
+    default:
+      componentToRender = null;
+      break;
+  }
+
+
   return (
-    <div className="season-container">
-      <UserBarComponent
-        user={user}
-        team={universe.getTeamByID(user.teamID)}
-        year={year}
-        week={week}
-        onExitGame={handleUserLogout}
-      />
-      <div className="season-container-grid">
-        <StandingsContainerComponent 
-            universe={universe}
-            leagueID={league.id} 
-            userTeamID={user.teamID} 
-            onTeamSelect={onTeamSelect}/>
-        <MatchweekComponent 
-            key={week}
-            matchups={league.schedule[week - 1]}
-            week={week}
-            userTeamID={user.teamID} />
-        <RosterComponent team={selectedTeam} />
+    <div className="season-container"> 
+      {componentToRender}
       </div>
-      <div>
-      <FixtureControlsComponent
-            universe={universe}
-            league={league}
-            handleReloads={handleReloads}
-            resetSelectedTeam={resetSelectedTeam}
-        />
-      </div>
-    </div>
   );
 };
 

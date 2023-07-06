@@ -9,13 +9,16 @@ import generateUniverse from '../scripts/GenerateUniverse';
 import {Universe, GameState, getStoredUniverse} from '../classes/Universe'
 import SeasonComponentSimplified from './components/SeasonComponentSimplified'
 import { Routes, Route, useNavigate } from 'react-router-dom'
+import LeagueOverviewComponent from './components/LeagueOverviewComponent'
+import TeamPageComponent from './components/TeamPageComponent'
+import UserBarComponent from './components/UserBarComponent'
+import AdvanceBarComponent from './components/AdvanceBarComponent'
 
 function App() {
   const [universe, setUniverse] = useState<Universe | null>(null);
   const [gameState, setGameState] = useState(GameState.Start);
   const [managerName, setManagerName] = useState('');
   const [userTeamID, setUserTeamID] = useState(0);
-  const [user, setUser] = useState<User | null>(null);
   const [reloads, setReloads] = useState(0);
 
   const navigate = useNavigate();
@@ -32,7 +35,6 @@ function App() {
     if (storedUniverseExists) {
       // Continue the stored game
       const storedUniverse = getStoredUniverse();
-      setUser(storedUniverse.user || null);
       if (storedUniverse.user){
         setUserTeamID(storedUniverse.user.teamID);
       }
@@ -69,6 +71,7 @@ function App() {
     const user = new User(managerName, userTeamID);
     newUniverse.user = user ;
     newUniverse.gameState = GameState.Season;
+    newUniverse.getTeamByID(userTeamID).user = true;
     newUniverse.saveUniverse();
     setUniverse(newUniverse);
     setGameState(GameState.Season);
@@ -102,18 +105,35 @@ function App() {
     return league;
   }
 
+  enum SeasonComponentState {
+    Overview,
+    PreMatch,
+    PostMatch,
+  }
+
+  const [seasonState, setSeasonState] = useState(SeasonComponentState.Overview);
+
+  const handleSeasonState = (state: SeasonComponentState) => {
+    setSeasonState(state);
+  }
+
   return (
     
-    <div>
+    <div className='app'>
       <h1>
         <i>Soul in the Game Soccer</i>
       </h1>
+      {gameState == GameState.Season && universe && universe.user && <UserBarComponent user={universe.user} team={universe.getTeamByID(universe.user.teamID)} year={universe.year} week={universe.week} onExitGame={handleUserLogout}/>}
       <Routes>
         <Route path="/start" element={<GameSetupComponent universe={universe} onNewGame={onNewGame} onContinueGame={handleContinueGame} />} />
         <Route path="/settings" element={<GameSettingsComponent onConfirmSettings={onConfirmSettings} />} />
         <Route path="/select" element={<TeamSelectionComponent onTeamSelect={handleTeamSelect} handleStartGame={handleStartGame}/>} />
-        <Route path="/season" element={universe && <SeasonComponentSimplified universe={universe} league={getUserLeague()} handleUserLogout={handleUserLogout} handleReloads={handleReloads}/>} />
+        <Route path="/season" element={universe && <SeasonComponentSimplified universe={universe} league={getUserLeague()} seasonState={seasonState}/> } />
+        <Route path="/league" element = {universe && <LeagueOverviewComponent universe={universe} leagueID={getUserLeague().id}/>}/>
+        <Route path="/teams/:teamID" element={universe && <TeamPageComponent universe={universe} league={getUserLeague()}/>} />
       </Routes>
+      {gameState == GameState.Season && universe && <AdvanceBarComponent universe={universe} league={getUserLeague()} handleReloads={handleReloads} seasonState={seasonState}updateSeasonState={handleSeasonState}/>}
+
     </div>
   )
 }

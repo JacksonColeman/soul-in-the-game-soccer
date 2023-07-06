@@ -1,42 +1,4 @@
 .season-container {
   border: 1px solid black;
+  height: 600px;
 }
-
-.season-container-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr; /* Divide the container into three equal rows */
-    height: 100vh; /* Adjust the height as needed */
-    /* column-gap: 50px; */
-    margin: auto;
-    height: 100%;
-  }
-
-  .grid-item {
-    border-right: 1px solid #ccc;
-    padding: 10px;
-    padding-top: 0px;
-  }
-  
-  .grid-item:last-child {
-    border-right: none;
-  }
-  
-  .standings-wrapper {
-    grid-column: 1 / 2; /* Position the standings div in the first row */
-    padding-right: 25px;
-    padding-left: 25px;
-
-  }
-  
-  .fixtures-wrapper {
-    grid-column: 2 / 3; /* Position the fixtures div in the second row */
-    padding-right: 25px;
-    padding-left: 25px;
-  }
-  
-  .roster-wrapper {
-    grid-column: 3 / 4; /* Position the roster div in the third row */
-    padding-right: 25px;
-    padding-left: 25px;
-  }
-

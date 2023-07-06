@@ -1,4 +1,5 @@
 import { Matchup } from "../../classes/Matchup";
+import { Link } from "react-router-dom";
 import '../styles/MatchupComponent.css'
 
 interface MatchupProps {
@@ -11,12 +12,19 @@ const MatchupComponent: React.FC<MatchupProps> = ({ matchup }) => {
   return (
     <div className="matchup">
       <div className="team-info">
-        <span className="team-name">{homeTeam.name}</span>
-        {played && <span className="team-score">{homeScore}</span>}
-      </div>
-      <div className="team-info">
-        <span className="team-name">{awayTeam.name}</span>
-        {played && <span className="team-score">{awayScore}</span>}
+        <div className="home-team-container">
+              <Link to={`/teams/${homeTeam.id}`} className="team-link">
+                {homeTeam.name}
+              </Link>
+        </div>
+        <div className = "team-score-container">
+          {played && <span className="jteam-score">{homeScore} - {awayScore}</span> || "vs"}
+        </div>
+        <div className="away-team">
+            <Link to={`/teams/${awayTeam.id}`} className="team-link">
+                {awayTeam.name}
+            </Link>
+        </div>
       </div>
     </div>
   );

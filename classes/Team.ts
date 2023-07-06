@@ -12,6 +12,42 @@ export class Team {
     ) {
     }
 
+    userStartingLineup: Player[] = [];
+    userBench: Player[] = [];
+
+    swapPlayers(playerA: Player, playerB: Player): void {
+      console.log(`Swapping ${playerA.lastName}, ${playerB.lastName}`)
+      const lists = [
+        this.userStartingLineup,
+        this.userBench,
+        this.reservePlayers
+      ];
+  
+      let listA: Player[] | null = null;
+      let listB: Player[] | null = null;
+  
+      // Find the lists containing playerA and playerB
+      for (const list of lists) {
+        if (list.includes(playerA)) {
+          listA = list;
+        }
+        if (list.includes(playerB)) {
+          listB = list;
+        }
+      }
+  
+      // Swap players if they are in different lists
+      if (listA !== null && listB !== null && listA !== listB && playerA.position == playerB.position) {
+        console.log("met swap condition")
+        const indexA = listA.indexOf(playerA);
+        const indexB = listB.indexOf(playerB);
+        if (indexA !== -1 && indexB !== -1) {
+          // Swap players between lists
+          [listA[indexA], listB[indexB]] = [listB[indexB], listA[indexA]];
+        }
+      }
+    }
+
     user = false;
 
     extraReserves: Player[] = []; // extra players for injury crises
@@ -41,6 +77,8 @@ export class Team {
             player.progress(year);
         }
         this.autophagy();
+        this.userStartingLineup = [];
+        this.userBench = [];
     }
 
     handleInjuries(){
@@ -76,7 +114,20 @@ export class Team {
         [PlayerPosition.FW]: 3,
       };
 
+    setUserTeamLineup(lineup: Player[]): void {
+      // Clear the current lineup
+      this.userStartingLineup = [];
+    
+      // Set the provided lineup
+      lineup.forEach(player => {
+        this.userStartingLineup.push(player);
+      });
+    }
+
     get startingLineup(): Player[] {
+      if (this.userStartingLineup.length != 0){
+        return this.userStartingLineup;
+      }
       const healthyPlayers = this.roster.filter(p => !p.injured);
       const sortedPlayers = healthyPlayers.sort((a, b) => {
         if (a.overallRating === b.overallRating) {
@@ -154,10 +205,18 @@ export class Team {
           }
         }
       }
-      return lineup;
+      const sortedLineup = sortByPosition(lineup);
+      if (this.user){
+        this.userStartingLineup = sortedLineup;
+      } else {
+      }
+      return sortedLineup;
   }    
 
 get subsBench(): Player[] {
+  if (this.userBench.length != 0){
+    return sortByPosition(this.userBench);
+  }
     const lineupPlayers = this.startingLineup;
     const nonLineupPlayers = this.roster.filter(p => !lineupPlayers.includes(p) && !p.injured)
     const sortedPlayers = nonLineupPlayers.sort((a, b) => {
@@ -188,8 +247,18 @@ get subsBench(): Player[] {
         subsBench.push(player);
       }
     }
+
+    const sortedBench = sortByPosition(subsBench);
+    if (this.user){
+      this.userBench = sortedBench
+    }
   
-    return subsBench;
+    return sortedBench;
+  }
+
+  get reservePlayers(): Player[]{
+    const reserves = this.roster.filter(p => !this.startingLineup.includes(p) && !this.subsBench.includes(p));
+    return reserves;
   }
   
       
@@ -283,3 +352,14 @@ get subsBench(): Player[] {
         throw new Error("No starting goalkeeper found"); // Throw an error if no goalkeeper is found
       }
 }
+
+const sortByPosition = (players: Player[]): Player[] => {
+  const positionOrder: { [key: string]: number } = {
+      GK: 0,
+      DF: 1,
+      MF: 2,
+      FW: 3,
+    };
+
+  return players.sort((a, b) => positionOrder[a.position] - positionOrder[b.position]);
+};

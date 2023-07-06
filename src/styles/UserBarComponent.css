@@ -32,7 +32,7 @@
     padding-right: 5px;
   }
   
-  .exit-button {
+  .exit-button, .advance-button {
     background-color: white;
     color: blue;
     border: none;

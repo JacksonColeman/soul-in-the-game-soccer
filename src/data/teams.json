@@ -102,7 +102,7 @@
     },
     {
       "id": 17,
-      "name": "Sheffield United",
+      "name": "Sheffield Utd",
       "stadium": "Bramall Lane",
       "reputation": 61
     },
@@ -139,7 +139,7 @@
     },
     {
       "id": 22,
-      "name": "Blackburn Rovers",
+      "name": "Blackburn",
       "stadium": "Ewood Park",
       "reputation": 58
     },
@@ -211,7 +211,7 @@
     },
     {
       "id": 34,
-      "name": "Plymouth Argyle",
+      "name": "Plymouth",
       "stadium": "Home Park",
       "reputation": 52
     },
@@ -235,7 +235,7 @@
     },
     {
       "id": 38,
-      "name": "Sheffield Wednesday",
+      "name": "Sheffield Wed",
       "stadium": "Hillsborough Stadium",
       "reputation": 55
     },

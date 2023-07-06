@@ -26,6 +26,11 @@ export class League{
     public avgGoals = 1.43;
     schedule: Matchup[][] = [];
 
+     getWeekMatchups(week: number): Matchup[]{
+      const weekMatchups = this.schedule[week - 1];
+      return weekMatchups;
+    }
+
     playWeekMatches(week: number){
       const weekMatchups = this.schedule[week - 1];
       for (const matchup of weekMatchups){

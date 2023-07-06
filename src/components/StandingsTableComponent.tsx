@@ -1,15 +1,15 @@
 import React from "react";
 import {League} from "../../classes/League"
+import { Link } from "react-router-dom";
 import {Team} from "../../classes/Team"
 import '../styles/StandingsTableComponent.css'
 
 interface StandingsTableProps {
   league: League;
   userTeamID: number;
-  onTeamSelect: (n: number) => void;
 }
 
-const StandingsTableComponent: React.FC<StandingsTableProps> = ({ league , userTeamID, onTeamSelect}) => {
+const StandingsTableComponent: React.FC<StandingsTableProps> = ({ league , userTeamID}) => {
   // Sort teams by points in descending order
 
   // uncomment to view championship
@@ -32,6 +32,7 @@ const StandingsTableComponent: React.FC<StandingsTableProps> = ({ league , userT
     <table className="standings-table">
       <thead>
         <tr>
+          <th>.</th>
           <th className="team-name-col">Team</th>
           <th className="stat-col">MP</th>
           <th className="stat-col">W</th>
@@ -41,7 +42,7 @@ const StandingsTableComponent: React.FC<StandingsTableProps> = ({ league , userT
           <th className="stat-col">GA</th>
           <th className="stat-col">GD</th>
           <th className="stat-col">Pts</th>
-          <th className="stat-col">rep</th>
+          {/* <th className="stat-col">rep</th> */}
         </tr>
       </thead>
       <tbody>
@@ -58,10 +59,12 @@ const StandingsTableComponent: React.FC<StandingsTableProps> = ({ league , userT
             ${team.id === userTeamID ? "user-team-row" : ""}`}
            // Call the onTeamSelect function with the team object when clicked`} // Add "user-team-row" class if the team ID matches the user's team ID
           >
-            <td className="team-name-col" onClick={() => onTeamSelect(team.id)}>
-              <a href="#!" className="team-link">
+            <td className="pos-col"> {index + 1}</td>
+            <td className="team-name-col">
+              {/* Link to the team page */}
+              <Link to={`/teams/${team.id}`} className="team-link">
                 {team.name}
-              </a>
+              </Link>
             </td>
             <td className="stat-col">{team.standingsInfo.wins + team.standingsInfo.draws + team.standingsInfo.losses}</td>
             <td className="stat-col">{team.standingsInfo.wins}</td>

@@ -1,0 +1,24 @@
+.league-overview {
+    width: 1000px;
+    height: 600px;
+    display: flex;
+  }
+  
+  .components-wrapper {
+    display: flex;
+    gap: 10px;
+  }
+
+  .post-match {
+    width: 1000px;
+    height: 600px;
+    display: flex;
+  }
+  
+  .standings-section {
+    width: 400px;
+    height: 590px;
+    overflow-y: scroll;
+  }
+  /* Adjust the styles of individual components as needed */
+  

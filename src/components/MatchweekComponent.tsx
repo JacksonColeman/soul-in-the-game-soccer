@@ -23,13 +23,11 @@ const MatchweekComponent: React.FC<MatchweekProps> = ({ matchups, week, userTeam
           <FeaturedMatchupComponent matchup={userMatchup} />
         </div>
       )}
-      <div className="matchweek-column-container">
         <div className="matchweek-column">
           {otherMatchups.map((matchup) => (
             <MatchupComponent key={matchup.id} matchup={matchup} />
           ))}
         </div>
-      </div>
     </div>
   );
 };

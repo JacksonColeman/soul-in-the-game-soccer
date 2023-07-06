@@ -18,10 +18,22 @@ export class Universe {
     gameState: GameState = GameState.Start;
     year: number = 2023;
     week: number = 1;
+    playerCount: number = 0;
     playedCurrentWeek: boolean = false;
   
     constructor() {
       this.leagues = [];
+    }
+
+    get userMatchup(): Matchup{
+        const league = this.userLeague;
+        if (!league || !this.user){throw new Error("unable to retrieve user matchup")}
+        for (const matchup of league.getWeekMatchups(this.week)){
+            if (matchup.homeTeam.id == this.user.teamID || matchup.awayTeam.id == this.user.teamID){
+                return matchup;
+            }
+        }
+        throw new Error("unable to retrieve user matchup");
     }
 
     get userLeague(): League | undefined{
@@ -78,6 +90,7 @@ export class Universe {
                 return team;
             }
         }
+        throw new Error(`${teamID} is an invalid team id`)
     }
 
     getLeagueByID(leagueID: number): League{
@@ -224,6 +237,7 @@ function unpackageLeagueData(packagedLeague: {
 // package and unpackage player
 function packagePlayer(player: Player){
     const playerData = {
+        id: player.id,
         firstName: player.firstName,
         lastName: player.lastName,
         teamID: player.team?.id,
@@ -239,7 +253,7 @@ function packagePlayer(player: Player){
 }
 
 function unpackagePlayer(team: Team, playerData: any){
-    const { firstName, lastName, age, position, attributes, stats, careerStats, injured, injuryTime } = playerData;
+    const { id, firstName, lastName, age, position, attributes, stats, careerStats, injured, injuryTime } = playerData;
     // Determine player subclass based on position
     let player: Player;
     if (position === 'GK') {
@@ -247,6 +261,7 @@ function unpackagePlayer(team: Team, playerData: any){
     } else {
       player = new PlayerOutfield(team, firstName, lastName, age, position, attributes);
     }
+    player.id = id;
     player.stats = stats;
     player.careerStats = careerStats;
     player.injured = injured;

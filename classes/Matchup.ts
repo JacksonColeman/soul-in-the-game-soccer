@@ -197,6 +197,6 @@ const updateReputation = (teamA: Team, teamB: Team, teamAScore: number, teamBSco
   const updatedReputationB =
   teamB.reputation + K_FACTOR * (actualWinProbabilityB - expectedWinProbabilityB);
 
-  teamA.reputation = Math.max(10, Math.min(99, updatedReputationA));
-  teamB.reputation = Math.max(10, Math.min(99, updatedReputationB));
+  teamA.reputation = Math.max(50, Math.min(99, updatedReputationA));
+  teamB.reputation = Math.max(50, Math.min(99, updatedReputationB));
 };

@@ -11,13 +11,17 @@ interface LeagueLeadersComponentProps {
 const LeagueLeadersComponent: React.FC<LeagueLeadersComponentProps> = ({
   league,
 }) => {
-  const getLeaders = (showGoals: boolean, showAssists: boolean, showCleanSheets: boolean): Player[] => {
+  const getLeaders = (
+    showGoals: boolean,
+    showAssists: boolean,
+    showCleanSheets: boolean
+  ): Player[] => {
     const allPlayers: Player[] = [];
-  
+
     league.teams.forEach((team: Team) => {
       allPlayers.push(...team.roster);
     });
-  
+
     return allPlayers
       .filter((player) => {
         if (showGoals && player.stats.goals > 0) {
@@ -26,7 +30,11 @@ const LeagueLeadersComponent: React.FC<LeagueLeadersComponentProps> = ({
         if (showAssists && player.stats.assists > 0) {
           return true;
         }
-        if (showCleanSheets && player instanceof PlayerGoalkeeper && player.stats.cleanSheets > 0) {
+        if (
+          showCleanSheets &&
+          player instanceof PlayerGoalkeeper &&
+          player.stats.cleanSheets > 0
+        ) {
           return true;
         }
         return false;
@@ -38,56 +46,57 @@ const LeagueLeadersComponent: React.FC<LeagueLeadersComponentProps> = ({
         if (showAssists) {
           return b.stats.assists - a.stats.assists;
         }
-        if (showCleanSheets && a instanceof PlayerGoalkeeper && b instanceof PlayerGoalkeeper) {
+        if (
+          showCleanSheets &&
+          a instanceof PlayerGoalkeeper &&
+          b instanceof PlayerGoalkeeper
+        ) {
           return b.stats.cleanSheets - a.stats.cleanSheets;
         }
         return 0;
       })
-      .slice(0, 5);
+      .slice(0, 3);
   };
-  
+
   const goalLeaders = getLeaders(true, false, false);
   const assistLeaders = getLeaders(false, true, false);
   const cleanSheetLeaders = getLeaders(false, false, true);
 
+  const renderLeaders = (
+    leaders: Player[],
+    statName: string,
+  ) => {
+
+    console.log(leaders);
+    return (
+      <div className={`league-leaders`}>
+        <h4>{statName}</h4>
+        <ul className="stats-list">
+          {leaders.map((player: Player) => (
+            <li className="stats-row" key={player.id}>
+              <div className="stats-row-info">
+                <div className="stats-row-player-name">{player.firstName} {player.lastName}</div>
+                <div className="stats-row-player-team-name">{player.team?.name}</div>
+              </div>
+              <div className="stats-row-stat">
+                {statName === "Clean Sheets" && player instanceof PlayerGoalkeeper && player.stats.cleanSheets}
+                {statName == "Goals" && player.stats.goals}
+                {statName == "Assists" && player.stats.assists}
+              </div>
+            </li>
+          ))}
+          {leaders.length == 0 ? <div>No stat leaders</div>: ""}
+        </ul>
+      </div>
+    );
+  };
+
   return (
     <div className="league-leaders-container">
-      <h4>Goals</h4>
-      <table className="leaders-table">
-        <tbody>
-          {goalLeaders.map((player: Player) => (
-            <tr key={player.id}>
-              <td>{`${player.firstName} ${player.lastName}`}</td>
-              <td>{player.team?.name || "-"}</td>
-              <td>{player.stats.goals}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      <h4>Assists</h4>
-      <table className="leaders-table">
-        <tbody>
-          {assistLeaders.map((player: Player) => (
-            <tr key={player.id}>
-              <td>{`${player.firstName} ${player.lastName}`}</td>
-              <td>{player.team?.name || "-"}</td>
-              <td>{player.stats.assists}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      <h4>Clean Sheets</h4>
-      <table className="leaders-table">
-        <tbody>
-          {cleanSheetLeaders.map((player: Player) => (
-            <tr key={player.id}>
-              <td>{`${player.firstName} ${player.lastName}`}</td>
-              <td>{player.team?.name || "-"}</td>
-              <td>{player instanceof PlayerGoalkeeper && player.stats.cleanSheets}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <h3>Stat Leaders</h3>
+      {renderLeaders(goalLeaders, "Goals")}
+      {renderLeaders(assistLeaders, "Assists")}
+      {renderLeaders(cleanSheetLeaders, "Clean Sheets")}
     </div>
   );
 };

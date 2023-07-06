@@ -1,0 +1,65 @@
+.turtle {
+    width: 450px;
+    height: 540px;
+    background-color: green;
+}
+
+.turtle-row{
+    height: 90px;
+    width: 450px;
+    display: flex;
+}
+
+.turtle-pos-lw, .turtle-pos-rw, .turtle-pos-lm, .turtle-pos-rm, .turtle-pos-lb, .turtle-pos-rb, .turtle-pos-gk{
+    height: 90px;
+    width: 90px;
+    display: flex;
+}
+
+.turtle-pos-st {
+    /* background-color: gold; */
+    margin: auto;
+}
+.turtle-pos-lw, .turtle-pos-rw{
+    /* background-color: blueviolet; */
+}
+
+.turtle-pos-lm, .turtle-pos-rm{
+    /* background-color: lightblue; */
+}
+
+.turtle-pos-cam {
+    /* background-color: lightgreen; */
+}
+
+.turtle-pos-cm {
+    /* background-color: greenyellow; */
+}
+
+.turtle-pos-cdm {
+    /* background-color: green; */
+    margin: auto;
+}
+
+.turtle-pos-cb {
+    /* background-color: orangered; */
+}
+
+.turtle-pos-lb, .turtle-pos-rb {
+    /* background-color: orange */
+}
+
+.turtle-pos-gk{
+    /* background-color: aqua; */
+    margin: auto;
+}
+
+.turtle-pos-st, .turtle-pos-cam, .turtle-pos-cm, .turtle-pos-cdm, .turtle-pos-cb{
+    height: 90px;
+    width: 270px;
+    display: flex;
+}
+
+.player-icon-container{
+    margin: auto;
+}

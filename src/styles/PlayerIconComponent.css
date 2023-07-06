@@ -1,0 +1,11 @@
+.player-icon{
+    font-size: 12px;
+    height: 80px;
+    width: 80px;
+    margin: auto;
+    background-color: white;
+}
+
+.selected{
+    background-color: pink;
+}

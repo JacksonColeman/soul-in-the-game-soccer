@@ -1,26 +1,46 @@
 .matchup {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  background-color: #f0f0f0;
-  border: 1px solid #ccc;
+  font-family: Arial, sans-serif;
+  background-color: #f5f5f5;
+  border-radius: 5px;
   padding: 5px;
   margin-bottom: 10px;
+  width: 300px;
 }
 
 .team-info {
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  width: 100%;
-  margin-bottom: 4px;
+  align-items: center;
 }
 
-.team-name {
-  font-weight: bold;
+.home-team-container,
+.away-team {
+  flex-grow: 1;
 }
 
-.team-score {
-  font-size: 18px;
+.home-team-container {
+  text-align: left;
+  width: 100px;
+}
+
+.away-team {
+  text-align: right;
+  width: 100px;
+}
+
+.team-link {
+  text-decoration: none;
+  color: #333;
+  /* font-weight: bold; */
+  font-size: 16px;
+}
+
+.team-score-container {
+  flex-grow: 0;
+  margin: 0 10px;
+}
+
+.match-score {
   font-weight: bold;
+  font-size: 20px;
 }
