@@ -20,7 +20,7 @@ const MatchDetailsComponent: React.FC<MatchDetailsComponentProps> = ({ matchup }
             key={index}
             style={{ textAlign: goal.homeTeam ? "left" : "right" }} // Set text alignment based on homeTeam attribute
           >
-           {goal.minute}' - {goal.scorer.firstName} {goal.scorer.lastName} assisted by {goal.assister?.lastName}
+           {goal.minute}' - {goal.scorer.firstName} {goal.scorer.lastName}
           </div>
         ))}
       </ul>

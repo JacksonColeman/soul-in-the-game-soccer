@@ -4,7 +4,7 @@ import leaguesData from "../../data/teams.json";
 
 interface TeamSelectionProps {
   onTeamSelect: (selectedTeamId: number) => void;
-  handleStartGame: () => void;
+  handleAdvanceToManagerSelect: () => void;
 }
 
 const teams = leaguesData.find(league => league.id == 1)?.teams;
@@ -12,7 +12,7 @@ if (!teams){
   throw new Error("Error retrieving teams. Moo!")
 }
 
-const TeamSelectionComponent: React.FC<TeamSelectionProps> = ({ onTeamSelect, handleStartGame }) => {
+const TeamSelectionComponent: React.FC<TeamSelectionProps> = ({ onTeamSelect, handleAdvanceToManagerSelect }) => {
   const [selectedTeamId, setSelectedTeamId] = useState<number | null>(null);
 
   const handleTeamClick = (teamId: number) => {
@@ -51,7 +51,7 @@ const TeamSelectionComponent: React.FC<TeamSelectionProps> = ({ onTeamSelect, ha
     <div>
       <h2>Select Your Team</h2>
       <div className="team-grid">{renderTeams()}</div>
-      <button disabled={!selectedTeamId} onClick={handleStartGame}>Start Game</button>
+      <button disabled={!selectedTeamId} onClick={handleAdvanceToManagerSelect}>Advance</button>
     </div>
   );
 };

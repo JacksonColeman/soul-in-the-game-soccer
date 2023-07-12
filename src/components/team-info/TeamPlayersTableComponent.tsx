@@ -16,6 +16,7 @@ enum Tab {
 
 const TeamPlayersTableComponent: React.FC<TeamPlayersTableProps> = ({ team }) => {
   const [currentTab, setCurrentTab] = useState<Tab>(Tab.STARTING_LINEUP);
+  const [lineup, setLineup] = useState(team.lineup);
 
   const renderPlayerTable = (players: Player[]) => {
     return (
@@ -35,9 +36,10 @@ const TeamPlayersTableComponent: React.FC<TeamPlayersTableProps> = ({ team }) =>
             <th className="stat-col">Physical</th>
             <th className="stat-col">Shooting</th>
             <th className="stat-col">Speed</th>
-            <th className="stat-col">GProb</th>
-            <th className="stat-col">AProb</th>
             <th className="stat-col">cond</th>
+            <th className="stat-col">status</th>
+            <th className="stat-col">gProb</th>
+            <th className="stat-col">aProb</th>
           </tr>
         </thead>
         <tbody>
@@ -48,7 +50,7 @@ const TeamPlayersTableComponent: React.FC<TeamPlayersTableProps> = ({ team }) =>
             >
               <td className="player-name">{player.firstName.charAt(0)}. {player.lastName}</td>
               <td className="stat-col">{player.age}</td>
-              <td className="stat-col">{player.position} / {player.fieldPosition}</td>
+              <td className="stat-col">{player.position}</td>
               <td className="stat-col">{player.overallRating}</td>
               <td className="stat-col">{player.stats.matchesPlayed}</td>
               <td className="stat-col">{player.stats.goals}</td>
@@ -59,9 +61,10 @@ const TeamPlayersTableComponent: React.FC<TeamPlayersTableProps> = ({ team }) =>
               <td className="stat-col">{player.attributes[PlayerAttribute.Physical]}</td>
               <td className="stat-col">{player.attributes[PlayerAttribute.Shooting]}</td>
               <td className="stat-col">{player.attributes[PlayerAttribute.Speed]}</td>
+              <td className="stat-col">{Math.round(player.condition)}</td>
+              <td className="stat-col">{player.injured ? `Inj ${player.injuryTime}` : `:)`}</td>
               <td className="stat-col">{player.goalScorerProb}</td>
               <td className="stat-col">{player.assistProb}</td>
-              <td className="stat-col">{player.condition}</td>
             </tr>
           ))}
         </tbody>
@@ -69,9 +72,9 @@ const TeamPlayersTableComponent: React.FC<TeamPlayersTableProps> = ({ team }) =>
     );
   };
 
-  const startingLineup = team.lineup.starterArray;
-  const bench = team.lineup.bench;
-  const reserves = team.lineup.reserves;
+  const startingLineup = lineup.starterArray;
+  const bench = lineup.bench;
+  const reserves = lineup.reserves;
 
   let currentPlayers: Player[] = [];
   if (currentTab === Tab.STARTING_LINEUP) {

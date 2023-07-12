@@ -14,7 +14,7 @@
 }
 
 .home-team-container,
-.away-team {
+.away-team-container {
   flex-grow: 1;
 }
 
@@ -23,7 +23,7 @@
   width: 100px;
 }
 
-.away-team {
+.away-team-container {
   text-align: right;
   width: 100px;
 }

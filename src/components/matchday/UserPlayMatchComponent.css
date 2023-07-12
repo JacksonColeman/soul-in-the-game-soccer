@@ -1,0 +1,47 @@
+.season-container h2{
+    margin: 0;
+}
+
+.season-container p{
+    margin: 0;
+}
+
+.match-team-container{
+    height: 450px;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
+.match-team{
+    margin-left: 50px;
+    margin-right: 50px;
+}
+
+.match-info-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .home-info {
+    flex: 1;
+    text-align: left;
+    padding-left: 200px;
+  }
+  
+  .score-info {
+    flex: 1;
+    text-align: center;
+  }
+  
+  .away-info {
+    flex: 1;
+    text-align: right;
+    padding-right: 200px;
+  }
+
+  .home-goals, .away-goals{
+    height: 40px;
+    overflow: scroll;
+  }

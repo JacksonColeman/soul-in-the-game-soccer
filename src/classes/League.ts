@@ -88,7 +88,6 @@ export class League{
     }
 
     generateSchedule(): Matchup[][] {
-      this.generateWeightedAttributeTotals();
       const matchups: Matchup[][] = [];
       const totalTeams = this.teams.length;
       const totalWeeks = totalTeams - 1;

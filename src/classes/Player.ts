@@ -4,7 +4,7 @@ import { PlayerPosition } from '../constants/positions';
 import { PlayerAttribute } from '../constants/attributes';
 import { positionGProb, positionASTProb } from '../constants/statProbabilities';
 import { getPositionFamiliarity } from '../constants/positionFamiliarities';
-import { getOverallAttributeWeights } from '../constants/overallWeights';
+import { getOverallAttributeWeights } from '../constants/overallAttributeWeights';
 
 export class Player {
   public id = uuidv4();
@@ -34,6 +34,12 @@ export class Player {
   }
   careerStats = {};
 
+  matchStats: {minutes: number, goals: number, assists: number} = {
+    minutes: 0,
+    goals: 0,
+    assists: 0
+  }
+
   // store position that player is playing at in lineup
 
   public fieldPosition: PlayerPosition | null = null;
@@ -43,15 +49,28 @@ export class Player {
 
   progress(year:number): void {
     this.age += 1;
+    this.condition = 100;
+    this.injuryTime -= 20;
+    if (this.injuryTime <= 0){
+      this.injuryTime = 0;
+      this.injured = false;
+    }
     year;
-    // Unique operations for each subclass can be implemented here
+    
+    
   }
 
   advanceWeek(){
     this.condition = Math.floor(Math.min(100, this.condition+20));
-    this.injuryTime -= 1;
-    if (this.injuryTime <= 0){
-      this.injured = false;
+    if (this.condition < 0){
+      this.condition = 0;
+    }
+    //injury update
+    if (this.injured){
+      this.injuryTime -= 1;
+      if (this.injuryTime <= 0){
+        this.injured = false;
+      }
     }
   }
 
@@ -85,7 +104,13 @@ export class Player {
   
     const weightedSum = Object.entries(attributeWeights).reduce((sum, [attribute, weight]) => {
       const attributeKey = attribute as PlayerAttribute; // Type assertion
-      return sum + this.attributes[attributeKey] * weight * (this.positionFamiliarity[position] / 100);
+      let attributeValue = this.attributes[attributeKey];
+      
+      if (attributeKey === PlayerAttribute.Mental) {
+        attributeValue *= this.positionFamiliarity[position] / 100;
+      }
+    
+      return sum + attributeValue * weight;
     }, 0);
   
     const totalWeight = Object.values(attributeWeights).reduce((sum, weight) => sum + weight, 0);
@@ -94,11 +119,53 @@ export class Player {
     return Math.min(99, Math.floor(weightedAverage) + 10);
   }
   
+  get effectiveOverallRating(){
+    if (this.injured){return 0}
+    let weightedAverage = 0;
+    const attributeWeights = getOverallAttributeWeights(this.position);
+  
+    const weightedSum = Object.entries(attributeWeights).reduce((sum, [attribute, weight]) => {
+      const attributeKey = attribute as PlayerAttribute; // Type assertion
+      
+      return sum + this.attributes[attributeKey] * weight * (this.condition/100);
+    }, 0);
+  
+    const totalWeight = Object.values(attributeWeights).reduce((sum, weight) => sum + weight, 0);
+    weightedAverage = weightedSum / totalWeight;
+  
+    return Math.min(99, Math.floor(weightedAverage) + 10);
+  }
+
   effectiveOverallAtPosition(position: PlayerPosition | undefined){
     if (this.injured){return 0}
-    let OAP = this.overallAtPosition(position);
-    let EOAP = OAP * (this.condition/100);
-    return EOAP;
+    if (position === undefined) {
+      return 0;
+    }
+  
+    if (this.position === PlayerPosition.GK && position !== PlayerPosition.GK) {
+      return 0;
+    }
+  
+    let weightedAverage = 0;
+    const attributeWeights = getOverallAttributeWeights(position);
+  
+    const weightedSum = Object.entries(attributeWeights).reduce((sum, [attribute, weight]) => {
+      const attributeKey = attribute as PlayerAttribute; // Type assertion
+      let attributeValue = this.attributes[attributeKey];
+      
+      if (attributeKey === PlayerAttribute.Mental) {
+        attributeValue *= this.positionFamiliarity[position] / 100;
+      }
+
+      attributeValue *= (this.condition/100);
+    
+      return sum + attributeValue * weight;
+    }, 0);
+  
+    const totalWeight = Object.values(attributeWeights).reduce((sum, weight) => sum + weight, 0);
+    weightedAverage = weightedSum / totalWeight;
+  
+    return Math.min(99, Math.floor(weightedAverage) + 10);
   }
 
   // probabilities of being the goalscorer or assister
@@ -109,7 +176,7 @@ export class Player {
 
   get assistProb(){
     if (this.fieldPosition == null){return 0};
-    return (this.attributes.Passing * 1 + this.attributes.Mental*1 * this.attributes.Physical*0.5 + this.attributes.Speed*0.5) * positionASTProb[this.fieldPosition];
+    return (this.attributes.Passing * 2 + this.attributes.Mental*1 + this.attributes.Physical*0.5 + this.attributes.Speed*0.5) * positionASTProb[this.fieldPosition];
 
   } 
 
@@ -188,40 +255,51 @@ export class PlayerOutfield extends Player {
 }
 
 
-// function progressAttribute(attribute: Attribute, attributeValue: number, age: number){
-//   // ages are that of upcoming year
-//   if (age < 26){
-//     // create an attribute development system
-//     const developmentRate = {
-//       [Attribute.Physical]: 1,
-//       [Attribute.Attacking]: 1,
-//       [Attribute.Defending]: 1,
-//       [Attribute.Playmaking]: 1,
-//       [Attribute.Diving]: 1,
-//       [Attribute.Handling]: 1,
-//       [Attribute.Reflexes]: 1,
-//     };
-//     const expectedDevelopment = 1 + (26 - age)/4;
-//     const developmentMultiplier = Math.random() * 1.5 + 0.5;
-//     const development = Math.floor(expectedDevelopment * developmentMultiplier * developmentRate[attribute]);
-//     return Math.min(99, attributeValue + development);
-//   }
-//   if (age > 29){
-//     const attributeDeclineRates = {
-//       [Attribute.Physical]: 1.5,
-//       [Attribute.Attacking]: 1,
-//       [Attribute.Defending]: 1,
-//       [Attribute.Playmaking]: 0.5,
-//       [Attribute.Diving]: 0.5,
-//       [Attribute.Handling]: 0.5,
-//       [Attribute.Reflexes]: 0.5,
-//     }
+function progressAttribute(attribute: PlayerAttribute, attributeValue: number, age: number){
+  // ages are that of upcoming year
+  if (age < 26){
+    // create an attribute development system
+    const developmentRate = {
+      [PlayerAttribute.Defending]: 1,
+      [PlayerAttribute.Mental]: 0.5,
+      [PlayerAttribute.Passing]: 1,
+      [PlayerAttribute.Physical]: 1,
+      [PlayerAttribute.Shooting]: 1,
+      [PlayerAttribute.Speed]: 1,
+      // gk
+      [PlayerAttribute.GKAgility]: 1,
+      [PlayerAttribute.GKHandling]: 1,
+      [PlayerAttribute.GKKicking]: 1,
+      [PlayerAttribute.GKPositioning]: 1,
+      [PlayerAttribute.GKReach]: 1,
+      [PlayerAttribute.GKReflexes]: 1,
+    };
+    const expectedDevelopment = 1 + (26 - age)/4;
+    const developmentMultiplier = Math.random() * 1.5 + 0.5;
+    const development = Math.floor(expectedDevelopment * developmentMultiplier * developmentRate[attribute]);
+    return Math.min(99, attributeValue + development);
+  }
+  if (age > 29){
+    const attributeDeclineRates = {
+      [PlayerAttribute.Defending]: 1,
+      [PlayerAttribute.Mental]: 0,
+      [PlayerAttribute.Passing]: 1,
+      [PlayerAttribute.Physical]: 2,
+      [PlayerAttribute.Shooting]: 1,
+      [PlayerAttribute.Speed]: 2,
+      [PlayerAttribute.GKAgility]: 0.5,
+      [PlayerAttribute.GKHandling]: 0.5,
+      [PlayerAttribute.GKKicking]: 0.5,
+      [PlayerAttribute.GKPositioning]: 0.5,
+      [PlayerAttribute.GKReach]: 0.5,
+      [PlayerAttribute.GKReflexes]: 0.5,
+    }
 
-//     const expectedDecline = 1 + (age - 29)/2;
-//     const declineMultiplier = Math.random() * 1.5 + 0.5;
-//     const attributeDeclineRate = attributeDeclineRates[attribute];
-//     const decline =  Math.floor(expectedDecline * declineMultiplier * attributeDeclineRate);
-//     return Math.max(10, attributeValue - decline);
-//   }
-//   return attributeValue;
-// }
+    const expectedDecline = 1 + (age - 29)/2;
+    const declineMultiplier = Math.random() * 1.5 + 0.5;
+    const attributeDeclineRate = attributeDeclineRates[attribute];
+    const decline =  Math.floor(expectedDecline * declineMultiplier * attributeDeclineRate);
+    return Math.max(10, attributeValue - decline);
+  }
+  return attributeValue;
+}

@@ -4,9 +4,6 @@ dependencies:
   '@stdlib/random-base-poisson':
     specifier: ^0.0.6
     version: 0.0.6
-  flatted:
-    specifier: ^3.2.7
-    version: 3.2.7
   react:
     specifier: ^18.2.0
     version: 18.2.0
@@ -4701,6 +4698,7 @@ packages:
 
   /flatted@3.2.7:
     resolution: {integrity: sha512-5nqDSxl8nn5BSNxyR3n4I6eDmbolI6WT+QqR547RwxQapgjQBmtktdP+HTBb/a/zLsbzERTONyUB5pefh5TtjQ==}
+    dev: true
 
   /fs.realpath@1.0.0:
     resolution: {integrity: sha512-OO0pH2lK6a0hZnAdau5ItzHPI6pUlvI7jMVnxUQRtw4owF2wk8lOSabtGDCTP4Ggrg2MbGnWO9X8K1t4+fGMDw==}

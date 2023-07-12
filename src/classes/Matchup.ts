@@ -5,6 +5,7 @@ import {Player, PlayerGoalkeeper, PlayerOutfield} from "./Player";
 import poisson from '@stdlib/random-base-poisson';
 import { v4 as uuidv4 } from 'uuid';
 import { PlayerAttribute } from "../constants/attributes";
+import { Lineup } from "./Lineup";
 
 export class Matchup {
     homeTeam: Team;
@@ -27,17 +28,23 @@ export class Matchup {
       this.awayScore = awayScore;
     }
 
-    get allStarters(){
-      const homeStarters = this.homeTeam.lineup.starterArray;
-      const awayStarters = this.awayTeam.lineup.starterArray;
-      const allStarters = homeStarters.concat(awayStarters);
-      return allStarters;
-    }
+    homeLineup: Lineup | null = null;
+    awayLineup: Lineup | null = null;
 
     playMatch(): void {
+      // get lineups
+      this.homeLineup = this.homeTeam.lineup;
+      this.awayLineup = this.awayTeam.lineup;
       // get team offense/defense ratios
       this.homeScore=0;
       this.awayScore=0;
+      // set inMatch to true
+      this.homeTeam.inMatch = true;
+      this.awayTeam.inMatch = true;
+      // get starters
+      const homeStarters = this.homeLineup.starterArray;
+      const awayStarters = this.awayLineup.starterArray;
+      const allStarters = homeStarters.concat(awayStarters);
 
       // attribute ratios
       const homeAttributeRatios = this.homeTeam.attributeRatios(this.league);
@@ -82,31 +89,35 @@ export class Matchup {
         // figure out cards and subs
         // decrement condition
         if(i % 4 == 0){
-          for (const p of this.allStarters){
+          for (const p of allStarters){
             if (p instanceof PlayerGoalkeeper){
-              p.condition -= Math.random()*0;
+              p.condition -= Math.random()*1;
+              if (Math.random() < 0.00){
+                p.injured = true;
+                p.injuryTime = Math.floor(Math.random()*5);
+              }
             } else {
-              p.condition -= Math.random()*0;
+              p.condition -= Math.random()*1.8;
+              if (Math.random() < 0.00){
+                p.injured = true;
+                p.injuryTime = Math.floor(Math.random()*5);
+              }
             }
           }
         }
-        let hs:number = poisson(homeScoreMean90);
-        let as:number = poisson(awayScoreMean90);
-        if (hs > 0){
+        let homeGoal:number = poisson(homeScoreMean90);
+        let awayGoal:number = poisson(awayScoreMean90);
+        if (homeGoal > 0){
           this.homeScore++;
-          let goal = this.createGoal(this.homeTeam, i)
+          let goal = this.createGoal(this.homeTeam, this.homeLineup, i)
           this.goals.push(goal);
         }
-        if (as > 0){
+        if (awayGoal > 0){
           this.awayScore++;
-          let goal = this.createGoal(this.awayTeam, i)
+          let goal = this.createGoal(this.awayTeam, this.awayLineup, i)
           this.goals.push(goal);
         }
       }
-      // const hs:number = poisson(homeScoreMean);
-      // const as:number = poisson(awayScoreMean);
-      // this.homeScore = hs; // Random score for the home team
-      // this.awayScore = as; // Random score for the away team
 
       this.homeTeam.standingsInfo.goalsFor += this.homeScore;
       this.awayTeam.standingsInfo.goalsFor += this.awayScore;
@@ -126,25 +137,35 @@ export class Matchup {
       }
 
       //update player stats
-      for (const player of this.homeTeam.lineup.starterArray){
+      for (const player of this.homeLineup.starterArray){
         player.stats.matchesPlayed++;
+        player.stats.goals += player.matchStats.goals;
+        player.stats.assists += player.matchStats.assists;
+        player.matchStats.goals = 0;
+        player.matchStats.assists = 0;
       }
-      for (const player of this.awayTeam.lineup.starterArray){
+      for (const player of this.awayLineup.starterArray){
         player.stats.matchesPlayed++;
+        player.stats.goals += player.matchStats.goals;
+        player.stats.assists += player.matchStats.assists;
+        player.matchStats.goals = 0;
+        player.matchStats.assists = 0;
       }
+
+      
 
       // update keeper stats
       // bug check
 
-      this.homeTeam.lineup.startingGoalkeeper.stats.goalsConceded += this.awayScore;
-      this.awayTeam.lineup.startingGoalkeeper.stats.goalsConceded += this.homeScore;
+      this.homeLineup.startingGoalkeeper.stats.goalsConceded += this.awayScore;
+      this.awayLineup.startingGoalkeeper.stats.goalsConceded += this.homeScore;
 
-      if (this.awayScore === 0 && this.homeTeam.lineup.startingGoalkeeper) {
-        this.homeTeam.lineup.startingGoalkeeper.stats.cleanSheets += 1;
+      if (this.awayScore === 0 && this.homeLineup.startingGoalkeeper) {
+        this.homeLineup.startingGoalkeeper.stats.cleanSheets += 1;
       }
 
-      if (this.homeScore === 0 && this.awayTeam.lineup.startingGoalkeeper) {
-        this.awayTeam.lineup.startingGoalkeeper.stats.cleanSheets += 1;
+      if (this.homeScore === 0 && this.awayLineup.startingGoalkeeper) {
+        this.awayLineup.startingGoalkeeper.stats.cleanSheets += 1;
       }
       
       // increment goals allowed
@@ -153,12 +174,14 @@ export class Matchup {
       // reputation update
       updateReputation(this.homeTeam, this.awayTeam, this.homeScore, this.awayScore);
 
+      this.homeTeam.inMatch = false;
+      this.awayTeam.inMatch = false;
       this.played = true;
     }
 
-    createGoal(team:Team, minute:number): Goal{
+    createGoal(team:Team, lineup:Lineup, minute:number): Goal{
       //create just one goal object
-      const players = team.lineup.starterArray.filter(
+      const players = lineup.starterArray.filter(
         (player) => player instanceof PlayerOutfield
       ) as PlayerOutfield[];
   
@@ -176,7 +199,7 @@ export class Matchup {
           assisterRandomValue -= player.assistProb;
           if (assisterRandomValue <= 0) {
             selectedAssister = player;
-            selectedAssister.stats.assists++;
+            selectedAssister.matchStats.assists++;
             break;
           }
         }
@@ -194,7 +217,7 @@ export class Matchup {
         scorerRandomValue -= player.goalScorerProb;
         if (scorerRandomValue <= 0) {
           selectedScorer = player;
-          selectedScorer.stats.goals++;
+          selectedScorer.matchStats.goals++;
           break;
         }
       }
@@ -204,62 +227,6 @@ export class Matchup {
       const homeTeam = team === this.homeTeam;
       const goal = new Goal(minute, selectedScorer, selectedAssister, homeTeam);
       return goal;   
-    }
-
-    createGoals(n: number, team:Team): Goal[] {
-      const players = team.lineup.starterArray.filter(
-        (player) => player instanceof PlayerOutfield
-      ) as PlayerOutfield[];
-  
-      const goals: Goal[] = [];
-
-      const assisterProbabilities = players.map((player) => player.assistProb);
-      const totalAssisterProbability = assisterProbabilities.reduce((total, probability) => total + probability, 0);
-
-      for (let i = 0; i < n; i++) {
-        let selectedAssister: PlayerOutfield | undefined;
-          if (Math.random() < 0.2) {
-            selectedAssister = undefined; // No assister
-          } else {
-          let assisterRandomValue = Math.random() * totalAssisterProbability;
-
-          for (let j = 0; j < players.length; j++) {
-            const player = players[j];
-            assisterRandomValue -= player.assistProb;
-            if (assisterRandomValue <= 0) {
-              selectedAssister = player;
-              selectedAssister.stats.assists++;
-              break;
-            }
-          }
-        }
-    
-        const potentialScorers = players.filter(p => p != selectedAssister)
-        const scorerProbabilities = potentialScorers.map((player) => player.goalScorerProb);
-        const totalScorerProbability = scorerProbabilities.reduce((total, probability) => total + probability, 0);
-    
-      
-        const minute = Math.floor(Math.random() * 90) + 1;
-    
-        let scorerRandomValue = Math.random() * totalScorerProbability;
-        let selectedScorer: PlayerOutfield | undefined;
-    
-        for (let j = 0; j < potentialScorers.length; j++) {
-          const player = potentialScorers[j];
-          scorerRandomValue -= player.goalScorerProb;
-          if (scorerRandomValue <= 0) {
-            selectedScorer = player;
-            selectedScorer.stats.goals++;
-
-            const homeTeam = team === this.homeTeam;
-            const goal = new Goal(minute, selectedScorer, selectedAssister, homeTeam);
-            goals.push(goal);
-            break;
-          }      
-        }
-      }
-  
-      return goals;
     }
   }
 
@@ -272,7 +239,7 @@ const calculateWinProbability = (teamAReputation: number, teamBReputation: numbe
   return 1 / (1 + 10 ** (-ratingDifference / 50));
 };
 
-const updateReputation = (teamA: Team, teamB: Team, teamAScore: number, teamBScore: number) => {
+export const updateReputation = (teamA: Team, teamB: Team, teamAScore: number, teamBScore: number) => {
   const expectedWinProbabilityA = calculateWinProbability(
     teamB.reputation,
     teamA.reputation

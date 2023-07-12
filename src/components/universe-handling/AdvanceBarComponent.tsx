@@ -1,4 +1,4 @@
-import './UserBarComponent.css';
+import './AdvanceBarComponent.css';
 import { Universe } from '../../classes/Universe';
 import { League } from '../../classes/League';
 import { useNavigate } from "react-router-dom";
@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 enum SeasonComponentState {
     Overview,
     PreMatch,
+    PlayMatch,
     PostMatch,
   }
   interface  AdvanceBarProps {
@@ -22,7 +23,6 @@ const AdvanceBarComponent: React.FC<AdvanceBarProps> = ({universe,league,handleR
     const { schedule } = league;
 
     const handleAdvance = () => {
-
         // if not at season/homepage, go back before advancing
         if (window.location.pathname !== "/season") {
             navigate("/season");
@@ -37,7 +37,10 @@ const AdvanceBarComponent: React.FC<AdvanceBarProps> = ({universe,league,handleR
         handleNewYear();
         handleReloads();
         updateSeasonState(SeasonComponentState.Overview);
-      } else if (!universe.playedCurrentWeek) {
+      } else if (seasonState == SeasonComponentState.PreMatch){
+        updateSeasonState(SeasonComponentState.PlayMatch)
+      }
+      else if (!universe.playedCurrentWeek) {
         handlePlayMatches();
         updateSeasonState(SeasonComponentState.PostMatch);
       } else {
@@ -74,9 +77,20 @@ const AdvanceBarComponent: React.FC<AdvanceBarProps> = ({universe,league,handleR
     const handlePlayMatches = () => {
       universe.playWeekMatches();
     };
+
+    const handleBack  = () => {
+      updateSeasonState(SeasonComponentState.Overview);
+    }
+
+    if (seasonState == SeasonComponentState.PlayMatch){
+      return(
+        <div className="user-bar"></div>
+      )
+    }
   
     return (
-      <div className="user-bar">
+      <div className="advance-bar">
+        {seasonState == SeasonComponentState.PreMatch && <button onClick={handleBack}>Back</button>}
         <button className="advance-button" onClick={handleAdvance}>Advance</button>
         <button className="full-season-button" onClick={handlePlayFullSeason}>Play Full Season</button>
       </div>

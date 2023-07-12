@@ -1,10 +1,11 @@
 import {Player} from './Player'
 import { generatePlayer} from '../scripts/GeneratePlayers';
 import { Lineup} from './Lineup';
-import {Formation, formationList} from './Formations'
+import {Formation} from './Formations';
+import { formationList } from '../constants/formationList';
 import { League } from './League';
-import { PlayerPosition } from '../constants/positions';
 import { PlayerAttribute } from '../constants/attributes';
+import { Manager } from './Manager';
 
 export class Team {
     constructor(
@@ -19,40 +20,56 @@ export class Team {
     }
 
     user = false;
-
+    inMatch = false;
+    inMatchStats = {
+      matchMinutes: 0,
+      matchGoals: 0
+    }
+    
+    public manager: Manager | null = null; 
+    lineupCalls = 0;
     savedLineup: Lineup | null = null;
     savedFormation: Formation | null = null;
 
     get formation(): Formation {
-      // return formationList[0];
-      const opt = this.optimalFormation();
-      this.savedFormation = opt;
-      return opt;
+      if (this.manager != null){
+        return this.manager.preferredFormation;
+      }
+      throw new Error("No manager!")
     }
 
     get lineup(): Lineup{
+      this.lineupCalls++;
+      if (this.savedLineup && this.inMatch){
+        console.log('retrieving saved lineup')
+        return this.savedLineup;
+      }
       if (this.savedLineup != null){
         this.savedLineup.optimizeLineup();
         return this.savedLineup;
       }
-      return this.getOptimalLineup(this.roster, this.formation);
+      const ln = new Lineup(this.roster, this.formation);
+      ln.buildNaiveLineup();
+      ln.optimizeLineup();
+      this.savedLineup = ln;
+      return ln;
     }
 
-    optimalFormation(): Formation{
-      let maxOverall = 0;
-      let bestFormation = null;
-      for (let i = 0; i < formationList.length; i++){
-        const form = formationList[i];
-        const lineup = this.getOptimalLineup(this.roster, form);
-        const lineupOverall = lineup.starterOverall;
-        if (lineupOverall > maxOverall){
-          maxOverall = lineupOverall;
-          bestFormation = form;
-        }
-      }
-      if (bestFormation == null){throw new Error("No formations found")}
-      return bestFormation;
-    }
+    // optimalFormation(): Formation{
+    //   let maxOverall = 0;
+    //   let bestFormation = null;
+    //   for (let i = 0; i < formationList.length; i++){
+    //     const form = formationList[i];
+    //     const lineup = this.getOptimalLineup(form);
+    //     const lineupOverall = lineup.starterOverall;
+    //     if (lineupOverall > maxOverall){
+    //       maxOverall = lineupOverall;
+    //       bestFormation = form;
+    //     }
+    //   }
+    //   if (bestFormation == null){throw new Error("No formations found")}
+    //   return bestFormation;
+    // }
 
     autophagy(){
       const newPlayers: Player[] = [];
@@ -83,58 +100,6 @@ export class Team {
         this.savedFormation = null;
     }
 
-    // move this to lineup class
-    public getOptimalLineup(players: Player[], formation: Formation): Lineup {
-      const lineup = new Lineup();
-      const selectedPlayers: Set<string> = new Set(); // Track selected players
-      const positionRequirements = formation.positionRequirements;
-      const healthyPlayers = players.filter(p => p.injured == false);
-      // Sort players by their overall ratings at each position
-      const sortedPlayers: { [position in PlayerPosition]: Player[] } = {
-        GK: healthyPlayers.filter(player => player.overallAtPosition(PlayerPosition.GK)).sort((a, b) => b.overallAtPosition(PlayerPosition.GK) - a.overallAtPosition(PlayerPosition.GK)),
-        LB: healthyPlayers.filter(player => player.overallAtPosition(PlayerPosition.LB)).sort((a, b) => b.overallAtPosition(PlayerPosition.LB) - a.overallAtPosition(PlayerPosition.LB)),
-        CB: healthyPlayers.filter(player => player.overallAtPosition(PlayerPosition.CB)).sort((a, b) => b.overallAtPosition(PlayerPosition.CB) - a.overallAtPosition(PlayerPosition.CB)),
-        RB: healthyPlayers.filter(player => player.overallAtPosition(PlayerPosition.RB)).sort((a, b) => b.overallAtPosition(PlayerPosition.RB) - a.overallAtPosition(PlayerPosition.RB)),
-        CDM: healthyPlayers.filter(player => player.overallAtPosition(PlayerPosition.CDM)).sort((a, b) => b.overallAtPosition(PlayerPosition.CDM) - a.overallAtPosition(PlayerPosition.CDM)),
-        LM: healthyPlayers.filter(player => player.overallAtPosition(PlayerPosition.LM)).sort((a, b) => b.overallAtPosition(PlayerPosition.LM) - a.overallAtPosition(PlayerPosition.LM)),
-        CM: healthyPlayers.filter(player => player.overallAtPosition(PlayerPosition.CM)).sort((a, b) => b.overallAtPosition(PlayerPosition.CM) - a.overallAtPosition(PlayerPosition.CM)),
-        RM: healthyPlayers.filter(player => player.overallAtPosition(PlayerPosition.RM)).sort((a, b) => b.overallAtPosition(PlayerPosition.RM) - a.overallAtPosition(PlayerPosition.RM)),
-        LW: healthyPlayers.filter(player => player.overallAtPosition(PlayerPosition.LW)).sort((a, b) => b.overallAtPosition(PlayerPosition.LW) - a.overallAtPosition(PlayerPosition.LW)),
-        CAM: healthyPlayers.filter(player => player.overallAtPosition(PlayerPosition.CAM)).sort((a, b) => b.overallAtPosition(PlayerPosition.CAM) - a.overallAtPosition(PlayerPosition.CAM)),
-        RW: healthyPlayers.filter(player => player.overallAtPosition(PlayerPosition.RW)).sort((a, b) => b.overallAtPosition(PlayerPosition.RW) - a.overallAtPosition(PlayerPosition.RW)),
-        ST: healthyPlayers.filter(player => player.overallAtPosition(PlayerPosition.ST)).sort((a, b) => b.overallAtPosition(PlayerPosition.ST) - a.overallAtPosition(PlayerPosition.ST)),
-      };
-
-      // Select the top players based on the position requirements
-      for (const position in positionRequirements) {
-        const numPlayersRequired = positionRequirements[position as PlayerPosition];
-        const positionPlayers = sortedPlayers[position as PlayerPosition];
-        const eligiblePlayers = positionPlayers.filter(player => !selectedPlayers.has(player.id)); // Exclude already selected players
-
-        for (let i = 0; i < numPlayersRequired; i++){
-          lineup.addStarter(eligiblePlayers[i], position as PlayerPosition)
-        }
-    
-        // Add selected players to the set of selected players
-        eligiblePlayers.slice(0, numPlayersRequired).forEach(player => {
-          selectedPlayers.add(player.id);
-        });
-      }
-
-      const sortedRemaining = healthyPlayers.filter(player => !selectedPlayers.has(player.id)).sort((a, b) => b.overallRating - a.overallRating);
-      for (let i = 0; i < 9; i++){
-        let player = sortedRemaining[i]
-        lineup.addToBench(player);
-        selectedPlayers.add(player.id);
-      }
-
-      lineup.reserves = players.filter(player => !selectedPlayers.has(player.id));
-
-      lineup.optimizeLineup();
-      this.savedLineup = lineup;
-      return lineup;
-    }
-
     get points():number{ 
         return this.standingsInfo.wins*3 + this.standingsInfo.draws;
     }
@@ -155,5 +120,9 @@ export class Team {
         [PlayerAttribute.Speed]: userWTS[PlayerAttribute.Speed] / lgAVGWTS[PlayerAttribute.Speed]
       }
       return attributeTotals;
+    }
+
+    public getPlayerByID(id: string): Player | undefined {
+      return this.roster.find((player) => player.id === id);
     }
   }

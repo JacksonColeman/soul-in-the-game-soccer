@@ -13,11 +13,14 @@ import LeagueOverviewComponent from './components/league-info/overview/LeagueOve
 import TeamPageComponent from './components/team-info/TeamPageComponent'
 import UserBarComponent from './components/universe-handling/UserBarComponent'
 import AdvanceBarComponent from './components/universe-handling/AdvanceBarComponent'
+import ChooseManagerComponent from './components/setup/ChooseManagerComponent'
+import { Manager } from './classes/Manager'
 
 function App() {
   const [universe, setUniverse] = useState<Universe | null>(null);
   const [gameState, setGameState] = useState(GameState.Start);
   const [managerName, setManagerName] = useState('');
+  const [userManager, setUserManager] = useState<Manager | null>(null);
   const [userTeamID, setUserTeamID] = useState(0);
   const [reloads, setReloads] = useState(0);
 
@@ -42,6 +45,7 @@ function App() {
       setGameState(storedUniverse.gameState);
       if (storedUniverse.gameState = GameState.Season){
         navigate('/season')
+        handleSeasonState(storedUniverse.seasonState);
       }
 
       if (!activeSession){
@@ -66,12 +70,22 @@ function App() {
       setUserTeamID(teamID);
     };
 
+  const handleAdvanceToManagerSelect = () => {
+    navigate('/managerselect')
+  }
+
   const handleStartGame = () => {
-    const newUniverse = generateUniverse();
     const user = new User(managerName, userTeamID);
+    const newUniverse = generateUniverse(userTeamID);
     newUniverse.user = user ;
     newUniverse.gameState = GameState.Season;
-    newUniverse.getTeamByID(userTeamID).user = true;
+    const userTeam = newUniverse.getTeamByID(userTeamID)
+    userTeam.user = true;
+    userTeam.manager = userManager;
+
+    for (const league of newUniverse.leagues){
+        league.generateWeightedAttributeTotals();
+    }
     newUniverse.saveUniverse();
     setUniverse(newUniverse);
     setGameState(GameState.Season);
@@ -80,7 +94,7 @@ function App() {
   }
   
   const onConfirmSettings = (managerName:string) => {
-    navigate('/select')
+    navigate('/teamselect')
     setManagerName(managerName);
     setGameState(GameState.Selection);
   };
@@ -88,13 +102,20 @@ function App() {
   const handleUserLogout = () => {
       setGameState(GameState.Start);
       navigate('/start');
+      setSeasonState(SeasonComponentState.Overview);
       sessionStorage.removeItem("activeSession");
   };
 
   const handleContinueGame = () => {
     sessionStorage.setItem('activeSession', 'true');
-    universe ? setGameState(universe.gameState) : null;
+    if (!universe){throw new Error("No universe to continue!")}
+    setGameState(universe.gameState);
+    handleSeasonState(universe.seasonState);
     navigate('/season');
+  }
+
+  const handleSelectManager = (manager: Manager) =>{
+    setUserManager(manager);
   }
 
   const getUserLeague = () => {
@@ -108,12 +129,21 @@ function App() {
   enum SeasonComponentState {
     Overview,
     PreMatch,
+    PlayMatch,
     PostMatch,
   }
+
+  const handlePostMatchAdvance = () => {
+    handleSeasonState(SeasonComponentState.PostMatch)
+    universe?.playWeekMatches();
+    universe?.saveUniverse();
+  }
+
 
   const [seasonState, setSeasonState] = useState(SeasonComponentState.Overview);
 
   const handleSeasonState = (state: SeasonComponentState) => {
+    if (universe){universe.seasonState = state;}
     setSeasonState(state);
   }
 
@@ -127,8 +157,9 @@ function App() {
       <Routes>
         <Route path="/start" element={<GameSetupComponent universe={universe} onNewGame={onNewGame} onContinueGame={handleContinueGame} />} />
         <Route path="/settings" element={<GameSettingsComponent onConfirmSettings={onConfirmSettings} />} />
-        <Route path="/select" element={<TeamSelectionComponent onTeamSelect={handleTeamSelect} handleStartGame={handleStartGame}/>} />
-        <Route path="/season" element={universe && <SeasonComponentSimplified universe={universe} league={getUserLeague()} seasonState={seasonState}/> } />
+        <Route path="/teamselect" element={<TeamSelectionComponent onTeamSelect={handleTeamSelect} handleAdvanceToManagerSelect={handleAdvanceToManagerSelect}/>} />
+        <Route path="/managerselect" element={<ChooseManagerComponent handleSelectManager={handleSelectManager} handleStartGame={handleStartGame}/>}/>
+        <Route path="/season" element={universe && <SeasonComponentSimplified universe={universe} league={getUserLeague()} seasonState={seasonState} handlePostMatchAdvance={handlePostMatchAdvance}/>} />
         <Route path="/league" element = {universe && <LeagueOverviewComponent universe={universe} leagueID={getUserLeague().id}/>}/>
         <Route path="/teams/:teamID" element={universe && <TeamPageComponent universe={universe} league={getUserLeague()}/>} />
       </Routes>

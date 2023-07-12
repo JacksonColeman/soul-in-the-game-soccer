@@ -4,6 +4,9 @@ import { Player, PlayerGoalkeeper, PlayerOutfield } from "./Player";
 import { Matchup } from "./Matchup";
 import { Team } from "./Team";
 import { ProRel } from "../scripts/ProRel";
+import { Lineup } from "./Lineup";
+import { PlayerPosition } from "../constants/positions";
+import { Formation } from "./Formations";
 
 export enum GameState{
     Start = "start",
@@ -12,10 +15,19 @@ export enum GameState{
     Season = "season"
 }
 
+enum SeasonComponentState {
+    Overview,
+    PreMatch,
+    PlayMatch,
+    PostMatch,
+  }
+
+
 export class Universe {
     leagues: League[];
     user: User | undefined;
     gameState: GameState = GameState.Start;
+    seasonState: SeasonComponentState = SeasonComponentState.Overview;
     year: number = 2023;
     week: number = 1;
     playerCount: number = 0;
@@ -149,12 +161,16 @@ export class Universe {
         const date = this.packageDate();
         const leagues = this.packageLeagues();
         const gameState = this.gameState;
+        const seasonState = this.seasonState;
+        const playedCurrentWeek = this.playedCurrentWeek;
 
         const packagedUniverse = {
             date: date, 
             gameState: gameState,
+            seasonState: seasonState,
             user: this.user, 
-            leagues: leagues
+            leagues: leagues,
+            playedCurrentWeek: playedCurrentWeek
         };
         localStorage.setItem('universe', JSON.stringify(packagedUniverse))
     }
@@ -167,7 +183,7 @@ export function getStoredUniverse(): Universe{
     if (storedUniverse) {
         const parsedUniverse = JSON.parse(storedUniverse);
         const newUniverse = new Universe();
-        const { date, leagues, user, gameState } = parsedUniverse;
+        const { date, leagues, user, gameState, seasonState, playedCurrentWeek } = parsedUniverse;
 
         // set date
         const {year, week} = date;
@@ -187,9 +203,9 @@ export function getStoredUniverse(): Universe{
             newUniverse.user = unpackagedUser;
         }
 
-        if (gameState){
-            newUniverse.gameState = gameState;
-        }
+        newUniverse.gameState = gameState;
+        newUniverse.seasonState = seasonState;
+        newUniverse.playedCurrentWeek = playedCurrentWeek;
 
         return newUniverse;
     }
@@ -207,6 +223,10 @@ function packageLeagueData(league: League) {
         stadium: team.stadium,
         reputation: team.reputation,
         standingsInfo: team.standingsInfo,
+        manager: team.manager,
+        inMatch: team.inMatch,
+        inMatchStats: team.inMatchStats,
+        savedLineup: team.savedLineup ? packageLineup(team.savedLineup) : null,
         roster: team.roster.map((p) => (packagePlayer(p))),
     }));
 
@@ -244,8 +264,27 @@ function unpackageLeagueData(packagedLeague: {
     // rebuild schedule
     const schedule = unpackageSchedule(league, scheduleData);
     league.schedule = schedule;
+    league.generateWeightedAttributeTotals();
 
     return league;
+}
+
+function unpackageTeam(teamData: any): Team{
+    const { id, name, stadium, reputation, roster, standingsInfo, manager, inMatch, inMatchStats, savedLineup } = teamData;
+    const team = new Team(id, name, stadium, reputation, [], standingsInfo);
+    team.manager = manager;
+    team.inMatch = inMatch;
+    team.inMatchStats = inMatchStats;
+    // Rebuild roster
+    for (const playerData of roster) {
+        const player = unpackagePlayer(team, playerData);
+        team.roster.push(player);
+    };
+    // rebuild lineup
+    if (savedLineup){
+        team.savedLineup = rebuildLineup(team, savedLineup);
+    }
+    return team;
 }
 
 // package and unpackage player
@@ -257,17 +296,20 @@ function packagePlayer(player: Player){
         teamID: player.team?.id,
         age: player.age,
         position: player.position,
+        fieldPosition: player.fieldPosition,
         attributes: player.attributes,
         stats: player.stats,
+        matchStats: player.matchStats,
         careerStats: player.careerStats,
         injured: player.injured,
-        injuryTime: player.injuryTime
+        injuryTime: player.injuryTime,
+        condition: player.condition
     }
     return playerData;
 }
 
 function unpackagePlayer(team: Team, playerData: any){
-    const { id, firstName, lastName, age, position, attributes, stats, careerStats, injured, injuryTime } = playerData;
+    const { id, firstName, lastName, age, position, fieldPosition, attributes, stats, matchStats, careerStats, injured, injuryTime, condition } = playerData;
     // Determine player subclass based on position
     let player: Player;
     if (position === 'GK') {
@@ -275,24 +317,18 @@ function unpackagePlayer(team: Team, playerData: any){
     } else {
       player = new PlayerOutfield(team, firstName, lastName, age, position, attributes);
     }
+    player.fieldPosition = fieldPosition;
     player.id = id;
     player.stats = stats;
+    player.matchStats = matchStats;
     player.careerStats = careerStats;
     player.injured = injured;
     player.injuryTime = injuryTime;
+    player.condition = condition
     return player;
 }
 
-function unpackageTeam(teamData: any): Team{
-    const { id, name, stadium, reputation, roster, standingsInfo } = teamData;
-    const team = new Team(id, name, stadium, reputation, [], standingsInfo);
-    // Rebuild roster
-    for (const playerData of roster) {
-        const player = unpackagePlayer(team, playerData);
-        team.roster.push(player);
-    };
-    return team;
-}
+
 
 function unpackageSchedule(league: League, scheduleData: any){
     const schedule: Matchup[][] = scheduleData.map((weekData: any[]) =>
@@ -310,3 +346,71 @@ function unpackageSchedule(league: League, scheduleData: any){
   )
   return schedule;
 }
+
+function packageLineup(lineup: Lineup) {
+    const starters = lineup.starters;
+    const bench = lineup.bench;
+    const reserves = lineup.reserves;
+    const formation = lineup.formation;
+  
+    const packagedLineup = {
+      starters: {} as { [position in PlayerPosition]: string[] },
+      bench: bench.map((player) => player.id),
+      reserves: reserves.map((player) => player.id),
+      formation: formation,
+    };
+  
+    for (const position in lineup.starters) {
+      packagedLineup.starters[position as PlayerPosition] = starters[position as PlayerPosition].map(
+        (player) => player.id
+      );
+    }
+  
+    return packagedLineup;
+  }
+
+  function rebuildLineup(team: Team, lineupData: any) {
+    const formation = new Formation(lineupData.formation.name, lineupData.formation.positionRequirements);
+    const lineup = new Lineup([],formation);
+  
+    // Rebuild starters
+    for (const position in lineupData.starters) {
+      const playerIDs = lineupData.starters[position as PlayerPosition];
+      const players = playerIDs.map((id: string) => team.getPlayerByID(id));
+      lineup.starters[position as PlayerPosition] = players;
+    }
+  
+    // Rebuild bench
+    lineup.bench = lineupData.bench.map((id: string) => team.getPlayerByID(id));
+  
+    // Rebuild reserves
+    lineup.reserves = lineupData.reserves.map((id: string) => team.getPlayerByID(id));
+
+    lineup.allPlayers = lineup.starterArray.concat(lineup.bench).concat(lineup.reserves);
+  
+    return lineup;
+  }
+  
+
+
+// function unpackageLineup(team: Team, lineupData: any): Lineup {
+
+//     const allPlayers = lineupData.allPlayers.map((playerData: any) => unpackagePlayer(playerData, team));
+//     const starters = lineupData.starters;
+//     const bench = lineupData.bench.map((playerData: any) => unpackagePlayer(playerData, team));
+
+//     const reserves = lineupData.reserves.map((playerData: any) => unpackagePlayer(playerData));
+//     const formation = lineupData.formation;
+
+//     const lineup = new Lineup(allPlayers, formation);
+
+//     // Unpackage each position in starters
+//     for (const position in starters) {
+//       lineup.starters[position] = starters[position].map((playerData: any) => unpackagePlayer(playerData));
+//     }
+
+//     lineup.bench = bench;
+//     lineup.reserves = reserves;
+
+//     return lineup;
+//   }

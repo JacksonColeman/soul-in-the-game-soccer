@@ -1,6 +1,26 @@
 .prematch-container {
-    max-height: 600px;
-    max-width: 1000px;
+    height: 600px;
+    width: 1000px;
     overflow: scroll;
+}
+
+.prematch-container h2 {
+    margin-top: 5px;
+    margin-bottom: 0px;
+}
+
+.prematch-container h3 {
+    margin-top: 5px;
+    margin-bottom: 0px;
+}
+
+.prematch-team-container{
+    height: 550px;
     display: flex;
+    justify-content: center;
+}
+
+.prematch-team{
+    margin-left: 50px;
+    margin-right: 50px;
 }

@@ -9,7 +9,7 @@ interface TeamPageProps {
   league: League;
 }
 
-const TeamPageComponent: React.FC<TeamPageProps> = ({ universe, league }) => {
+const TeamPageComponent: React.FC<TeamPageProps> = ({ universe }) => {
   const { teamID } = useParams(); // Access the teamID parameter from the URL
 
   if (!teamID){throw new Error("invalid teamID")}
@@ -22,6 +22,8 @@ const TeamPageComponent: React.FC<TeamPageProps> = ({ universe, league }) => {
 
   return (
     <div>
+      <h3>{team.name}</h3>
+      {team.manager && <p>Manager: {team.manager.firstName} {team.manager.lastName} | {team.manager.mentality} | {team.manager.preferredFormation.name} </p>}
       <RosterComponent team={team}/>
     </div>
   );

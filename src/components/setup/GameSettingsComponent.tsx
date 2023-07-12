@@ -4,20 +4,20 @@ import React, { useState } from 'react';
 import './GameSettingsComponent.css'
 
 type GameSettingsProps = {
-  onConfirmSettings: (managerName: string) => void;
+  onConfirmSettings: (userName: string) => void;
 };
 
 const GameSettings: React.FC<GameSettingsProps> = ({ onConfirmSettings }) => {
-  const [managerName, setManagerName] = useState('');
+  const [userName, setUserName] = useState('');
 
 
-  const handleManagerNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setManagerName(event.target.value);
+  const handleUserNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setUserName(event.target.value);
   };
 
   const handleConfirmSettings = () => {
-    if (managerName) {
-      onConfirmSettings(managerName);
+    if (userName) {
+      onConfirmSettings(userName);
     }
   };
 
@@ -27,8 +27,8 @@ const GameSettings: React.FC<GameSettingsProps> = ({ onConfirmSettings }) => {
         <h2>Game Settings</h2>
         <div className="setting">
           <label>
-            Manager Name:{' '}
-            <input type="text" value={managerName} onChange={handleManagerNameChange} />
+            Your Name:{' '}
+            <input type="text" value={userName} onChange={handleUserNameChange} />
           </label>
         </div>
         <button onClick={handleConfirmSettings}>Confirm Settings</button>

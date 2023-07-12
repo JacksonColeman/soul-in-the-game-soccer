@@ -3,20 +3,20 @@
 }
 
 .turtle {
-    width: 450px;
-    height: 540px;
+    width: 375px;
+    height: 450px;
     background-color: green;
 }
 
 .turtle-row{
-    height: 90px;
-    width: 450px;
+    height: 75px;
+    width: 375px;
     display: flex;
 }
 
 .turtle-pos-lw, .turtle-pos-rw, .turtle-pos-lm, .turtle-pos-rm, .turtle-pos-lb, .turtle-pos-rb, .turtle-pos-gk{
-    height: 90px;
-    width: 90px;
+    height: 75px;
+    width: 75px;
     display: flex;
 }
 
@@ -59,11 +59,16 @@
 }
 
 .turtle-pos-st, .turtle-pos-cam, .turtle-pos-cm, .turtle-pos-cdm, .turtle-pos-cb{
-    height: 90px;
-    width: 270px;
+    height: 75px;
+    width: 225px;
     display: flex;
 }
 
 .player-icon-container{
     margin: auto;
+}
+
+.swap-button {
+    height:10px;
+    width: 20px;
 }

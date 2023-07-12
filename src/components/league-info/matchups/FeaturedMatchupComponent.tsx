@@ -20,7 +20,7 @@ const MatchupComponent: React.FC<MatchupProps> = ({ matchup }) => {
         <div className = "team-score-container">
           {played && <span className="jteam-score">{homeScore} - {awayScore}</span> || "vs"}
         </div>
-        <div className="away-team">
+        <div className="away-team-container">
             <Link to={`/teams/${awayTeam.id}`} className="team-link">
                 {awayTeam.name}
             </Link>

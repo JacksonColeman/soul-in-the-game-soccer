@@ -4,6 +4,7 @@ import { League } from "../../classes/League";
 import MatchDetailsComponent from "./MatchDetailsComponent";
 import AroundTheLeagueComponent from "../league-info/matchups/AroundTheLeagueComponent";
 import StandingsTableComponent from "../league-info/standings/StandingsTableComponent";
+import MatchweekComponent from "../league-info/matchups/MatchweekComponent";
 
 interface PostMatchComponentProps {
   universe: Universe;
@@ -18,8 +19,7 @@ const PostMatchComponent: React.FC<PostMatchComponentProps> = ({ universe, leagu
         <h3>Standings</h3>
         {universe.user && < StandingsTableComponent league={league} userTeamID={universe.user.teamID}/>}
       </div>
-      <MatchDetailsComponent matchup={universe.userMatchup}/>
-      <AroundTheLeagueComponent matchups={league.getWeekMatchups(universe.week)} userTeamID={user.teamID}/>
+      <MatchweekComponent matchups={league.getWeekMatchups(universe.week)} week={universe.week} userTeamID={user.teamID}/>
     </div>
   )
 };
