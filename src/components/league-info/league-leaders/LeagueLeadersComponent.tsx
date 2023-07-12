@@ -1,6 +1,7 @@
 import React from "react";
 import { League } from "../../../classes/League";
-import { Player, PlayerGoalkeeper } from "../../../classes/Player";
+import { Player } from "../../../classes/Player";
+import { PlayerPosition } from "../../../constants/positions";
 import { Team } from "../../../classes/Team";
 import "./LeagueLeadersComponents.css";
 
@@ -32,7 +33,7 @@ const LeagueLeadersComponent: React.FC<LeagueLeadersComponentProps> = ({
         }
         if (
           showCleanSheets &&
-          player instanceof PlayerGoalkeeper &&
+          player.position == PlayerPosition.GK &&
           player.stats.cleanSheets > 0
         ) {
           return true;
@@ -48,8 +49,8 @@ const LeagueLeadersComponent: React.FC<LeagueLeadersComponentProps> = ({
         }
         if (
           showCleanSheets &&
-          a instanceof PlayerGoalkeeper &&
-          b instanceof PlayerGoalkeeper
+          a.position == PlayerPosition.GK &&
+          b.position == PlayerPosition.GK
         ) {
           return b.stats.cleanSheets - a.stats.cleanSheets;
         }
@@ -78,7 +79,7 @@ const LeagueLeadersComponent: React.FC<LeagueLeadersComponentProps> = ({
                 <div className="stats-row-player-team-name">{player.team?.name}</div>
               </div>
               <div className="stats-row-stat">
-                {statName === "Clean Sheets" && player instanceof PlayerGoalkeeper && player.stats.cleanSheets}
+                {statName === "Clean Sheets" && player.position == PlayerPosition.GK && player.stats.cleanSheets}
                 {statName == "Goals" && player.stats.goals}
                 {statName == "Assists" && player.stats.assists}
               </div>

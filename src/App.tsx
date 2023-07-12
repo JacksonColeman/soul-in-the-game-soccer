@@ -6,7 +6,7 @@ import TeamSelectionComponent from './components/setup/TeamSelectionComponent'
 import GameSetupComponent from './components/setup/GameSetupComponent'
 import GameSettingsComponent from './components/setup/GameSettingsComponent'
 import generateUniverse from './scripts/GenerateUniverse'
-import {Universe, GameState, getStoredUniverse} from './classes/Universe'
+import {Universe, getStoredUniverse} from './classes/Universe'
 import SeasonComponentSimplified from './components/league-info/overview/SeasonComponentSimplified'
 import { Routes, Route, useNavigate } from 'react-router-dom'
 import LeagueOverviewComponent from './components/league-info/overview/LeagueOverviewComponent'
@@ -15,6 +15,7 @@ import UserBarComponent from './components/universe-handling/UserBarComponent'
 import AdvanceBarComponent from './components/universe-handling/AdvanceBarComponent'
 import ChooseManagerComponent from './components/setup/ChooseManagerComponent'
 import { Manager } from './classes/Manager'
+import { GameState, WeekState } from './constants/gameStates'
 
 function App() {
   const [universe, setUniverse] = useState<Universe | null>(null);
@@ -45,12 +46,13 @@ function App() {
       setGameState(storedUniverse.gameState);
       if (storedUniverse.gameState = GameState.Season){
         navigate('/season')
-        handleSeasonState(storedUniverse.seasonState);
+        handleWeekState(storedUniverse.weekState);
       }
 
       if (!activeSession){
         console.log("No active session")
         setGameState(GameState.Start);
+        handleWeekState(WeekState.Overview)
         navigate('/start');
       }
 
@@ -102,7 +104,7 @@ function App() {
   const handleUserLogout = () => {
       setGameState(GameState.Start);
       navigate('/start');
-      setSeasonState(SeasonComponentState.Overview);
+      setweekState(WeekState.Overview);
       sessionStorage.removeItem("activeSession");
   };
 
@@ -110,7 +112,7 @@ function App() {
     sessionStorage.setItem('activeSession', 'true');
     if (!universe){throw new Error("No universe to continue!")}
     setGameState(universe.gameState);
-    handleSeasonState(universe.seasonState);
+    handleWeekState(universe.weekState);
     navigate('/season');
   }
 
@@ -126,7 +128,7 @@ function App() {
     return league;
   }
 
-  enum SeasonComponentState {
+  enum WeekState {
     Overview,
     PreMatch,
     PlayMatch,
@@ -134,17 +136,17 @@ function App() {
   }
 
   const handlePostMatchAdvance = () => {
-    handleSeasonState(SeasonComponentState.PostMatch)
+    handleWeekState(WeekState.PostMatch)
     universe?.playWeekMatches();
     universe?.saveUniverse();
   }
 
 
-  const [seasonState, setSeasonState] = useState(SeasonComponentState.Overview);
+  const [weekState, setweekState] = useState(WeekState.Overview);
 
-  const handleSeasonState = (state: SeasonComponentState) => {
-    if (universe){universe.seasonState = state;}
-    setSeasonState(state);
+  const handleWeekState = (state: WeekState) => {
+    if (universe){universe.weekState = state;}
+    setweekState(state);
   }
 
   return (
@@ -159,11 +161,11 @@ function App() {
         <Route path="/settings" element={<GameSettingsComponent onConfirmSettings={onConfirmSettings} />} />
         <Route path="/teamselect" element={<TeamSelectionComponent onTeamSelect={handleTeamSelect} handleAdvanceToManagerSelect={handleAdvanceToManagerSelect}/>} />
         <Route path="/managerselect" element={<ChooseManagerComponent handleSelectManager={handleSelectManager} handleStartGame={handleStartGame}/>}/>
-        <Route path="/season" element={universe && <SeasonComponentSimplified universe={universe} league={getUserLeague()} seasonState={seasonState} handlePostMatchAdvance={handlePostMatchAdvance}/>} />
+        <Route path="/season" element={universe && <SeasonComponentSimplified universe={universe} league={getUserLeague()} weekState={weekState} handlePostMatchAdvance={handlePostMatchAdvance}/>} />
         <Route path="/league" element = {universe && <LeagueOverviewComponent universe={universe} leagueID={getUserLeague().id}/>}/>
         <Route path="/teams/:teamID" element={universe && <TeamPageComponent universe={universe} league={getUserLeague()}/>} />
       </Routes>
-      {gameState == GameState.Season && universe && <AdvanceBarComponent universe={universe} league={getUserLeague()} handleReloads={handleReloads} seasonState={seasonState}updateSeasonState={handleSeasonState}/>}
+      {gameState == GameState.Season && universe && <AdvanceBarComponent universe={universe} league={getUserLeague()} handleReloads={handleReloads} weekState={weekState} updateWeekState={handleWeekState}/>}
 
     </div>
   )

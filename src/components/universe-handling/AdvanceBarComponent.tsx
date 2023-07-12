@@ -2,22 +2,16 @@ import './AdvanceBarComponent.css';
 import { Universe } from '../../classes/Universe';
 import { League } from '../../classes/League';
 import { useNavigate } from "react-router-dom";
-
-enum SeasonComponentState {
-    Overview,
-    PreMatch,
-    PlayMatch,
-    PostMatch,
-  }
+import { WeekState } from '../../constants/gameStates';
   interface  AdvanceBarProps {
     universe: Universe;
     league: League;
     handleReloads: () => void;
-    seasonState: SeasonComponentState;
-    updateSeasonState: (state: SeasonComponentState) => void;
+    weekState: WeekState;
+    updateWeekState: (state: WeekState) => void;
   }
 
-const AdvanceBarComponent: React.FC<AdvanceBarProps> = ({universe,league,handleReloads, seasonState, updateSeasonState})=> {
+const AdvanceBarComponent: React.FC<AdvanceBarProps> = ({universe,league,handleReloads, weekState, updateWeekState})=> {
     const { week } = universe;
     const navigate = useNavigate();
     const { schedule } = league;
@@ -29,23 +23,23 @@ const AdvanceBarComponent: React.FC<AdvanceBarProps> = ({universe,league,handleR
             return;
         }
 
-      if (seasonState == SeasonComponentState.Overview && !universe.playedCurrentWeek){
-        updateSeasonState(SeasonComponentState.PreMatch);
+      if (weekState == WeekState.Overview && !universe.playedCurrentWeek){
+        updateWeekState(WeekState.PreMatch);
         return;
       } 
       if (week === schedule.length && universe.playedCurrentWeek) {
         handleNewYear();
         handleReloads();
-        updateSeasonState(SeasonComponentState.Overview);
-      } else if (seasonState == SeasonComponentState.PreMatch){
-        updateSeasonState(SeasonComponentState.PlayMatch)
+        updateWeekState(WeekState.Overview);
+      } else if (weekState == WeekState.PreMatch){
+        updateWeekState(WeekState.PlayMatch)
       }
       else if (!universe.playedCurrentWeek) {
         handlePlayMatches();
-        updateSeasonState(SeasonComponentState.PostMatch);
+        updateWeekState(WeekState.PostMatch);
       } else {
         handleNextWeek();
-        updateSeasonState(SeasonComponentState.Overview);
+        updateWeekState(WeekState.Overview);
       }
   
       universe.saveUniverse();
@@ -60,7 +54,7 @@ const AdvanceBarComponent: React.FC<AdvanceBarProps> = ({universe,league,handleR
         handlePlayMatches();
         handleNextWeek();
       }
-      updateSeasonState(SeasonComponentState.Overview);
+      updateWeekState(WeekState.Overview);
       universe.saveUniverse();
       handleReloads();
     };
@@ -79,10 +73,10 @@ const AdvanceBarComponent: React.FC<AdvanceBarProps> = ({universe,league,handleR
     };
 
     const handleBack  = () => {
-      updateSeasonState(SeasonComponentState.Overview);
+      updateWeekState(WeekState.Overview);
     }
 
-    if (seasonState == SeasonComponentState.PlayMatch){
+    if (weekState == WeekState.PlayMatch){
       return(
         <div className="user-bar"></div>
       )
@@ -90,7 +84,7 @@ const AdvanceBarComponent: React.FC<AdvanceBarProps> = ({universe,league,handleR
   
     return (
       <div className="advance-bar">
-        {seasonState == SeasonComponentState.PreMatch && <button onClick={handleBack}>Back</button>}
+        {weekState == WeekState.PreMatch && <button onClick={handleBack}>Back</button>}
         <button className="advance-button" onClick={handleAdvance}>Advance</button>
         <button className="full-season-button" onClick={handlePlayFullSeason}>Play Full Season</button>
       </div>

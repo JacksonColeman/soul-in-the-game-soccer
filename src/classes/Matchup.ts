@@ -1,11 +1,12 @@
 import { League } from "./League";
 import { Team } from "./Team";
 import {Goal} from "./Goal";
-import {Player, PlayerGoalkeeper, PlayerOutfield} from "./Player";
+import {Player} from "./Player";
 import poisson from '@stdlib/random-base-poisson';
 import { v4 as uuidv4 } from 'uuid';
 import { PlayerAttribute } from "../constants/attributes";
 import { Lineup } from "./Lineup";
+import { PlayerPosition } from "../constants/positions";
 
 export class Matchup {
     homeTeam: Team;
@@ -50,6 +51,8 @@ export class Matchup {
       const homeAttributeRatios = this.homeTeam.attributeRatios(this.league);
       const awayAttributeRatios = this.awayTeam.attributeRatios(this.league);
 
+      // currently, goalkeeper has no impact - fix this?
+
       const homeTeamAttackProxy = (homeAttributeRatios[PlayerAttribute.Passing] * 10 + 
                                   homeAttributeRatios[PlayerAttribute.Shooting] * 10 +
                                   homeAttributeRatios[PlayerAttribute.Speed] * 10 +
@@ -90,7 +93,7 @@ export class Matchup {
         // decrement condition
         if(i % 4 == 0){
           for (const p of allStarters){
-            if (p instanceof PlayerGoalkeeper){
+            if (p.position == PlayerPosition.GK){
               p.condition -= Math.random()*1;
               if (Math.random() < 0.00){
                 p.injured = true;
@@ -182,13 +185,13 @@ export class Matchup {
     createGoal(team:Team, lineup:Lineup, minute:number): Goal{
       //create just one goal object
       const players = lineup.starterArray.filter(
-        (player) => player instanceof PlayerOutfield
-      ) as PlayerOutfield[];
+        (player) => player.position != PlayerPosition.GK
+      ) as Player[];
   
       const assisterProbabilities = players.map((player) => player.assistProb);
       const totalAssisterProbability = assisterProbabilities.reduce((total, probability) => total + probability, 0);
 
-      let selectedAssister: PlayerOutfield | undefined;
+      let selectedAssister: Player | undefined;
         if (Math.random() < 0.2) {
           selectedAssister = undefined; // No assister
         } else {
@@ -210,7 +213,7 @@ export class Matchup {
       const totalScorerProbability = scorerProbabilities.reduce((total, probability) => total + probability, 0);
   
       let scorerRandomValue = Math.random() * totalScorerProbability;
-      let selectedScorer: PlayerOutfield | undefined;
+      let selectedScorer: Player | undefined;
   
       for (let j = 0; j < potentialScorers.length; j++) {
         const player = potentialScorers[j];

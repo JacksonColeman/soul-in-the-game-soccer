@@ -1,7 +1,6 @@
 import { Team } from '../../classes/Team';
 import './PrematchComponent.css'
 import LineupTurtleComponent from '../team-info/LineupTurtleComponent';
-import LineupTableComponent from '../team-info/LineupTableComponent';
 import { Matchup } from '../../classes/Matchup';
 
 interface PreMatchComponentProps {

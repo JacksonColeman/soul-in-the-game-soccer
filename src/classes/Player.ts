@@ -27,12 +27,15 @@ export class Player {
   injuryTime = 0;
 
   // stats
-  stats: { matchesPlayed: number, goals: number, assists: number} = {
+  stats: { matchesPlayed: number, goals: number, assists: number, goalsConceded: number, cleanSheets: number} = {
     matchesPlayed: 0,
     goals: 0,
-    assists: 0
+    assists: 0,
+    goalsConceded: 0,
+    cleanSheets: 0
   }
-  careerStats = {};
+
+  careerStats: { [year: number]: { teamName: string, matchesPlayed: number, goals: number, assists: number, goalsConceded: number, cleanSheets: number } } = {};
 
   matchStats: {minutes: number, goals: number, assists: number} = {
     minutes: 0,
@@ -55,9 +58,79 @@ export class Player {
       this.injuryTime = 0;
       this.injured = false;
     }
-    year;
     
-    
+    // add stats to careerStats
+    const teamName = this.team?.name || '-';
+    this.careerStats[year] = { teamName, ...this.stats };
+    // reset stats
+    this.stats = {
+      matchesPlayed: 0,
+      goals: 0,
+      assists: 0,
+      goalsConceded: 0,
+      cleanSheets: 0
+    }
+
+    // progress/regress attributes
+    this.attributeProgression(); 
+  }
+
+  attributeProgression(): void {
+    const developmentRate = {
+      [PlayerAttribute.Defending]: 1,
+      [PlayerAttribute.Mental]: 0.5,
+      [PlayerAttribute.Passing]: 1,
+      [PlayerAttribute.Physical]: 1,
+      [PlayerAttribute.Shooting]: 1,
+      [PlayerAttribute.Speed]: 1,
+      // gk
+      [PlayerAttribute.GKAgility]: 1,
+      [PlayerAttribute.GKHandling]: 1,
+      [PlayerAttribute.GKKicking]: 1,
+      [PlayerAttribute.GKPositioning]: 1,
+      [PlayerAttribute.GKReach]: 1,
+      [PlayerAttribute.GKReflexes]: 1,
+    };
+
+    const attributeDeclineRates = {
+      [PlayerAttribute.Defending]: 1,
+      [PlayerAttribute.Mental]: 0,
+      [PlayerAttribute.Passing]: 1,
+      [PlayerAttribute.Physical]: 2,
+      [PlayerAttribute.Shooting]: 1,
+      [PlayerAttribute.Speed]: 2,
+      [PlayerAttribute.GKAgility]: 0.5,
+      [PlayerAttribute.GKHandling]: 0.5,
+      [PlayerAttribute.GKKicking]: 0.5,
+      [PlayerAttribute.GKPositioning]: 0.5,
+      [PlayerAttribute.GKReach]: 0.5,
+      [PlayerAttribute.GKReflexes]: 0.5,
+    }
+  
+    if (this.age < 26) {
+      const attributeKeys = Object.keys(this.attributes) as PlayerAttribute[];
+      for (const attribute of attributeKeys) {
+        const expectedDevelopment = 1 + (26 - this.age) / 4;
+        const developmentMultiplier = Math.random() * 1.5 + 0.5;
+        const development = Math.floor(expectedDevelopment * developmentMultiplier * developmentRate[attribute]);
+        this.attributes[attribute] = Math.min(99, this.attributes[attribute] + development);
+      }
+    }
+    if (this.age > 29){
+      const attributeKeys = Object.keys(this.attributes) as PlayerAttribute[];
+      for (const attribute of attributeKeys) {
+        if (attribute == PlayerAttribute.Mental){
+          const mentalBoost = Math.floor(Math.random() * 2) + 1;
+          this.attributes[attribute] = Math.min(99, this.attributes[attribute] + mentalBoost);
+          continue;
+        }
+        const expectedDecline = 1 + (this.age - 29)/2;
+        const declineMultiplier = Math.random() * 1.5 + 0.5;
+        const attributeDeclineRate = attributeDeclineRates[attribute];
+        const decline =  Math.floor(expectedDecline * declineMultiplier * attributeDeclineRate);
+        this.attributes[attribute] = Math.max(10, this.attributes[attribute] - decline);
+      }
+    }
   }
 
   advanceWeek(){
@@ -180,126 +253,4 @@ export class Player {
 
   } 
 
-}
-
-export class PlayerGoalkeeper extends Player {
-  constructor(
-    team: Team | undefined,
-    firstName: string,
-    lastName: string,
-    age: number,
-    attributes: Record<PlayerAttribute, number>,
-  ) {
-    super(team, firstName, lastName, age, PlayerPosition.GK, attributes);
-  }
-
-  stats: { matchesPlayed: number, goals: number, assists: number, goalsConceded: number, cleanSheets: number} = {
-    matchesPlayed: 0,
-    goals: 0,
-    assists: 0,
-    goalsConceded: 0,
-    cleanSheets: 0
-  }
-
-  careerStats: { [year: number]: { teamName: string, matchesPlayed: number, goals: number, assists: number, goalsConceded: number, cleanSheets: number } } = {};
-
-  progress(year:number): void {
-    super.progress(year); // Increment age from the superclass
-    const teamName = this.team?.name || '-';
-    this.careerStats[year] = { teamName, ...this.stats };
-    // reset stats
-    this.stats = {
-      matchesPlayed: 0,
-      goals: 0,
-      assists: 0,
-      goalsConceded: 0,
-      cleanSheets: 0
-    }
-  }
-  
-}
-
-export class PlayerOutfield extends Player {
-  constructor(
-    team: Team | undefined,
-    firstName: string,
-    lastName: string,
-    age: number,
-    position: PlayerPosition,
-    attributes: Record<PlayerAttribute, number>,
-    
-  ) {
-    super(team, firstName, lastName, age, position, attributes);
-  }
-
-  stats: { matchesPlayed: number, goals: number, assists: number} = {
-    matchesPlayed: 0,
-    goals: 0,
-    assists: 0,
-  }
-
-  careerStats: { [year: number]: { teamName: string, age: number, stats: any } } = {};
-
-  progress(year:number): void {
-    const teamName = this.team?.name || '-';
-    const age = this.age;
-    this.careerStats[year] = { teamName, age, stats: this.stats };
-    super.progress(year); // Increment age from the superclass
-    // reset stats
-    this.stats = {
-      matchesPlayed: 0,
-      goals: 0,
-      assists: 0
-    }
-  }
-}
-
-
-function progressAttribute(attribute: PlayerAttribute, attributeValue: number, age: number){
-  // ages are that of upcoming year
-  if (age < 26){
-    // create an attribute development system
-    const developmentRate = {
-      [PlayerAttribute.Defending]: 1,
-      [PlayerAttribute.Mental]: 0.5,
-      [PlayerAttribute.Passing]: 1,
-      [PlayerAttribute.Physical]: 1,
-      [PlayerAttribute.Shooting]: 1,
-      [PlayerAttribute.Speed]: 1,
-      // gk
-      [PlayerAttribute.GKAgility]: 1,
-      [PlayerAttribute.GKHandling]: 1,
-      [PlayerAttribute.GKKicking]: 1,
-      [PlayerAttribute.GKPositioning]: 1,
-      [PlayerAttribute.GKReach]: 1,
-      [PlayerAttribute.GKReflexes]: 1,
-    };
-    const expectedDevelopment = 1 + (26 - age)/4;
-    const developmentMultiplier = Math.random() * 1.5 + 0.5;
-    const development = Math.floor(expectedDevelopment * developmentMultiplier * developmentRate[attribute]);
-    return Math.min(99, attributeValue + development);
-  }
-  if (age > 29){
-    const attributeDeclineRates = {
-      [PlayerAttribute.Defending]: 1,
-      [PlayerAttribute.Mental]: 0,
-      [PlayerAttribute.Passing]: 1,
-      [PlayerAttribute.Physical]: 2,
-      [PlayerAttribute.Shooting]: 1,
-      [PlayerAttribute.Speed]: 2,
-      [PlayerAttribute.GKAgility]: 0.5,
-      [PlayerAttribute.GKHandling]: 0.5,
-      [PlayerAttribute.GKKicking]: 0.5,
-      [PlayerAttribute.GKPositioning]: 0.5,
-      [PlayerAttribute.GKReach]: 0.5,
-      [PlayerAttribute.GKReflexes]: 0.5,
-    }
-
-    const expectedDecline = 1 + (age - 29)/2;
-    const declineMultiplier = Math.random() * 1.5 + 0.5;
-    const attributeDeclineRate = attributeDeclineRates[attribute];
-    const decline =  Math.floor(expectedDecline * declineMultiplier * attributeDeclineRate);
-    return Math.max(10, attributeValue - decline);
-  }
-  return attributeValue;
 }

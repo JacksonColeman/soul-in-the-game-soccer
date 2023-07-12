@@ -5,25 +5,19 @@ import PreMatchComponent from "../../matchday/PrematchComponent";
 import PostMatchComponent from "../../matchday/PostMatchComponent";
 import "./SeasonComponent.css";
 import UserPlayMatchComponent from "../../matchday/UserPlayMatchComponent";
+import { WeekState } from "../../../constants/gameStates";
 
 interface SeasonProps {
   universe: Universe,
   league: League,
-  seasonState: SeasonComponentState,
+  weekState: WeekState
   handlePostMatchAdvance: ()=>void;
-}
-
-enum SeasonComponentState {
-  Overview,
-  PreMatch,
-  PlayMatch,
-  PostMatch,
 }
 
 const SeasonComponentSimplified: React.FC<SeasonProps> = ({
   universe,
   league,
-  seasonState,
+  weekState,
   handlePostMatchAdvance
 }) => {
   const { user } = universe;
@@ -34,18 +28,18 @@ const SeasonComponentSimplified: React.FC<SeasonProps> = ({
   }
 
   let componentToRender;
-  switch (seasonState) {
-    case SeasonComponentState.Overview:
+  switch (weekState) {
+    case WeekState.Overview:
       componentToRender = <LeagueOverviewComponent universe={universe} leagueID={league.id} />;
       
       break;
-    case SeasonComponentState.PreMatch:
+    case WeekState.PreMatch:
       componentToRender = <PreMatchComponent matchup={universe.userMatchup} team={league.getTeam(user.teamID)} />;
       break;
-    case SeasonComponentState.PlayMatch:
+    case WeekState.PlayMatch:
       componentToRender = <UserPlayMatchComponent universe={universe} matchup={universe.userMatchup} handleAdvance={handlePostMatchAdvance}/>
       break;
-    case SeasonComponentState.PostMatch:
+    case WeekState.PostMatch:
       componentToRender = <PostMatchComponent universe={universe} league={league} user={user} />;
       break;
     default:

@@ -60,7 +60,13 @@ export class League{
       [PlayerAttribute.Passing]: 0,
       [PlayerAttribute.Physical]: 0,
       [PlayerAttribute.Shooting]: 0,
-      [PlayerAttribute.Speed]: 0
+      [PlayerAttribute.Speed]: 0,
+      [PlayerAttribute.GKAgility]: 0,
+      [PlayerAttribute.GKHandling]: 0,
+      [PlayerAttribute.GKKicking]: 0,
+      [PlayerAttribute.GKReach]: 0,
+      [PlayerAttribute.GKReflexes]: 0,
+      [PlayerAttribute.GKPositioning]: 0
     };
 
     generateWeightedAttributeTotals(){
@@ -70,7 +76,13 @@ export class League{
         [PlayerAttribute.Passing]: 0,
         [PlayerAttribute.Physical]: 0,
         [PlayerAttribute.Shooting]: 0,
-        [PlayerAttribute.Speed]: 0
+        [PlayerAttribute.Speed]: 0,
+        [PlayerAttribute.GKAgility]: 0,
+        [PlayerAttribute.GKHandling]: 0,
+        [PlayerAttribute.GKKicking]: 0,
+        [PlayerAttribute.GKReach]: 0,
+        [PlayerAttribute.GKReflexes]: 0,
+        [PlayerAttribute.GKPositioning]: 0
       };
 
       for (const team of this.teams){

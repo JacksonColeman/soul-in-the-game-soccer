@@ -1,6 +1,7 @@
 import {League} from '../classes/League';
-import {Universe, GameState } from '../classes/Universe'
+import {Universe} from '../classes/Universe'
 import { generateTeams } from './GenerateTeams';
+import { GameState } from '../constants/gameStates';
 
 
 export default function generateUniverse(userTeamID: number){

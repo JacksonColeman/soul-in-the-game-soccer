@@ -1,5 +1,5 @@
 import { Team } from "../classes/Team"
-import { Player, PlayerGoalkeeper, PlayerOutfield } from "../classes/Player";
+import { Player} from "../classes/Player";
 import { PlayerPosition } from "../constants/positions";
 import { PlayerAttribute } from "../constants/attributes";
 import {firstName, lastName} from './GenerateNames';
@@ -15,11 +15,7 @@ export function generatePlayer(team: Team | undefined, position: PlayerPosition,
     let player: Player | undefined = undefined;
 
     const attributes = generatePlayerAttributes(ability, position);
-    if (position == PlayerPosition.GK){
-        player = new PlayerGoalkeeper(team, firstName('male'), lastName(), age, attributes);
-        return player;
-    }
-    player = new PlayerOutfield(team, firstName('male'), lastName(), age, position, attributes);
+    player = new Player(team, firstName('male'), lastName(), age, position, attributes);
     return player;
 }
 

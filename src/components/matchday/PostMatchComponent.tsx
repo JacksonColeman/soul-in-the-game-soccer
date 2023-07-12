@@ -1,8 +1,6 @@
 import User from "../../classes/User";
 import { Universe } from "../../classes/Universe";
 import { League } from "../../classes/League";
-import MatchDetailsComponent from "./MatchDetailsComponent";
-import AroundTheLeagueComponent from "../league-info/matchups/AroundTheLeagueComponent";
 import StandingsTableComponent from "../league-info/standings/StandingsTableComponent";
 import MatchweekComponent from "../league-info/matchups/MatchweekComponent";
 

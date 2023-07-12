@@ -2,7 +2,6 @@ import {Player} from './Player'
 import { generatePlayer} from '../scripts/GeneratePlayers';
 import { Lineup} from './Lineup';
 import {Formation} from './Formations';
-import { formationList } from '../constants/formationList';
 import { League } from './League';
 import { PlayerAttribute } from '../constants/attributes';
 import { Manager } from './Manager';
@@ -112,6 +111,14 @@ export class Team {
       const lgAVGWTS = league.weightedAttributeTotals;
       const userWTS = this.lineup.weightedAttributeTotals;
       const attributeTotals = {
+        //gk
+        [PlayerAttribute.GKAgility]: userWTS[PlayerAttribute.GKAgility] / lgAVGWTS[PlayerAttribute.GKAgility],
+        [PlayerAttribute.GKHandling]: userWTS[PlayerAttribute.GKHandling] / lgAVGWTS[PlayerAttribute.GKHandling],
+        [PlayerAttribute.GKKicking]: userWTS[PlayerAttribute.GKKicking] / lgAVGWTS[PlayerAttribute.GKKicking],
+        [PlayerAttribute.GKReach]: userWTS[PlayerAttribute.GKReach] / lgAVGWTS[PlayerAttribute.GKReach],
+        [PlayerAttribute.GKReflexes]: userWTS[PlayerAttribute.GKReflexes] / lgAVGWTS[PlayerAttribute.GKReflexes],
+        [PlayerAttribute.GKPositioning]: userWTS[PlayerAttribute.GKPositioning] / lgAVGWTS[PlayerAttribute.GKPositioning],
+        // of
         [PlayerAttribute.Defending]: userWTS[PlayerAttribute.Defending] / lgAVGWTS[PlayerAttribute.Defending],
         [PlayerAttribute.Mental]: userWTS[PlayerAttribute.Mental] / lgAVGWTS[PlayerAttribute.Mental],
         [PlayerAttribute.Passing]: userWTS[PlayerAttribute.Passing] / lgAVGWTS[PlayerAttribute.Passing],

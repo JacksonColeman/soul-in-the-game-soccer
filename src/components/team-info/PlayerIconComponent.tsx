@@ -10,11 +10,14 @@ interface PlayerIconProps {
 
 const PlayerIconComponent: React.FC<PlayerIconProps> = ({  player, fieldPosition, }) => {
 
+  let goalIcon = "⚽";
+  let assistIcon = "🅰️"
+
   return (
     <div className={`player-icon`}>
       <strong className="player-name">{player.lastName}</strong>
       <div className="player-pos">{player.position} | {player.overallAtPosition(fieldPosition)}</div>
-      <div>{"⚽".repeat(player.matchStats.goals) + "🅰️".repeat(player.matchStats.assists)}</div>
+      <div>{goalIcon.repeat(player.matchStats.goals) + assistIcon.repeat(player.matchStats.assists)}</div>
     </div>
   );
 };

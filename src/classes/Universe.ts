@@ -1,33 +1,19 @@
 import { League } from "./League";
 import User from "./User";
-import { Player, PlayerGoalkeeper, PlayerOutfield } from "./Player";
+import { Player } from "./Player";
 import { Matchup } from "./Matchup";
 import { Team } from "./Team";
 import { ProRel } from "../scripts/ProRel";
 import { Lineup } from "./Lineup";
 import { PlayerPosition } from "../constants/positions";
 import { Formation } from "./Formations";
-
-export enum GameState{
-    Start = "start",
-    Settings = "settings",
-    Selection = "selection",
-    Season = "season"
-}
-
-enum SeasonComponentState {
-    Overview,
-    PreMatch,
-    PlayMatch,
-    PostMatch,
-  }
-
+import { GameState, WeekState } from "../constants/gameStates";
 
 export class Universe {
     leagues: League[];
     user: User | undefined;
     gameState: GameState = GameState.Start;
-    seasonState: SeasonComponentState = SeasonComponentState.Overview;
+    weekState: WeekState = WeekState.Overview;
     year: number = 2023;
     week: number = 1;
     playerCount: number = 0;
@@ -161,13 +147,13 @@ export class Universe {
         const date = this.packageDate();
         const leagues = this.packageLeagues();
         const gameState = this.gameState;
-        const seasonState = this.seasonState;
+        const weekState = this.weekState;
         const playedCurrentWeek = this.playedCurrentWeek;
 
         const packagedUniverse = {
             date: date, 
             gameState: gameState,
-            seasonState: seasonState,
+            weekState: weekState,
             user: this.user, 
             leagues: leagues,
             playedCurrentWeek: playedCurrentWeek
@@ -183,7 +169,7 @@ export function getStoredUniverse(): Universe{
     if (storedUniverse) {
         const parsedUniverse = JSON.parse(storedUniverse);
         const newUniverse = new Universe();
-        const { date, leagues, user, gameState, seasonState, playedCurrentWeek } = parsedUniverse;
+        const { date, leagues, user, gameState, weekState, playedCurrentWeek } = parsedUniverse;
 
         // set date
         const {year, week} = date;
@@ -204,7 +190,7 @@ export function getStoredUniverse(): Universe{
         }
 
         newUniverse.gameState = gameState;
-        newUniverse.seasonState = seasonState;
+        newUniverse.weekState = weekState;
         newUniverse.playedCurrentWeek = playedCurrentWeek;
 
         return newUniverse;
@@ -312,11 +298,7 @@ function unpackagePlayer(team: Team, playerData: any){
     const { id, firstName, lastName, age, position, fieldPosition, attributes, stats, matchStats, careerStats, injured, injuryTime, condition } = playerData;
     // Determine player subclass based on position
     let player: Player;
-    if (position === 'GK') {
-      player = new PlayerGoalkeeper(team, firstName, lastName, age, attributes);
-    } else {
-      player = new PlayerOutfield(team, firstName, lastName, age, position, attributes);
-    }
+    player = new Player(team, firstName, lastName, age, position, attributes)
     player.fieldPosition = fieldPosition;
     player.id = id;
     player.stats = stats;

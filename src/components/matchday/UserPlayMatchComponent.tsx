@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Matchup, updateReputation } from "../../classes/Matchup";
 import { PlayerAttribute } from "../../constants/attributes";
-import { PlayerGoalkeeper } from "../../classes/Player";
+import { PlayerPosition } from "../../constants/positions";
 import poisson from "@stdlib/random-base-poisson";
 import { Goal } from "../../classes/Goal";
 import LineupTurtleComponent from "../team-info/LineupTurtleComponent";
@@ -56,7 +56,7 @@ const UserPlayMatchComponent: React.FC<UserPlayMatchComponentProps> = ({ univers
       // decrement condition
       if(minute % 4 == 0){
         for (const p of allStarters){
-          if (p instanceof PlayerGoalkeeper){
+          if (p.position == PlayerPosition.GK){
             p.condition -= Math.random()*1;
             if (Math.random() < 0.00){
               p.injured = true;
@@ -80,6 +80,7 @@ const UserPlayMatchComponent: React.FC<UserPlayMatchComponentProps> = ({ univers
         setHomeGoals([...homeGoals, goal]);
         matchup.goals.push(goal);
         universe.saveUniverse();
+        handlePlayPause();
       }
       if (awayGoal > 0){
         setAwayScore(awayScore+1);
@@ -89,6 +90,7 @@ const UserPlayMatchComponent: React.FC<UserPlayMatchComponentProps> = ({ univers
         setAwayGoals([...awayGoals, goal]);
         matchup.goals.push(goal);
         universe.saveUniverse();
+        handlePlayPause();
       }
     homeTeam.inMatchStats.matchMinutes++;
     awayTeam.inMatchStats.matchMinutes++;
@@ -229,6 +231,10 @@ const UserPlayMatchComponent: React.FC<UserPlayMatchComponentProps> = ({ univers
       const storedMinute = homeTeam.inMatchStats.matchMinutes;
   
       // Update the state with the retrieved values
+      if (storedMinute > 0){
+        setButtonText("Resume Match");
+      }
+
       setHomeScore(storedHomeScore);
       setAwayScore(storedAwayScore);
       setMinute(storedMinute);

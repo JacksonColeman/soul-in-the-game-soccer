@@ -1,4 +1,4 @@
-import {Player, PlayerGoalkeeper, PlayerOutfield} from './Player'
+import {Player} from './Player'
 import { PlayerAttribute } from '../constants/attributes';
 import { PlayerPosition } from '../constants/positions';
 import { Formation } from './Formations';
@@ -61,8 +61,8 @@ export class Lineup {
       this.clearLineup();
 
       //Make sure best goalkeeper is starting, 2nd best is on the bench)
-      const goalkeepers = this.allPlayers.filter(player => player instanceof PlayerGoalkeeper && !player.injured).sort((a, b) => b.overallAtPosition(PlayerPosition.GK) - a.overallAtPosition(PlayerPosition.GK));
-      const outfield = this.allPlayers.filter(player => player instanceof PlayerOutfield && !player.injured).sort((a, b) => b.overallRating - a.overallRating);
+      const goalkeepers = this.allPlayers.filter(player => player.position == PlayerPosition.GK && !player.injured).sort((a, b) => b.overallAtPosition(PlayerPosition.GK) - a.overallAtPosition(PlayerPosition.GK));
+      const outfield = this.allPlayers.filter(player => player.position != PlayerPosition.GK && !player.injured).sort((a, b) => b.overallRating - a.overallRating);
       if (goalkeepers.length < 2){
         throw new Error("Not enough goalkeepers!")
       }
@@ -82,7 +82,7 @@ export class Lineup {
       }
 
       // fill bench
-      const allOutfield = this.allPlayers.filter(player => player instanceof PlayerOutfield && !this.starterArray.includes(player)).sort((a, b) => b.overallRating - a.overallRating);
+      const allOutfield = this.allPlayers.filter(player => player.position != PlayerPosition.GK && !this.starterArray.includes(player)).sort((a, b) => b.overallRating - a.overallRating);
       while (this.bench.length < this.maxBenchSize){
         const p = allOutfield.shift();
         if (!p){
@@ -139,9 +139,9 @@ export class Lineup {
       }
     }
 
-    get startingGoalkeeper(): PlayerGoalkeeper{
+    get startingGoalkeeper(): Player{
       const gk = this.starters[PlayerPosition.GK][0];
-      if (gk instanceof PlayerGoalkeeper){
+      if (gk.position == PlayerPosition.GK){
         return gk;
       }
       console.log(this.starters[PlayerPosition.GK])
@@ -335,7 +335,7 @@ export class Lineup {
       // lineup optimization
       public optimizeLineup(): void {
         // goalkeepers
-        const goalkeepers = this.allPlayers.filter(player => player instanceof PlayerGoalkeeper && !player.injured).sort((a, b) => b.overallAtPosition(PlayerPosition.GK) - a.overallAtPosition(PlayerPosition.GK));
+        const goalkeepers = this.allPlayers.filter(player => player.position == PlayerPosition.GK && !player.injured).sort((a, b) => b.overallAtPosition(PlayerPosition.GK) - a.overallAtPosition(PlayerPosition.GK));
         if (goalkeepers.length < 2){
           console.log(this.allPlayers[0].team?.name);
           throw new Error("Not enough goalkeepers!")
@@ -352,7 +352,7 @@ export class Lineup {
 
         // outfield players
         let swapped = false;
-        const starters = this.starterArray.filter(p => p instanceof PlayerOutfield);
+        const starters = this.starterArray.filter(p => p.position != PlayerPosition.GK);
       
         // Iterate over each pair of starters
         for (let i = 0; i < starters.length; i++) {
@@ -376,7 +376,7 @@ export class Lineup {
           // start at index 1 to ignore keeper
           for (let b = 1; b < this.bench.length; b++){
             const player2 = this.bench[b];
-            if (player2 instanceof PlayerGoalkeeper){
+            if (player2.position == PlayerPosition.GK){
               continue;
             }
             // Evaluate if swapping players increases overall value
@@ -389,7 +389,7 @@ export class Lineup {
           // check swaps with reserves
           for (let r = 0; r < this.reserves.length; r++){
             const player2 = this.reserves[r];
-            if (player2 instanceof PlayerGoalkeeper){
+            if (player2.position == PlayerPosition.GK){
               continue;
             }
             // Evaluate if swapping players increases overall value
@@ -408,7 +408,7 @@ export class Lineup {
 
         // optimize bench
         // get all non starting outfield players
-        const nonStarters = this.allPlayers.filter(p => !this.starterArray.includes(p) && p instanceof PlayerOutfield).sort((a, b) => b.effectiveOverallRating - a.effectiveOverallRating);
+        const nonStarters = this.allPlayers.filter(p => !this.starterArray.includes(p) && p.position != PlayerPosition.GK).sort((a, b) => b.effectiveOverallRating - a.effectiveOverallRating);
         for (let b = 1; b < this.maxBenchSize; b++){
           const p = nonStarters.shift();
           if (!p){throw new Error("not enough players!")}
@@ -426,11 +426,26 @@ export class Lineup {
           [PlayerAttribute.Passing]: 0,
           [PlayerAttribute.Physical]: 0,
           [PlayerAttribute.Shooting]: 0,
-          [PlayerAttribute.Speed]: 0
+          [PlayerAttribute.Speed]: 0,
+          [PlayerAttribute.GKAgility]: 0,
+          [PlayerAttribute.GKHandling]: 0,
+          [PlayerAttribute.GKKicking]: 0,
+          [PlayerAttribute.GKReach]: 0,
+          [PlayerAttribute.GKReflexes]: 0,
+          [PlayerAttribute.GKPositioning]: 0
         }
         for (const position in this.starters) {
           const players = this.starters[position as PlayerPosition];
           for (const p of players){
+            if (position == PlayerPosition.GK) {
+              attributeTotals[PlayerAttribute.GKAgility] += p.attributes[PlayerAttribute.GKAgility] * 100 * (p.condition/100);
+              attributeTotals[PlayerAttribute.GKHandling] += p.attributes[PlayerAttribute.GKHandling] * 100 * (p.condition/100);
+              attributeTotals[PlayerAttribute.GKKicking] += p.attributes[PlayerAttribute.GKKicking] * 100 * (p.condition/100);
+              attributeTotals[PlayerAttribute.GKReach] += p.attributes[PlayerAttribute.GKReach]  * 100 * (p.condition/100);
+              attributeTotals[PlayerAttribute.GKReflexes] += p.attributes[PlayerAttribute.GKReflexes]  * 100 * (p.condition/100);
+              attributeTotals[PlayerAttribute.GKPositioning] += p.attributes[PlayerAttribute.GKPositioning] * 100 * (p.condition/100);
+            }
+            
             if (position == PlayerPosition.LB || position == PlayerPosition.RB){
               attributeTotals[PlayerAttribute.Defending] += p.attributes[PlayerAttribute.Defending] * 76 * (p.condition/100);
               attributeTotals[PlayerAttribute.Mental] += p.attributes[PlayerAttribute.Mental] * 98 * (p.positionFamiliarity[position]/100)* (p.condition/100);
