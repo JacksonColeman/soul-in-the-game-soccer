@@ -1,7 +1,9 @@
 import { Team } from "./Team";
+import { Player } from "./Player";
 import { Matchup } from "./Matchup";
 import leaguesData from "../data/teams.json"
 import { PlayerAttribute } from "../constants/attributes";
+import { PlayerPosition } from "../constants/positions";
 
 export class League{
 
@@ -9,6 +11,7 @@ export class League{
     public id!: number;
     public teams: Team[] = [];
     public relegatesToID!: number | undefined;
+    public transferSpendMultiplier!: number;
 
     constructor(public leagueID: number) {
       const leagueData = leaguesData.find(league => league.id === leagueID);
@@ -19,6 +22,10 @@ export class League{
           if (leagueData.relegatesTo){ 
             this.relegatesToID = leagueData.relegatesTo;
           } else {this.relegatesToID = undefined;}
+          // transfer spend
+          if (leagueData.transferSpendMultiplier){ 
+            this.transferSpendMultiplier = leagueData.transferSpendMultiplier;
+          } else {this.transferSpendMultiplier = 100}
       }
   }
 
@@ -158,5 +165,103 @@ export class League{
         team.newYear(year);
       }
       this.schedule = this.generateSchedule();
+    }
+
+    // league awards
+    get allPlayers(): Player[] {
+      const allPlayers: Player[] = [];
+      for (const team of this.teams) {
+        allPlayers.push(...team.roster);
+      }
+      return allPlayers;
+    }
+
+    topScorer(): Player | undefined {
+      let topScorer: Player | undefined;
+      let maxGoals = 0;
+      let minMatchesPlayed = Infinity;
+  
+      for (const player of this.allPlayers) {
+        if (player.stats.goals > maxGoals) {
+          topScorer = player;
+          maxGoals = player.stats.goals;
+          minMatchesPlayed = player.stats.matchesPlayed;
+        } else if (player.stats.goals === maxGoals && player.stats.matchesPlayed < minMatchesPlayed) {
+          topScorer = player;
+          minMatchesPlayed = player.stats.matchesPlayed;
+        }
+      }
+  
+      return topScorer;
+    }
+
+    topAssister(): Player | undefined {
+      let topAssister: Player | undefined;
+      let maxAssists = 0;
+      let minMatchesPlayed = Infinity;
+  
+      for (const player of this.allPlayers) {
+        if (player.stats.assists > maxAssists) {
+          topAssister = player;
+          maxAssists = player.stats.assists;
+          minMatchesPlayed = player.stats.matchesPlayed;
+        } else if (player.stats.assists === maxAssists && player.stats.matchesPlayed < minMatchesPlayed) {
+          topAssister = player;
+          minMatchesPlayed = player.stats.matchesPlayed;
+        }
+      }
+  
+      return topAssister;
+    }
+
+    zamora(): Player | undefined {
+      let zamora: Player | undefined;
+      let minGoalsConcededRatio = Infinity;
+  
+      for (const player of this.allPlayers) {
+        if (player.position === PlayerPosition.GK && player.stats.matchesPlayed >= 28) {
+          const goalsConcededRatio = player.stats.goalsConceded / player.stats.matchesPlayed;
+          if (goalsConcededRatio < minGoalsConcededRatio) {
+            zamora = player;
+            minGoalsConcededRatio = goalsConcededRatio;
+          }
+        }
+      }
+  
+      return zamora;
+    }
+
+    // get league winner
+    leagueWinner(): Team | undefined {
+      const sortedTeams = [...this.teams].sort((teamA, teamB) => {
+        if (teamA.points !== teamB.points) {
+          return teamB.points - teamA.points; // Sort by points (descending order)
+        }
+    
+        if (teamA.goalDiff !== teamB.goalDiff) {
+          return teamB.goalDiff - teamA.goalDiff; // Sort by goal difference (descending order)
+        }
+    
+        return teamB.standingsInfo.goalsFor - teamA.standingsInfo.goalsFor; // Sort by goals scored (descending order)
+      });
+    
+      return sortedTeams[0]; // First team in the sorted array is the winner
+    }
+
+    leagueMVP(): Player | undefined {
+      let topMVP: Player | undefined;
+      let highestMVPValue = 0;
+    
+      for (const team of this.teams) {
+        for (const player of team.roster) {
+          const MVPValue = player.stats.goals * 1.5 + player.stats.assists + (player.team?.standingsInfo.wins || 0);
+          if (MVPValue > highestMVPValue) {
+            highestMVPValue = MVPValue;
+            topMVP = player;
+          }
+        }
+      }
+    
+      return topMVP;
     }
 }

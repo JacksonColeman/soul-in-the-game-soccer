@@ -12,7 +12,7 @@ export default function generateUniverse(userTeamID: number){
     // generate all leagues
     for (let i = 1; i <=2; i++){
         const league = new League(i);
-        league.teams = generateTeams(i, userTeamID);
+        league.teams = generateTeams(league, userTeamID);
         league.schedule = league.generateSchedule();
         universe.addLeague(league);
     }

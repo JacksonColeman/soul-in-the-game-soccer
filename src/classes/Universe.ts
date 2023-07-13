@@ -40,17 +40,16 @@ export class Universe {
         }
     }
 
-    get allPlayers(){
-        const allPlayersArray = []
-        for (const lg of this.leagues){
-            for (const tm of lg.teams){
-                for (const pl of tm.roster){
-                    allPlayersArray.push(pl);
-                }
-            }
+    get allPlayers(): Player[] {
+        let allPlayersArray: Player[] = [];
+      
+        for (const lg of this.leagues) {
+          allPlayersArray = allPlayersArray.concat(lg.allPlayers);
         }
+      
         return allPlayersArray;
-    }
+      }
+    
     playWeekMatches(){
         for (const league of this.leagues){
             if (this.week <= league.schedule.length){
@@ -243,7 +242,7 @@ function unpackageLeagueData(packagedLeague: {
     
     // rebuild teams
     for (const team of teamsData){
-        const newTeam = unpackageTeam(team);
+        const newTeam = unpackageTeam(league,team);
         league.addTeam(newTeam);
     }
 
@@ -255,9 +254,9 @@ function unpackageLeagueData(packagedLeague: {
     return league;
 }
 
-function unpackageTeam(teamData: any): Team{
+function unpackageTeam(league: League, teamData: any): Team{
     const { id, name, stadium, reputation, roster, standingsInfo, manager, inMatch, inMatchStats, savedLineup } = teamData;
-    const team = new Team(id, name, stadium, reputation, [], standingsInfo);
+    const team = new Team(league, id, name, stadium, reputation, [], standingsInfo);
     team.manager = manager;
     team.inMatch = inMatch;
     team.inMatchStats = inMatchStats;

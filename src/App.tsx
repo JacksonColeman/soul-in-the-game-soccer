@@ -16,6 +16,8 @@ import AdvanceBarComponent from './components/universe-handling/AdvanceBarCompon
 import ChooseManagerComponent from './components/setup/ChooseManagerComponent'
 import { Manager } from './classes/Manager'
 import { GameState, WeekState } from './constants/gameStates'
+import SeasonRecapComponent from './components/league-info/recap/SeasonRecapComponent.tsx'
+import TransferOverviewComponent from './components/transfer/TransferOverviewComponent.tsx'
 
 function App() {
   const [universe, setUniverse] = useState<Universe | null>(null);
@@ -163,6 +165,8 @@ function App() {
         <Route path="/managerselect" element={<ChooseManagerComponent handleSelectManager={handleSelectManager} handleStartGame={handleStartGame}/>}/>
         <Route path="/season" element={universe && <SeasonComponentSimplified universe={universe} league={getUserLeague()} weekState={weekState} handlePostMatchAdvance={handlePostMatchAdvance}/>} />
         <Route path="/league" element = {universe && <LeagueOverviewComponent universe={universe} leagueID={getUserLeague().id}/>}/>
+        <Route path="/recap" element = {universe && <SeasonRecapComponent league={getUserLeague()}/>}/>
+        <Route path="/transfer" element = {universe && <TransferOverviewComponent universe={universe}/>}/>
         <Route path="/teams/:teamID" element={universe && <TeamPageComponent universe={universe} league={getUserLeague()}/>} />
       </Routes>
       {gameState == GameState.Season && universe && <AdvanceBarComponent universe={universe} league={getUserLeague()} handleReloads={handleReloads} weekState={weekState} updateWeekState={handleWeekState}/>}

@@ -3,6 +3,7 @@ import { Universe } from "../../classes/Universe";
 import { League } from "../../classes/League";
 import { useParams } from "react-router-dom";
 import RosterComponent from "./RosterComponent";
+import { formatCurrency } from "../../scripts/formatCurrency";
 
 interface TeamPageProps {
   universe: Universe;
@@ -19,10 +20,11 @@ const TeamPageComponent: React.FC<TeamPageProps> = ({ universe }) => {
   if (!team) {
     return <div>Team not found</div>;
   }
-
+  team.resetTransferBudget()
   return (
     <div>
       <h3>{team.name}</h3>
+      <p>Transfer Budget: {formatCurrency(team.transferBudget)}</p>
       {team.manager && <p>Manager: {team.manager.firstName} {team.manager.lastName} | {team.manager.mentality} | {team.manager.preferredFormation.name} </p>}
       <RosterComponent team={team}/>
     </div>

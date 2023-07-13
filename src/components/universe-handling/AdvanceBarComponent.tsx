@@ -18,7 +18,7 @@ const AdvanceBarComponent: React.FC<AdvanceBarProps> = ({universe,league,handleR
 
     const handleAdvance = () => {
         // if not at season/homepage, go back before advancing
-        if (window.location.pathname !== "/season") {
+        if (window.location.pathname.includes("teams")) {
             navigate("/season");
             return;
         }
@@ -27,10 +27,16 @@ const AdvanceBarComponent: React.FC<AdvanceBarProps> = ({universe,league,handleR
         updateWeekState(WeekState.PreMatch);
         return;
       } 
-      if (week === schedule.length && universe.playedCurrentWeek) {
+      if (window.location.pathname == '/recap'){
+        console.log('advancing to next year')
         handleNewYear();
         handleReloads();
+        navigate('/transfer')
+      } else if (window.location.pathname == '/transfer'){
         updateWeekState(WeekState.Overview);
+        navigate("/season");
+      } else if (week === schedule.length && universe.playedCurrentWeek) {
+        navigate("/recap");
       } else if (weekState == WeekState.PreMatch){
         updateWeekState(WeekState.PlayMatch)
       }

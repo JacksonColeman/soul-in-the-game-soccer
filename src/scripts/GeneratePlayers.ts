@@ -18,7 +18,6 @@ export function generatePlayer(team: Team | undefined, position: PlayerPosition,
     player = new Player(team, firstName('male'), lastName(), age, position, attributes);
     return player;
 }
-
 interface AttributeWeights {
     Defending: number;
     Passing: number;
@@ -33,7 +32,6 @@ interface AttributeWeights {
     GKPositioning: number;
     GKKicking: number;
   }
-  
   
   function generatePlayerAttributes(ability: number, position: PlayerPosition){
     ability = Math.floor(ability);
@@ -87,7 +85,7 @@ interface AttributeWeights {
           weightSum += weight;
       
           if (randomWeight <= weightSum) {
-            attributeValues[PlayerAttr] = (attributeValues[PlayerAttr] || 0) + 1;
+            attributeValues[PlayerAttr] = attributeValues[PlayerAttr] + 1;
             remainingPoints -= 1;
 
             if (attributeValues[PlayerAttr] > 80) {

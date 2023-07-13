@@ -45,8 +45,14 @@ export function ProRel(relegatingLeague: League, promotingLeague: League, n: num
   
     // Add the 3 lowest teams from relegating league to promoting league
     promotingLeague.teams.push(...relegatingTeamsToMove);
+    for (const team of relegatingTeamsToMove){
+      team.league = promotingLeague;
+    }
   
     // Add the 3 highest teams from promoting league to relegating league
     relegatingLeague.teams.push(...promotingTeamsToMove);
+    for (const team of promotingTeamsToMove){
+      team.league = relegatingLeague;
+    }
   }
   

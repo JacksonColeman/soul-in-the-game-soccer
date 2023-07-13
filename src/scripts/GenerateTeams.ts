@@ -1,9 +1,11 @@
 import { Team } from "../classes/Team.ts"
+import { League } from "../classes/League.ts";
 import leaguesData from "../data/teams.json"
 import { generateManager } from "./GenerateManager.ts";
 import generateStartingRoster from './GenerateStartingRoster.ts'
 
-export function generateTeams(leagueID: number, userTeamID: number): Team[]{
+export function generateTeams(league: League, userTeamID: number): Team[]{
+    let leagueID = league.id;
     let teamsData = leaguesData.find(league => league.id == leagueID)?.teams;
     if (!teamsData){
         throw new Error("invalid league ID")
@@ -12,7 +14,7 @@ export function generateTeams(leagueID: number, userTeamID: number): Team[]{
     teamsData.map(teamInfo => {
         // reputation changes based on leagueMode
         let reputation = teamInfo.reputation + Math.floor(Math.random() * 7) - 3;
-        let n = new Team(teamInfo.id, teamInfo.name,teamInfo.stadium,reputation,[])
+        let n = new Team(league, teamInfo.id, teamInfo.name,teamInfo.stadium,reputation,[])
         if (teamInfo.id != userTeamID){
             n.manager = generateManager();
         }

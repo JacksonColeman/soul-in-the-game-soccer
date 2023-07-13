@@ -5,6 +5,7 @@ import { PlayerAttribute } from '../constants/attributes';
 import { positionGProb, positionASTProb } from '../constants/statProbabilities';
 import { getPositionFamiliarity } from '../constants/positionFamiliarities';
 import { getOverallAttributeWeights } from '../constants/overallAttributeWeights';
+import { formatCurrency } from '../scripts/formatCurrency';
 
 export class Player {
   public id = uuidv4();
@@ -50,6 +51,17 @@ export class Player {
     this.positionFamiliarity[position] = Math.min(100, this.positionFamiliarity[position] + change);
   }
 
+  retired = false;
+  handleRetirement(){
+    let retirementProb = ((2 ** (this.age - 33)) / 2);
+    if (this.age > 40){
+      retirementProb = 0.9;
+    }
+    if (Math.random() * 100 < retirementProb){
+      this.retired = true;
+    }
+  }
+
   progress(year:number): void {
     this.age += 1;
     this.condition = 100;
@@ -73,6 +85,7 @@ export class Player {
 
     // progress/regress attributes
     this.attributeProgression(); 
+    this.handleRetirement();
   }
 
   attributeProgression(): void {
@@ -124,7 +137,7 @@ export class Player {
           this.attributes[attribute] = Math.min(99, this.attributes[attribute] + mentalBoost);
           continue;
         }
-        const expectedDecline = 1 + (this.age - 29)/2;
+        const expectedDecline = 1 + (this.age - 29)/4;
         const declineMultiplier = Math.random() * 1.5 + 0.5;
         const attributeDeclineRate = attributeDeclineRates[attribute];
         const decline =  Math.floor(expectedDecline * declineMultiplier * attributeDeclineRate);
@@ -253,4 +266,18 @@ export class Player {
 
   } 
 
+  get value(): number{
+    if (this.age > 39){
+      return (1.1 ** this.overallRating) * 1000;
+    }
+    let val = (1.1 ** this.overallRating) * 1000 * (40 - this.age);
+    return val;
+  }
+
+  get formattedValue(){
+    let formatted = formatCurrency(this.value);
+    return formatted;
+  }
+
 }
+

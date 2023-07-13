@@ -38,8 +38,7 @@ const TeamPlayersTableComponent: React.FC<TeamPlayersTableProps> = ({ team }) =>
             <th className="stat-col">Speed</th>
             <th className="stat-col">cond</th>
             <th className="stat-col">status</th>
-            <th className="stat-col">gProb</th>
-            <th className="stat-col">aProb</th>
+            <th className="stat-col">VALUE</th>
           </tr>
         </thead>
         <tbody>
@@ -63,8 +62,7 @@ const TeamPlayersTableComponent: React.FC<TeamPlayersTableProps> = ({ team }) =>
               <td className="stat-col">{player.attributes[PlayerAttribute.Speed]}</td>
               <td className="stat-col">{Math.round(player.condition)}</td>
               <td className="stat-col">{player.injured ? `Inj ${player.injuryTime}` : `:)`}</td>
-              <td className="stat-col">{player.goalScorerProb}</td>
-              <td className="stat-col">{player.assistProb}</td>
+              <td className="stat-col">{player.formattedValue}</td>
             </tr>
           ))}
         </tbody>

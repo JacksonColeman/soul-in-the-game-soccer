@@ -7,7 +7,9 @@ import { PlayerAttribute } from '../constants/attributes';
 import { Manager } from './Manager';
 
 export class Team {
+
     constructor(
+        public league: League,
         public id: number,
         public name: string, 
         public stadium: string,
@@ -23,6 +25,12 @@ export class Team {
     inMatchStats = {
       matchMinutes: 0,
       matchGoals: 0
+    }
+    transferBudget = 0;
+
+    resetTransferBudget(): void{
+      let repMultiplier = 1.002 ** this.reputation;
+      this.transferBudget = this.reputation * repMultiplier * this.league.transferSpendMultiplier;
     }
     
     public manager: Manager | null = null; 
@@ -40,7 +48,6 @@ export class Team {
     get lineup(): Lineup{
       this.lineupCalls++;
       if (this.savedLineup && this.inMatch){
-        console.log('retrieving saved lineup')
         return this.savedLineup;
       }
       if (this.savedLineup != null){
@@ -73,11 +80,12 @@ export class Team {
     autophagy(){
       const newPlayers: Player[] = [];
       this.roster = this.roster.filter(player => {
-        if (player.age > 30 && player.overallRating < (this.reputation**.99)/2) {
+        if (player.retired) {
           const newPosition = player.position;
-          const newPlayer = generatePlayer(this, newPosition, this.reputation ** 0.99, 17, 21);
+          const newPlayerAbility = (this.reputation + 100)/2 - 30
+          const newPlayer = generatePlayer(this, newPosition, newPlayerAbility, 17, 21);
           newPlayers.push(newPlayer);
-          console.log(`${this.name} replaced ${player.lastName} (${player.overallRating}) with ${newPlayer.lastName} (${newPlayer.overallRating}). Attribute change of ${newPlayer.overallRating - player.overallRating}`);
+          console.log(`${this.name} replaced retiring ${player.lastName} (Age ${player.age}) (${player.overallRating}) with ${newPlayer.lastName} (${newPlayer.overallRating}). Attribute change of ${newPlayer.overallRating - player.overallRating}`);
           return false; // Remove the player from the roster
         }
         return true; // Keep the player in the roster
