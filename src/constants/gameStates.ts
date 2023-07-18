@@ -3,7 +3,7 @@ export enum GameState{
     Settings = "settings",
     Selection = "selection",
     Season = "season",
-    SeasonReview = "review",
+    SeasonRecap = "recap",
     TransferWindow = "transfers",
 }
 

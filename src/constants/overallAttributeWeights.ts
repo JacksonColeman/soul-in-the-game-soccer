@@ -37,6 +37,23 @@ export function getOverallAttributeWeights(position: PlayerPosition): Record<Pla
           [PlayerAttribute.GKPositioning]: 0,
           [PlayerAttribute.GKKicking]: 0,
         };
+      case PlayerPosition.LWB:
+      case PlayerPosition.RWB:
+        return {
+          [PlayerAttribute.Speed]: 14,
+          [PlayerAttribute.Physical]: 11,
+          [PlayerAttribute.Shooting]: 2,
+          [PlayerAttribute.Passing]: 8,
+          [PlayerAttribute.Defending]: 5,
+          [PlayerAttribute.Mental]: 7,
+          // keeper attributes
+          [PlayerAttribute.GKAgility]: 0,
+          [PlayerAttribute.GKReflexes]: 0,
+          [PlayerAttribute.GKHandling]: 0,
+          [PlayerAttribute.GKReach]: 0,
+          [PlayerAttribute.GKPositioning]: 0,
+          [PlayerAttribute.GKKicking]: 0,
+        };
       case PlayerPosition.LM:
       case PlayerPosition.RM:
         return {

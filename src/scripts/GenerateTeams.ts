@@ -2,7 +2,6 @@ import { Team } from "../classes/Team.ts"
 import { League } from "../classes/League.ts";
 import leaguesData from "../data/teams.json"
 import { generateManager } from "./GenerateManager.ts";
-import generateStartingRoster from './GenerateStartingRoster.ts'
 
 export function generateTeams(league: League, userTeamID: number): Team[]{
     let leagueID = league.id;
@@ -18,7 +17,7 @@ export function generateTeams(league: League, userTeamID: number): Team[]{
         if (teamInfo.id != userTeamID){
             n.manager = generateManager();
         }
-        n.roster = generateStartingRoster(n);
+        // n.roster = generateStartingRoster(n); // moving generate roster elsewhere
         teams.push(n);
     })
     return teams;

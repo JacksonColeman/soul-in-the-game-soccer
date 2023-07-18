@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import { Player } from '../../classes/Player';
 import { PlayerPosition } from '../../constants/positions';
 import { Universe } from '../../classes/Universe';
@@ -11,6 +11,7 @@ type TransferOverviewProps = {
 const TransferOverviewComponent: React.FC<TransferOverviewProps> = ({ universe }) => {
   const [currentTab, setCurrentTab] = useState<PlayerPosition>(PlayerPosition.GK);
   const positions: PlayerPosition[] = Object.values(PlayerPosition);
+  const [updates, setUpdates] = useState(0);
 
   const playersByPosition = positions.reduce((acc, position) => {
     acc[position] = universe.allPlayers
@@ -22,6 +23,12 @@ const TransferOverviewComponent: React.FC<TransferOverviewProps> = ({ universe }
   const handleTabChange = (tab: PlayerPosition) => {
     setCurrentTab(tab);
   };
+
+  const handleRound = () => {
+    universe.handleTransferRound();
+    universe.saveUniverse();
+    setUpdates(updates+1);
+  }
 
   return (
     <div>
@@ -38,6 +45,7 @@ const TransferOverviewComponent: React.FC<TransferOverviewProps> = ({ universe }
             </button>
           ))}
         </div>
+        <button onClick={handleRound}>Handle Round</button>
         <div className="position-content">
           <table>
             <thead>
@@ -47,6 +55,11 @@ const TransferOverviewComponent: React.FC<TransferOverviewProps> = ({ universe }
                 <th>Age</th>
                 <th>Overall</th>
                 <th>Value</th>
+                <th>Interest</th>
+                <th>Market Value</th>
+                <th>Transfer?</th>
+                <th>From</th>
+                <th>Fee</th>
               </tr>
             </thead>
             <tbody>
@@ -57,12 +70,33 @@ const TransferOverviewComponent: React.FC<TransferOverviewProps> = ({ universe }
                   <td>{player.age}</td>
                   <td>{player.overallRating}</td>
                   <td>{formatCurrency(player.value)}</td>
+                  <td>{player.transferInterest.size}</td>
+                  <td>{formatCurrency(player.marketValue)}</td>
+                  <td>{player.transfer ? "Y" : "N"}</td>
+                  <td>{player.transfer?.sellingTeam.name}</td>
+                  <td>{player.transfer?.fee && formatCurrency(player.transfer.fee)}</td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
       </div>
+      <table>
+      <thead>
+        <tr>
+          <th>Team Name</th>
+          <th>Transfer Budget</th>
+        </tr>
+      </thead>
+      <tbody>
+        {universe.allTeams.sort((teamA, teamB) => teamB.transferBudget - teamA.transferBudget).map((team) => (
+          <tr key={team.id}>
+            <td>{team.name}</td>
+            <td>{formatCurrency(team.transferBudget)}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
     </div>
   );
 };

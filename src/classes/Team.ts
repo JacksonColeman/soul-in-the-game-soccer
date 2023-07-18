@@ -5,6 +5,9 @@ import {Formation} from './Formations';
 import { League } from './League';
 import { PlayerAttribute } from '../constants/attributes';
 import { Manager } from './Manager';
+import { PlayerPosition } from '../constants/positions';
+import { formatCurrency } from '../scripts/formatCurrency';
+import { Transfer } from './Transfer';
 
 export class Team {
 
@@ -103,9 +106,82 @@ export class Team {
             player.progress(year);
         }
         this.autophagy();
+        this.resetTransferBudget();
         this.savedLineup = null;
         this.savedFormation = null;
     }
+
+    
+    identifyTransferTargets(potentialTargets: Player[]): void {
+      potentialTargets = potentialTargets.filter(p => !p.transferred && p.team != this && !p.retired) // filter already transferred players and players on same team // and if retired players sneak in somehow
+
+      const transferTargets: Player[] = [];
+      const valueDifferences: number[] = [];
+      const positionRequirements = this.manager?.preferredFormation.positionRequirements;
+    
+      for (const position in positionRequirements) {
+        const requiredPlayers = positionRequirements[position as PlayerPosition];
+        if (requiredPlayers > 0) {
+          const playersAtPosition = this.roster.filter((player) => player.position === position);
+          playersAtPosition.sort((a, b) => b.value - a.value); // Sort players by value in descending order
+          const replacementPlayer = playersAtPosition[requiredPlayers - 1];
+          let replacementPlayerValue = 0;
+          if (!replacementPlayer) {
+            replacementPlayerValue = this.reputation * 100000;
+          } else {
+            replacementPlayerValue = replacementPlayer.value;
+          }
+    
+          // Iterate through players in playerArray within the transfer budget and higher value than team's best
+          const potentialPositionTargets = potentialTargets.filter(p => p.position === position);
+          for (const player of potentialPositionTargets) {
+            if (player.value > replacementPlayerValue && player.marketValue <= this.transferBudget*(2/3)) { //can't spend more than 2/3 of budget on one player
+              const valueDifference = (player.value - replacementPlayerValue) / player.marketValue;
+              transferTargets.push(player);
+              valueDifferences.push(valueDifference);
+            }
+          }
+        }
+      }
+    
+      // Sort the transfer targets based on value difference in descending order
+      const sortedTransferTargets = transferTargets.sort((a, b) => {
+        const indexA = transferTargets.indexOf(a);
+        const indexB = transferTargets.indexOf(b);
+        return valueDifferences[indexB] - valueDifferences[indexA];
+      });
+    
+      // Set top twenty targets
+      const topTwentyTargets = sortedTransferTargets.slice(0, 20);
+
+      for (const target of topTwentyTargets) {
+        target.transferInterest.add(this.id);
+      }
+    
+      this.transferTargets = topTwentyTargets;
+    }
+    transferTargets: Player[] = [];
+
+    makeTransferOffers(){
+      let transferTargetsCopy = [...this.transferTargets];
+      let accepted = false;
+      while (!accepted && transferTargetsCopy.length > 0){
+        const p = transferTargetsCopy.shift();
+        if (!p || !p.team){throw new Error("No player in transfer list")}
+        if (p.transferred){
+          continue;
+        }
+        if (Math.random() > 0.5){
+          console.log(`${this.name} sign ${p.name} (${p.position} ${p.overallRating}) from ${p.team.name} for ${formatCurrency(p.marketValue)}`)
+          const t = new Transfer(p, this, p.team, p.marketValue);
+          t.processTransfer();
+          p.transfer = t;
+          accepted = true;
+        }
+      }
+    }
+
+
 
     get points():number{ 
         return this.standingsInfo.wins*3 + this.standingsInfo.draws;

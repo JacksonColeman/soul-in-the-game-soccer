@@ -3,7 +3,7 @@
   "name": "Premier League",
   "id": 1,
   "relegatesTo": 2,
-  "transferSpendMultiplier": 1000000,
+  "transferSpendMultiplier": 500000,
   "teams": [
     {
       "id": 1,
@@ -131,7 +131,7 @@
   "name": "EFL Championship",
   "id": 2,
   "relegatesTo": null,
-  "transferSpendMultiplier": 250000,
+  "transferSpendMultiplier": 125000,
   "teams": [
     {
       "id": 21,

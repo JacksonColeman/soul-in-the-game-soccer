@@ -5,8 +5,21 @@ import { PlayerAttribute } from "../constants/attributes";
 import {firstName, lastName} from './GenerateNames';
 import { generationAttributeWeights } from "../constants/generationAttributeWeights";
 
-function generateBoundedAge(min:number,max:number): number {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
+
+function generateNormalDistribution(mean: number, stdDev: number) {
+  let u = 0, v = 0;
+  while (u === 0) u = Math.random();
+  while (v === 0) v = Math.random();
+  const z = Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
+  return Math.round(mean + stdDev * z);
+}
+
+function generateBoundedAge(ageMin: number, ageMax: number): number {
+    let age = 0;
+    while (age < ageMin || age > ageMax){
+      age = generateNormalDistribution(26,4)
+    }
+    return age;
 }
 
 export function generatePlayer(team: Team | undefined, position: PlayerPosition, ability: number, ageMin:number, ageMax:number): Player {
@@ -14,7 +27,7 @@ export function generatePlayer(team: Team | undefined, position: PlayerPosition,
     ability = Math.floor(ability);
     let player: Player | undefined = undefined;
 
-    const attributes = generatePlayerAttributes(ability, position);
+    const attributes = generatePlayerAttributes(ability, position, age);
     player = new Player(team, firstName('male'), lastName(), age, position, attributes);
     return player;
 }
@@ -33,12 +46,13 @@ interface AttributeWeights {
     GKKicking: number;
   }
   
-  function generatePlayerAttributes(ability: number, position: PlayerPosition){
+  function generatePlayerAttributes(ability: number, position: PlayerPosition, age:number){
     ability = Math.floor(ability);
     if (ability > 99){
         ability = 99;
     }
-    
+    ability -= Math.abs(27 - age) // rudimentary age discount
+
     const attributeWeights = generationAttributeWeights;
     const positionAttributeWeights = attributeWeights[position];
     const attributeValues: AttributeWeights = {} as AttributeWeights;

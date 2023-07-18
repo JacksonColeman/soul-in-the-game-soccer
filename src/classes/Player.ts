@@ -6,6 +6,7 @@ import { positionGProb, positionASTProb } from '../constants/statProbabilities';
 import { getPositionFamiliarity } from '../constants/positionFamiliarities';
 import { getOverallAttributeWeights } from '../constants/overallAttributeWeights';
 import { formatCurrency } from '../scripts/formatCurrency';
+import { Transfer } from './Transfer';
 
 export class Player {
   public id = uuidv4();
@@ -20,6 +21,11 @@ export class Player {
     public attributes: Record<PlayerAttribute, number>
   ) {
     this.positionFamiliarity = getPositionFamiliarity(this.position);
+    this.marketValue = this.value;
+  }
+
+  get name(){
+    return `${this.firstName} ${this.lastName}`
   }
 
   // injury/conditioning variables
@@ -86,6 +92,10 @@ export class Player {
     // progress/regress attributes
     this.attributeProgression(); 
     this.handleRetirement();
+    // handle transfer stuff
+    this.marketValue = this.value;
+    this.transferInterest.clear();
+    this.transferred = false;
   }
 
   attributeProgression(): void {
@@ -274,10 +284,22 @@ export class Player {
     return val;
   }
 
+  marketValue: number = 0;
+
+  updateMarketValue(){
+    if (this.transferInterest.size > 0){this.marketValue *= 1.01**(this.transferInterest.size)}
+    if (this.transferInterest.size == 0 && this.marketValue > this.value){this.marketValue = Math.max(this.value, this.marketValue*0.97)}
+    this.transferInterest.clear();
+  }
+
   get formattedValue(){
     let formatted = formatCurrency(this.value);
     return formatted;
   }
+
+  transferInterest = new Set();
+  transferred = false;
+  transfer: Transfer | null = null;
 
 }
 

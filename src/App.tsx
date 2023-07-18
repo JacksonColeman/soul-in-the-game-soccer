@@ -18,6 +18,7 @@ import { Manager } from './classes/Manager'
 import { GameState, WeekState } from './constants/gameStates'
 import SeasonRecapComponent from './components/league-info/recap/SeasonRecapComponent.tsx'
 import TransferOverviewComponent from './components/transfer/TransferOverviewComponent.tsx'
+import { generateRosters } from './scripts/GenerateRosters.ts'
 
 function App() {
   const [universe, setUniverse] = useState<Universe | null>(null);
@@ -49,6 +50,9 @@ function App() {
       if (storedUniverse.gameState = GameState.Season){
         navigate('/season')
         handleWeekState(storedUniverse.weekState);
+      }
+      if (storedUniverse.gameState = GameState.TransferWindow){
+        navigate('/transfer')
       }
 
       if (!activeSession){
@@ -87,6 +91,9 @@ function App() {
     userTeam.user = true;
     userTeam.manager = userManager;
 
+    // generate rosters
+    generateRosters(newUniverse);
+    //
     for (const league of newUniverse.leagues){
         league.generateWeightedAttributeTotals();
     }

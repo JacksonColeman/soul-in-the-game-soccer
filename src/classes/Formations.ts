@@ -1,10 +1,11 @@
 import { PlayerPosition } from "../constants/positions";
+import { DepthChartWeights } from "../constants/depthChartWeights";
 
-type PositionRequirements = {
+type PositionAmounts = {
   [position in PlayerPosition]: number;
 };
 
 export class Formation {
-  constructor(public name: string, public positionRequirements: PositionRequirements) {}
+  constructor(public name: string, public positionRequirements: PositionAmounts, public gameStartAmounts: PositionAmounts, public depthChartWeights: DepthChartWeights) {}
 }
 

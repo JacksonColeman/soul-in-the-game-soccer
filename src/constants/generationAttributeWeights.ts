@@ -19,6 +19,15 @@ const FBAttributes = {
   [PlayerAttribute.Speed]: 9,
 }
 
+const WBAttributes = {
+  [PlayerAttribute.Defending]: 6, //
+  [PlayerAttribute.Mental]: 7, //
+  [PlayerAttribute.Passing]: 7, //
+  [PlayerAttribute.Physical]: 9, //
+  [PlayerAttribute.Shooting]: 2, //
+  [PlayerAttribute.Speed]: 9, //
+}
+
 const WMAttributes = {
   [PlayerAttribute.Defending]: 3,
   [PlayerAttribute.Mental]: 7,
@@ -59,6 +68,15 @@ export const generationAttributeWeights: Record<PlayerPosition, Record<PlayerAtt
   // Add the remaining positions with aligned attribute weights
   [PlayerPosition.RB]: {
     ...FBAttributes,
+    ...GKAttributesWithZeroValues,
+  },
+  [PlayerPosition.LWB]: {
+    ...WBAttributes,
+    ...GKAttributesWithZeroValues,
+  },
+  // Add the remaining positions with aligned attribute weights
+  [PlayerPosition.RWB]: {
+    ...WBAttributes,
     ...GKAttributesWithZeroValues,
   },
   [PlayerPosition.CB]: {

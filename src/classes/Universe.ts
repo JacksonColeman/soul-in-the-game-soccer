@@ -49,6 +49,14 @@ export class Universe {
       
         return allPlayersArray;
       }
+
+    get allTeams(): Team[]{
+        let teamArray: Team[] = [];
+        for (const lg of this.leagues){
+            teamArray = teamArray.concat(lg.teams);
+        }
+        return teamArray;
+    }
     
     playWeekMatches(){
         for (const league of this.leagues){
@@ -159,6 +167,25 @@ export class Universe {
         };
         localStorage.setItem('universe', JSON.stringify(packagedUniverse))
     }
+
+    // transfers
+    handleTransferRound(){
+        for (let i = 0; i < 50; i++){
+            for (const lg of this.leagues){
+                for (const tm of lg.teams){
+                tm.identifyTransferTargets(this.allPlayers);
+                }
+            }
+            for (const player of this.allPlayers){
+                player.updateMarketValue();
+            }
+        }
+        for (const lg of this.leagues){
+            for (const tm of lg.teams){
+            tm.makeTransferOffers();
+            }
+        }
+    }
 }
 
 export function getStoredUniverse(): Universe{
@@ -211,6 +238,7 @@ function packageLeagueData(league: League) {
         manager: team.manager,
         inMatch: team.inMatch,
         inMatchStats: team.inMatchStats,
+        transferBudget: team.transferBudget,
         savedLineup: team.savedLineup ? packageLineup(team.savedLineup) : null,
         roster: team.roster.map((p) => (packagePlayer(p))),
     }));
@@ -255,11 +283,12 @@ function unpackageLeagueData(packagedLeague: {
 }
 
 function unpackageTeam(league: League, teamData: any): Team{
-    const { id, name, stadium, reputation, roster, standingsInfo, manager, inMatch, inMatchStats, savedLineup } = teamData;
+    const { id, name, stadium, reputation, roster, standingsInfo, manager, inMatch, inMatchStats, transferBudget, savedLineup } = teamData;
     const team = new Team(league, id, name, stadium, reputation, [], standingsInfo);
     team.manager = manager;
     team.inMatch = inMatch;
     team.inMatchStats = inMatchStats;
+    team.transferBudget = transferBudget;
     // Rebuild roster
     for (const playerData of roster) {
         const player = unpackagePlayer(team, playerData);
@@ -288,13 +317,14 @@ function packagePlayer(player: Player){
         careerStats: player.careerStats,
         injured: player.injured,
         injuryTime: player.injuryTime,
-        condition: player.condition
+        condition: player.condition,
+        marketValue: player.marketValue
     }
     return playerData;
 }
 
 function unpackagePlayer(team: Team, playerData: any){
-    const { id, firstName, lastName, age, position, fieldPosition, attributes, stats, matchStats, careerStats, injured, injuryTime, condition } = playerData;
+    const { id, firstName, lastName, age, position, fieldPosition, attributes, stats, matchStats, careerStats, injured, injuryTime, condition, marketValue } = playerData;
     // Determine player subclass based on position
     let player: Player;
     player = new Player(team, firstName, lastName, age, position, attributes)
@@ -305,7 +335,8 @@ function unpackagePlayer(team: Team, playerData: any){
     player.careerStats = careerStats;
     player.injured = injured;
     player.injuryTime = injuryTime;
-    player.condition = condition
+    player.condition = condition;
+    player.marketValue = marketValue;
     return player;
 }
 
@@ -351,7 +382,7 @@ function packageLineup(lineup: Lineup) {
   }
 
   function rebuildLineup(team: Team, lineupData: any) {
-    const formation = new Formation(lineupData.formation.name, lineupData.formation.positionRequirements);
+    const formation = new Formation(lineupData.formation.name, lineupData.formation.positionRequirements, lineupData.formation.gameStartAmounts, lineupData.formation.depthChartWeights);
     const lineup = new Lineup([],formation);
   
     // Rebuild starters

@@ -2,7 +2,7 @@ import './AdvanceBarComponent.css';
 import { Universe } from '../../classes/Universe';
 import { League } from '../../classes/League';
 import { useNavigate } from "react-router-dom";
-import { WeekState } from '../../constants/gameStates';
+import { GameState, WeekState } from '../../constants/gameStates';
   interface  AdvanceBarProps {
     universe: Universe;
     league: League;
@@ -32,10 +32,13 @@ const AdvanceBarComponent: React.FC<AdvanceBarProps> = ({universe,league,handleR
         handleNewYear();
         handleReloads();
         navigate('/transfer')
-      } else if (window.location.pathname == '/transfer'){
+        universe.gameState = GameState.TransferWindow;
+      } 
+      else if (window.location.pathname == '/transfer'){
         updateWeekState(WeekState.Overview);
         navigate("/season");
-      } else if (week === schedule.length && universe.playedCurrentWeek) {
+      } 
+      else if (week === schedule.length && universe.playedCurrentWeek) {
         navigate("/recap");
       } else if (weekState == WeekState.PreMatch){
         updateWeekState(WeekState.PlayMatch)

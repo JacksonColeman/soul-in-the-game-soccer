@@ -18,7 +18,9 @@ export class Lineup {
         [PlayerPosition.LB]: [],
         [PlayerPosition.CB]: [],
         [PlayerPosition.RB]: [],
+        [PlayerPosition.LWB]: [],
         [PlayerPosition.CDM]: [],
+        [PlayerPosition.RWB]: [],
         [PlayerPosition.LM]: [],
         [PlayerPosition.CM]: [],
         [PlayerPosition.RM]: [],
@@ -39,7 +41,9 @@ export class Lineup {
         [PlayerPosition.LB]: [],
         [PlayerPosition.CB]: [],
         [PlayerPosition.RB]: [],
+        [PlayerPosition.LWB]: [],
         [PlayerPosition.CDM]: [],
+        [PlayerPosition.RWB]: [],
         [PlayerPosition.LM]: [],
         [PlayerPosition.CM]: [],
         [PlayerPosition.RM]: [],
@@ -64,6 +68,7 @@ export class Lineup {
       const goalkeepers = this.allPlayers.filter(player => player.position == PlayerPosition.GK && !player.injured).sort((a, b) => b.overallAtPosition(PlayerPosition.GK) - a.overallAtPosition(PlayerPosition.GK));
       const outfield = this.allPlayers.filter(player => player.position != PlayerPosition.GK && !player.injured).sort((a, b) => b.overallRating - a.overallRating);
       if (goalkeepers.length < 2){
+        console.log(this.allPlayers);
         throw new Error("Not enough goalkeepers!")
       }
       this.addStarter(goalkeepers[0], PlayerPosition.GK);
