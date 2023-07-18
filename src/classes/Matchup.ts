@@ -260,6 +260,6 @@ export const updateReputation = (teamA: Team, teamB: Team, teamAScore: number, t
   const updatedReputationB =
   teamB.reputation + K_FACTOR * (actualWinProbabilityB - expectedWinProbabilityB);
 
-  teamA.reputation = Math.max(50, Math.min(99, updatedReputationA));
-  teamB.reputation = Math.max(50, Math.min(99, updatedReputationB));
+  teamA.reputation = Math.max(30, Math.min(99, updatedReputationA));
+  teamB.reputation = Math.max(30, Math.min(99, updatedReputationB));
 };

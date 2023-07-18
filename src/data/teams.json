@@ -130,7 +130,7 @@
 {
   "name": "EFL Championship",
   "id": 2,
-  "relegatesTo": null,
+  "relegatesTo": 3,
   "transferSpendMultiplier": 125000,
   "teams": [
     {
@@ -278,5 +278,310 @@
       "reputation": 60
     }
   ]
+},
+{
+  "name": "EFL League One",
+  "id": 3,
+  "relegatesTo": 4,
+  "transferSpendMultiplier": 50000,
+  "teams": [
+    {
+      "id": 45,
+      "name": "Barnsley",
+      "stadium": "Oakwell",
+      "reputation": 53
+    },
+    {
+      "id": 46,
+      "name": "Blackpool",
+      "stadium": "Bloomfield Road",
+      "reputation": 54
+    },
+    {
+      "id": 47,
+      "name": "Bolton",
+      "stadium": "Toughsheet Community Stadium",
+      "reputation": 53
+    },
+    {
+      "id": 48,
+      "name": "Bristol Rovers",
+      "stadium": "Memorial Stadium",
+      "reputation": 49
+    },
+    {
+      "id": 49,
+      "name": "Burton",
+      "stadium": "Pirelli Stadium",
+      "reputation": 46
+    },
+    {
+      "id": 50,
+      "name": "Cambridge United",
+      "stadium": "Abbey Stadium",
+      "reputation": 44
+    },
+    {
+      "id": 51,
+      "name": "Carlisle",
+      "stadium": "Brunton Park",
+      "reputation": 41
+    },
+    {
+      "id": 52,
+      "name": "Charlton",
+      "stadium": "The Valley",
+      "reputation": 53
+    },
+    {
+      "id": 53,
+      "name": "Cheltenham",
+      "stadium": "Whaddon Road",
+      "reputation": 44
+    },
+    {
+      "id": 54,
+      "name": "Derby County",
+      "stadium": "Pride Park Stadium",
+      "reputation": 55
+    },
+    {
+      "id": 55,
+      "name": "Exeter City",
+      "stadium": "St. James Park",
+      "reputation": 44
+    },
+    {
+      "id": 56,
+      "name": "Fleetwood",
+      "stadium": "Highbury Stadium",
+      "reputation": 44
+    },
+    {
+      "id": 57,
+      "name": "Leyton Orient",
+      "stadium": "Brisbane Road",
+      "reputation": 41
+    },
+    {
+      "id": 58,
+      "name": "Lincoln City",
+      "stadium": "Sincil Bank",
+      "reputation": 46
+    },
+    {
+      "id": 59,
+      "name": "Northampton Town",
+      "stadium": "Sixfields Stadium",
+      "reputation": 43
+    },
+    {
+      "id": 60,
+      "name": "Oxford Utd",
+      "stadium": "Kassam Stadium",
+      "reputation": 50
+    },
+    {
+      "id": 61,
+      "name": "Peterborough",
+      "stadium": "London Road",
+      "reputation": 51
+    },
+    {
+      "id": 62,
+      "name": "Portsmouth",
+      "stadium": "Fratton Park",
+      "reputation": 53
+    },
+    {
+      "id": 63,
+      "name": "Port Vale",
+      "stadium": "Vale Park",
+      "reputation": 44
+    },
+    {
+      "id": 64,
+      "name": "Reading",
+      "stadium": "Madejski Stadium",
+      "reputation": 56
+    },
+    {
+      "id": 65,
+      "name": "Shrewsbury",
+      "stadium": "New Meadow",
+      "reputation": 45
+    },
+    {
+      "id": 66,
+      "name": "Stevenage",
+      "stadium": "Broadhall Way",
+      "reputation": 39
+    },
+    {
+      "id": 67,
+      "name": "Wigan Athletic",
+      "stadium": "DW Stadium",
+      "reputation": 51
+    },
+    {
+      "id": 68,
+      "name": "Wycombe",
+      "stadium": "Adams Park",
+      "reputation": 50
+    }
+  ]
+},
+{
+  "name": "EFL League Two",
+  "id": 4,
+  "relegatesTo": null,
+  "transferSpendMultiplier": 25000,
+  "teams": [
+    {
+      "id": 69,
+      "name": "Accrington Stanley",
+      "stadium": "Crown Ground",
+      "reputation": 44
+    },
+    {
+      "id": 70,
+      "name": "AFC Wimbledon",
+      "stadium": "Plough Lane",
+      "reputation": 43
+    },
+    {
+      "id": 71,
+      "name": "Barrow",
+      "stadium": "Holker Street",
+      "reputation": 35
+    },
+    {
+      "id": 72,
+      "name": "Bradford City",
+      "stadium": "Valley Parade",
+      "reputation": 43
+    },
+    {
+      "id": 73,
+      "name": "Colchester",
+      "stadium": "Colchester Community Stadium",
+      "reputation": 41
+    },
+    {
+      "id": 74,
+      "name": "Crawley Town",
+      "stadium": "Broadfield Stadium",
+      "reputation": 39
+    },
+    {
+      "id": 75,
+      "name": "Crewe Alexandra",
+      "stadium": "Gresty Road",
+      "reputation": 42
+    },
+    {
+      "id": 76,
+      "name": "Doncaster Rovers",
+      "stadium": "Keepmoat Stadium",
+      "reputation": 44
+    },
+    {
+      "id": 77,
+      "name": "Forest Green",
+      "stadium": "The New Lawn",
+      "reputation": 44
+    },
+    {
+      "id": 78,
+      "name": "Gillingham",
+      "stadium": "Priestfield Stadium",
+      "reputation": 44
+    },
+    {
+      "id": 79,
+      "name": "Grimsby Town",
+      "stadium": "Blundell Park",
+      "reputation": 40
+    },
+    {
+      "id": 80,
+      "name": "Harrogate Town",
+      "stadium": "Wetherby Road",
+      "reputation": 35
+    },
+    {
+      "id": 81,
+      "name": "Mansfield Town",
+      "stadium": "Field Mill",
+      "reputation": 42
+    },
+    {
+      "id": 82,
+      "name": "MK Dons",
+      "stadium": "Stadium MK",
+      "reputation": 51
+    },
+    {
+      "id": 83,
+      "name": "Morecambe",
+      "stadium": "Mazuma Stadium",
+      "reputation": 41
+    },
+    {
+      "id": 84,
+      "name": "Newport County",
+      "stadium": "Rodney Parade",
+      "reputation": 41
+    },
+    {
+      "id": 85,
+      "name": "Notts County",
+      "stadium": "Meadow Lane",
+      "reputation": 39
+    },
+    {
+      "id": 86,
+      "name": "Salford City",
+      "stadium": "Moor Lane",
+      "reputation": 42
+    },
+    {
+      "id": 87,
+      "name": "Stockport",
+      "stadium": "Edgeley Park",
+      "reputation": 39
+    },
+    {
+      "id": 88,
+      "name": "Sutton United",
+      "stadium": "Gander Green Lane",
+      "reputation": 36
+    },
+    {
+      "id": 89,
+      "name": "Swindon Town",
+      "stadium": "County Ground",
+      "reputation": 44
+    },
+    {
+      "id": 90,
+      "name": "Tranmere",
+      "stadium": "Prenton Park",
+      "reputation": 43
+    },
+    {
+      "id": 91,
+      "name": "Walsall",
+      "stadium": "Bescot Stadium",
+      "reputation": 41
+    },
+    {
+      "id": 92,
+      "name": "Wrexham",
+      "stadium": "Racecourse Ground",
+      "reputation": 40
+    }
+  ]
+  
 }
 ]
