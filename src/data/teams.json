@@ -582,6 +582,725 @@
       "reputation": 40
     }
   ]
-  
+},
+{
+  "name": "La Liga",
+  "id": 5,
+  "relegatesTo": null,
+  "transferSpendMultiplier": 400000,
+  "teams": [
+    {
+      "id": 93,
+      "name": "Alavés",
+      "stadium": "Mendizorrotza",
+      "reputation": 66
+    },
+    {
+      "id": 94,
+      "name": "Almería",
+      "stadium": "Power Horse Stadium",
+      "reputation": 66
+    },
+    {
+      "id": 95,
+      "name": "Athletic Club",
+      "stadium": "San Mamés",
+      "reputation": 75
+    },
+    {
+      "id": 96,
+      "name": "Atlético Madrid",
+      "stadium": "Cívitas Metropolitano",
+      "reputation": 86
+    },
+    {
+      "id": 97,
+      "name": "Barcelona",
+      "stadium": "Estadi Olímpic Lluís Companys",
+      "reputation": 90
+    },
+    {
+      "id": 98,
+      "name": "Cádiz",
+      "stadium": "Nuevo Mirandilla",
+      "reputation": 65
+    },
+    {
+      "id": 99,
+      "name": "Celta Vigo",
+      "stadium": "Abanca-Balaídos",
+      "reputation": 69
+    },
+    {
+      "id": 100,
+      "name": "Getafe",
+      "stadium": "Coliseum Alfonso Pérez",
+      "reputation": 68
+    },
+    {
+      "id": 101,
+      "name": "Girona",
+      "stadium": "Montilivi",
+      "reputation": 63
+    },
+    {
+      "id": 102,
+      "name": "Granada",
+      "stadium": "Nuevo Los Cármenes",
+      "reputation": 64
+    },
+    {
+      "id": 103,
+      "name": "Las Palmas",
+      "stadium": "Gran Canaria",
+      "reputation": 63
+    },
+    {
+      "id": 104,
+      "name": "Mallorca",
+      "stadium": "Son Moix",
+      "reputation": 64
+    },
+    {
+      "id": 105,
+      "name": "Osasuna",
+      "stadium": "El Sadar",
+      "reputation": 67
+    },
+    {
+      "id": 106,
+      "name": "Rayo Vallecano",
+      "stadium": "Vallecas",
+      "reputation": 65
+    },
+    {
+      "id": 107,
+      "name": "Real Betis",
+      "stadium": "Benito Villamarín",
+      "reputation": 73
+    },
+    {
+      "id": 108,
+      "name": "Real Madrid",
+      "stadium": "Santiago Bernabéu",
+      "reputation": 92
+    },
+    {
+      "id": 109,
+      "name": "Real Sociedad",
+      "stadium": "Reale Arena",
+      "reputation": 76
+    },
+    {
+      "id": 110,
+      "name": "Sevilla",
+      "stadium": "Ramón Sánchez Pizjuán",
+      "reputation": 80
+    },
+    {
+      "id": 111,
+      "name": "Valencia",
+      "stadium": "Mestalla",
+      "reputation": 76
+    },
+    {
+      "id": 112,
+      "name": "Villarreal",
+      "stadium": "Estadio de la Cerámica",
+      "reputation": 79
+    }
+  ]
+},
+{
+  "name": "Bundesliga",
+  "id": 6,
+  "relegatesTo": null,
+  "transferSpendMultiplier": 300000,
+  "teams": [
+      {
+        "id": 113,
+        "name": "Bayer Leverkusen",
+        "stadium": "BayArena",
+        "reputation": 77
+      },
+      {
+        "id": 114,
+        "name": "Borussia Dortmund",
+        "stadium": "Signal Iduna Park",
+        "reputation": 84
+      },
+      {
+        "id": 115,
+        "name": "Darmstadt",
+        "stadium": "Merck-Stadion am Böllenfalltor",
+        "reputation": 58
+      },
+      {
+        "id": 116,
+        "name": "Eintracht Frankfurt",
+        "stadium": "Deutsche Bank Park",
+        "reputation": 73
+      },
+      {
+        "id": 117,
+        "name": "FC Augsburg",
+        "stadium": "WWK Arena",
+        "reputation": 70
+      },
+      {
+        "id": 118,
+        "name": "FC Bayern",
+        "stadium": "Allianz Arena",
+        "reputation": 91
+      },
+      {
+        "id": 119,
+        "name": "FC Köln",
+        "stadium": "RheinEnergieStadion",
+        "reputation": 71
+      },
+      {
+        "id": 120,
+        "name": "FSV Mainz",
+        "stadium": "Mewa Arena",
+        "reputation": 71
+      },
+      {
+        "id": 121,
+        "name": "Gladbach",
+        "stadium": "Borussia-Park",
+        "reputation": 76
+      },
+      {
+        "id": 122,
+        "name": "Heidenheim",
+        "stadium": "Voith-Arena",
+        "reputation": 55
+      },
+      {
+        "id": 123,
+        "name": "RB Leipzig",
+        "stadium": "Red Bull Arena",
+        "reputation": 75
+      },
+      {
+        "id": 124,
+        "name": "SC Freiburg",
+        "stadium": "Europa-Park Stadion",
+        "reputation": 68
+      },
+      {
+        "id": 125,
+        "name": "TSG Hoffenheim",
+        "stadium": "PreZero Arena",
+        "reputation": 74
+      },
+      {
+        "id": 126,
+        "name": "Union Berlin",
+        "stadium": "Stadion An der Alten Försterei",
+        "reputation": 66
+      },
+      {
+        "id": 127,
+        "name": "VfB Stuttgart",
+        "stadium": "MHPArena",
+        "reputation": 72
+      },
+      {
+        "id": 128,
+        "name": "VfL Bochum",
+        "stadium": "Vonovia Ruhrstadion",
+        "reputation": 61
+      },
+      {
+        "id": 129,
+        "name": "VfL Wolfsburg",
+        "stadium": "Volkswagen Arena",
+        "reputation": 75
+      },
+      {
+        "id": 130,
+        "name": "Werder Bremen",
+        "stadium": "Wohninvest Weserstadion",
+        "reputation": 70
+      } 
+  ]
+},
+{
+  "name": "Serie A",
+  "id": 7,
+  "relegatesTo": null,
+  "transferSpendMultiplier": 200000,
+  "teams": [
+    {
+      "id": 131,
+      "name": "AC Milan",
+      "stadium": "San Siro",
+      "reputation": 83
+    },
+    {
+      "id": 132,
+      "name": "AS Roma",
+      "stadium": "Stadio Olimpico",
+      "reputation": 81
+    },
+    {
+      "id": 133,
+      "name": "Atalanta",
+      "stadium": "Stadio Atleti Azzurri d'Italia",
+      "reputation": 74
+    },
+    {
+      "id": 134,
+      "name": "Bologna",
+      "stadium": "Stadio Renato Dall'Ara",
+      "reputation": 66
+    },
+    {
+      "id": 135,
+      "name": "Cagliari",
+      "stadium": "Unipol Domus",
+      "reputation": 64
+    },
+    {
+      "id": 136,
+      "name": "Empoli",
+      "stadium": "Stadio Carlo Castellani",
+      "reputation": 63
+    },
+    {
+      "id": 137,
+      "name": "Fiorentina",
+      "stadium": "Stadio Artemio Franchi",
+      "reputation": 73
+    },
+    {
+      "id": 138,
+      "name": "Frosinone",
+      "stadium": "Stadio Benito Stirpe",
+      "reputation": 59
+    },
+    {
+      "id": 139,
+      "name": "Genoa",
+      "stadium": "Stadio Luigi Ferraris",
+      "reputation": 65
+    },
+    {
+      "id": 140,
+      "name": "Hellas Verona",
+      "stadium": "Stadio Marcantonio Bentegodi",
+      "reputation": 66
+    },
+    {
+      "id": 141,
+      "name": "Internazionale",
+      "stadium": "San Siro",
+      "reputation": 85
+    },
+    {
+      "id": 142,
+      "name": "Juventus",
+      "stadium": "Juventus Stadium",
+      "reputation": 87
+    },
+    {
+      "id": 143,
+      "name": "Lazio",
+      "stadium": "Stadio Olimpico",
+      "reputation": 78
+    },
+    {
+      "id": 144,
+      "name": "Lecce",
+      "stadium": "Stadio Via del mare",
+      "reputation": 61
+    },
+    {
+      "id": 145,
+      "name": "Monza",
+      "stadium": "Stadio Brianteo",
+      "reputation": 62
+    },
+    {
+      "id": 146,
+      "name": "Napoli",
+      "stadium": "Stadio Diego Armando Maradona",
+      "reputation": 80
+    },
+    {
+      "id": 147,
+      "name": "Salernitana",
+      "stadium": "Stadio Arechi",
+      "reputation": 62
+    },
+    {
+      "id": 148,
+      "name": "Sassuolo",
+      "stadium": "Mapei Stadium – Città del Tricolore",
+      "reputation": 68
+    },
+    {
+      "id": 149,
+      "name": "Torino",
+      "stadium": "Stadio Olimpico Grande Torino",
+      "reputation": 68
+    },
+    {
+      "id": 150,
+      "name": "Udinese",
+      "stadium": "Stadio Friuli",
+      "reputation": 66
+    }
+  ]  
+},
+{
+  "name": "Ligue 1",
+  "id": 8,
+  "relegatesTo": null,
+  "transferSpendMultiplier": 300000,
+  "teams": [
+    {
+      "id": 151,
+      "name": "AS Monaco",
+      "stadium": "Stade Louis II",
+      "reputation": 75
+    },
+    {
+      "id": 152,
+      "name": "Brest",
+      "stadium": "Stade Francis-Le Blé",
+      "reputation": 64
+    },
+    {
+      "id": 153,
+      "name": "Clermont",
+      "stadium": "Stade Gabriel Montpied",
+      "reputation": 63
+    },
+    {
+      "id": 154,
+      "name": "FC Metz",
+      "stadium": "Stade Saint-Symphorien",
+      "reputation": 62
+    },
+    {
+      "id": 155,
+      "name": "FC Nantes",
+      "stadium": "Stade de la Beaujoire",
+      "reputation": 67
+    },
+    {
+      "id": 156,
+      "name": "Havre AC",
+      "stadium": "Stade Océane",
+      "reputation": 58
+    },
+    {
+      "id": 157,
+      "name": "Lille",
+      "stadium": "Decathlon Arena Pierre Mauroy Stadium",
+      "reputation": 72
+    },
+    {
+      "id": 158,
+      "name": "Lorient",
+      "stadium": "Stade du Moustoir",
+      "reputation": 63
+    },
+    {
+      "id": 159,
+      "name": "Lyon",
+      "stadium": "Groupama Stadium",
+      "reputation": 78
+    },
+    {
+      "id": 160,
+      "name": "Marseille",
+      "stadium": "Orange Vélodrome",
+      "reputation": 78
+    },
+    {
+      "id": 161,
+      "name": "Montpellier",
+      "stadium": "Stade de la Mosson",
+      "reputation": 66
+    },
+    {
+      "id": 162,
+      "name": "OGC Nice",
+      "stadium": "Allianz Riviera",
+      "reputation": 71
+    },
+    {
+      "id": 163,
+      "name": "Paris Saint-Germain",
+      "stadium": "Parc des Princes",
+      "reputation": 88
+    },
+    {
+      "id": 164,
+      "name": "RC Lens",
+      "stadium": "Stade Bollaert-Delelis",
+      "reputation": 66
+    },
+    {
+      "id": 165,
+      "name": "Reims",
+      "stadium": "Stade Auguste Delaune",
+      "reputation": 65
+    },
+    {
+      "id": 166,
+      "name": "Rennes",
+      "stadium": "Roazhon Park",
+      "reputation": 73
+    },
+    {
+      "id": 167,
+      "name": "Strasbourg",
+      "stadium": "Stade de la Meinau",
+      "reputation": 66
+    },
+    {
+      "id": 168,
+      "name": "Toulouse",
+      "stadium": "Stadium Municipal",
+      "reputation": 64
+    }
+  ]  
+},
+{
+  "name": "Eredivisie",
+  "id": 9,
+  "relegatesTo": null,
+  "transferSpendMultiplier": 125000,
+  "teams": [
+    {
+      "id": 169,
+      "name": "Ajax",
+      "stadium": "Johan Cruijff ArenA",
+      "reputation": 79
+    },
+    {
+      "id": 170,
+      "name": "Almere City",
+      "stadium": "Yanmar Stadion",
+      "reputation": 51
+    },
+    {
+      "id": 171,
+      "name": "AZ",
+      "stadium": "AFAS Stadion",
+      "reputation": 68
+    },
+    {
+      "id": 172,
+      "name": "Excelsior",
+      "stadium": "Van Donge & De Roo Stadion",
+      "reputation": 49
+    },
+    {
+      "id": 173,
+      "name": "FC Twente",
+      "stadium": "De Grolsch Veste",
+      "reputation": 60
+    },
+    {
+      "id": 174,
+      "name": "FC Utrecht",
+      "stadium": "Stadion Galgenwaard",
+      "reputation": 66
+    },
+    {
+      "id": 175,
+      "name": "FC Volendam",
+      "stadium": "Kras Stadion",
+      "reputation": 50
+    },
+    {
+      "id": 176,
+      "name": "Feyenoord",
+      "stadium": "De Kuip",
+      "reputation": 70
+    },
+    {
+      "id": 177,
+      "name": "Fortuna Sittard",
+      "stadium": "Fortuna Sittard Stadion",
+      "reputation": 56
+    },
+    {
+      "id": 178,
+      "name": "Go Ahead",
+      "stadium": "De Adelaarshorst",
+      "reputation": 50
+    },
+    {
+      "id": 179,
+      "name": "Heerenveen",
+      "stadium": "Abe Lenstra Stadion",
+      "reputation": 61
+    },
+    {
+      "id": 180,
+      "name": "Heracles",
+      "stadium": "Erve Asito",
+      "reputation": 58
+    },
+    {
+      "id": 181,
+      "name": "NEC",
+      "stadium": "Goffertstadion",
+      "reputation": 55
+    },
+    {
+      "id": 182,
+      "name": "PEC Zwolle",
+      "stadium": "MAC³PARK Stadion",
+      "reputation": 57
+    },
+    {
+      "id": 183,
+      "name": "PSV",
+      "stadium": "Philips Stadion",
+      "reputation": 73
+    },
+    {
+      "id": 184,
+      "name": "RKC",
+      "stadium": "Mandemakers Stadion",
+      "reputation": 52
+    },
+    {
+      "id": 185,
+      "name": "Sparta",
+      "stadium": "Spartastadion Het Kasteel",
+      "reputation": 58
+    },
+    {
+      "id": 186,
+      "name": "Vitesse",
+      "stadium": "GelreDome",
+      "reputation": 64
+    }
+  ]  
+},
+{
+  "name": "Primeira Liga",
+  "id": 10,
+  "relegatesTo": null,
+  "transferSpendMultiplier": 125000,
+  "teams": [
+    {
+      "id": 187,
+      "name": "Arouca",
+      "stadium": "Estádio Municipal de Arouca",
+      "reputation": 55
+    },
+    {
+      "id": 188,
+      "name": "Benfica",
+      "stadium": "Estádio da Luz",
+      "reputation": 82
+    },
+    {
+      "id": 189,
+      "name": "Boavista",
+      "stadium": "Estádio do Bessa",
+      "reputation": 61
+    },
+    {
+      "id": 190,
+      "name": "Braga",
+      "stadium": "Estádio Municipal de Braga",
+      "reputation": 67
+    },
+    {
+      "id": 191,
+      "name": "Casa Pia",
+      "stadium": "Estádio Municipal de Rio Maior*",
+      "reputation": 55
+    },
+    {
+      "id": 192,
+      "name": "Chaves",
+      "stadium": "Estádio Municipal Eng.º Manuel Branco Teixeira",
+      "reputation": 56
+    },
+    {
+      "id": 193,
+      "name": "Estoril",
+      "stadium": "Estádio António Coimbra da Mota",
+      "reputation": 58
+    },
+    {
+      "id": 194,
+      "name": "Estrela da Amadora SAD",
+      "stadium": "Estádio José Gomes",
+      "reputation": 53
+    },
+    {
+      "id": 195,
+      "name": "Famalicão",
+      "stadium": "Estádio Municipal 22 de Junho",
+      "reputation": 58
+    },
+    {
+      "id": 196,
+      "name": "Farense",
+      "stadium": "Estádio de São Luís",
+      "reputation": 59
+    },
+    {
+      "id": 197,
+      "name": "Gil Vicente",
+      "stadium": "Estádio Cidade de Barcelos",
+      "reputation": 59
+    },
+    {
+      "id": 198,
+      "name": "Moreirense",
+      "stadium": "Parque de Jogos Comendador Joaquim de Almeida Freitas",
+      "reputation": 57
+    },
+    {
+      "id": 199,
+      "name": "Portimonense",
+      "stadium": "Estádio Municipal de Portimão",
+      "reputation": 57
+    },
+    {
+      "id": 200,
+      "name": "FC Porto",
+      "stadium": "Estádio do Dragão",
+      "reputation": 83
+    },
+    {
+      "id": 201,
+      "name": "Rio Ave",
+      "stadium": "Estádio dos Arcos",
+      "reputation": 58
+    },
+    {
+      "id": 202,
+      "name": "Sporting CP",
+      "stadium": "Estádio José Alvalade",
+      "reputation": 72
+    },
+    {
+      "id": 203,
+      "name": "Vitória Guimarães",
+      "stadium": "Estádio D. Afonso Henriques",
+      "reputation": 63
+    },
+    {
+      "id": 204,
+      "name": "Vizela",
+      "stadium": "Estádio do FC Vizela",
+      "reputation": 53
+    }
+  ]  
 }
 ]

@@ -10,7 +10,7 @@ export default function generateUniverse(userTeamID: number){
     universe.gameState = GameState.Start;
 
     // generate all leagues
-    for (let i = 1; i <= 4; i++){
+    for (let i = 1; i <= 10; i++){
         const league = new League(i);
         league.teams = generateTeams(league, userTeamID);
         league.schedule = league.generateSchedule();

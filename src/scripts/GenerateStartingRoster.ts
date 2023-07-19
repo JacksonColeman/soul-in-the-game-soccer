@@ -5,7 +5,7 @@ import { generatePlayer} from "./GeneratePlayers";
 
 export default function generateStartingRoster(team: Team): Player[]{
     const roster: Player[] = [];
-    const ability = (team.reputation + 100)/2 - 15;
+    const ability = (team.reputation + 100)/2 - 10;
     let player;
 
     if (team.manager == null){
