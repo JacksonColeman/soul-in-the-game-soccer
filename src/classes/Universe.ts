@@ -277,8 +277,6 @@ function unpackageLeagueData(packagedLeague: {
     // rebuild schedule
     const schedule = unpackageSchedule(league, scheduleData);
     league.schedule = schedule;
-    league.generateWeightedAttributeTotals();
-
     return league;
 }
 

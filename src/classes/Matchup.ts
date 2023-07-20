@@ -47,42 +47,54 @@ export class Matchup {
       const awayStarters = this.awayLineup.starterArray;
       const allStarters = homeStarters.concat(awayStarters);
 
-      // attribute ratios
-      const homeAttributeRatios = this.homeTeam.attributeRatios(this.league);
-      const awayAttributeRatios = this.awayTeam.attributeRatios(this.league);
+      // attribute totals
+      const homeAttributeTotals = this.homeTeam.lineup.weightedAttributeTotals;
+      const awayAttributeTotals = this.awayTeam.lineup.weightedAttributeTotals;
 
       // currently, goalkeeper has no impact - fix this?
 
-      const homeTeamAttackProxy = (homeAttributeRatios[PlayerAttribute.Passing] * 10 + 
-                                  homeAttributeRatios[PlayerAttribute.Shooting] * 10 +
-                                  homeAttributeRatios[PlayerAttribute.Speed] * 10 +
-                                  homeAttributeRatios[PlayerAttribute.Mental] * 10 +
-                                  homeAttributeRatios[PlayerAttribute.Physical] * 5 +
-                                  homeAttributeRatios[PlayerAttribute.Defending] * 1)/46
+      const homeTeamAttackProxy = (homeAttributeTotals[PlayerAttribute.Passing] * 10 + 
+                                  homeAttributeTotals[PlayerAttribute.Shooting] * 10 +
+                                  homeAttributeTotals[PlayerAttribute.Speed] * 10 +
+                                  homeAttributeTotals[PlayerAttribute.Mental] * 10 +
+                                  homeAttributeTotals[PlayerAttribute.Physical] * 5 +
+                                  homeAttributeTotals[PlayerAttribute.Defending] * 1 + 
+                                  homeAttributeTotals[PlayerAttribute.GKKicking] * 1)/47
 
-      const homeTeamDefendProxy = (homeAttributeRatios[PlayerAttribute.Passing] * 5 + 
-                                  homeAttributeRatios[PlayerAttribute.Shooting] * 1 +
-                                  homeAttributeRatios[PlayerAttribute.Speed] * 5 +
-                                  homeAttributeRatios[PlayerAttribute.Mental] * 8 +
-                                  homeAttributeRatios[PlayerAttribute.Physical] * 8 +
-                                  homeAttributeRatios[PlayerAttribute.Defending] * 10)/37 
+      const homeTeamDefendProxy = (homeAttributeTotals[PlayerAttribute.Passing] * 5 + 
+                                  homeAttributeTotals[PlayerAttribute.Shooting] * 1 +
+                                  homeAttributeTotals[PlayerAttribute.Speed] * 5 +
+                                  homeAttributeTotals[PlayerAttribute.Mental] * 8 +
+                                  homeAttributeTotals[PlayerAttribute.Physical] * 8 +
+                                  homeAttributeTotals[PlayerAttribute.Defending] * 10 + 
+                                  homeAttributeTotals[PlayerAttribute.GKAgility] * 1 +
+                                  homeAttributeTotals[PlayerAttribute.GKHandling] * 1 + 
+                                  homeAttributeTotals[PlayerAttribute.GKPositioning] * .63 +
+                                  homeAttributeTotals[PlayerAttribute.GKReach] * .75 +
+                                  homeAttributeTotals[PlayerAttribute.GKReflexes] * 1)/41.38 
 
-      const awayTeamAttackProxy = (awayAttributeRatios[PlayerAttribute.Passing] * 10 + 
-                                  awayAttributeRatios[PlayerAttribute.Shooting] * 10 +
-                                  awayAttributeRatios[PlayerAttribute.Speed] * 10 +
-                                  awayAttributeRatios[PlayerAttribute.Mental] * 10 +
-                                  awayAttributeRatios[PlayerAttribute.Physical] * 5 +
-                                  awayAttributeRatios[PlayerAttribute.Defending] * 1)/46
+      const awayTeamAttackProxy = (awayAttributeTotals[PlayerAttribute.Passing] * 10 + 
+                                  awayAttributeTotals[PlayerAttribute.Shooting] * 10 +
+                                  awayAttributeTotals[PlayerAttribute.Speed] * 10 +
+                                  awayAttributeTotals[PlayerAttribute.Mental] * 10 +
+                                  awayAttributeTotals[PlayerAttribute.Physical] * 5 +
+                                  awayAttributeTotals[PlayerAttribute.Defending] * 1 + 
+                                  awayAttributeTotals[PlayerAttribute.GKKicking] * 1)/47
 
-      const awayTeamDefendProxy = (awayAttributeRatios[PlayerAttribute.Passing] * 5 + 
-                                  awayAttributeRatios[PlayerAttribute.Shooting] * 1 +
-                                  awayAttributeRatios[PlayerAttribute.Speed] * 5 +
-                                  awayAttributeRatios[PlayerAttribute.Mental] * 8 +
-                                  awayAttributeRatios[PlayerAttribute.Physical] * 8 +
-                                  awayAttributeRatios[PlayerAttribute.Defending] * 10)/37
+      const awayTeamDefendProxy = (awayAttributeTotals[PlayerAttribute.Passing] * 5 + 
+                                  awayAttributeTotals[PlayerAttribute.Shooting] * 1 +
+                                  awayAttributeTotals[PlayerAttribute.Speed] * 5 +
+                                  awayAttributeTotals[PlayerAttribute.Mental] * 8 +
+                                  awayAttributeTotals[PlayerAttribute.Physical] * 8 +
+                                  awayAttributeTotals[PlayerAttribute.Defending] * 10 +
+                                  awayAttributeTotals[PlayerAttribute.GKAgility] * 1 +
+                                  awayAttributeTotals[PlayerAttribute.GKHandling] * 1 + 
+                                  awayAttributeTotals[PlayerAttribute.GKPositioning] * .63 +
+                                  awayAttributeTotals[PlayerAttribute.GKReach] * .75 +
+                                  awayAttributeTotals[PlayerAttribute.GKReflexes] * 1)/41.38 
 
-      let homeScoreMean = this.league.avgGoals * (homeTeamAttackProxy) * ((1/awayTeamDefendProxy)) *1.05;
-      let awayScoreMean = this.league.avgGoals * (awayTeamAttackProxy) * ((1/homeTeamDefendProxy)) * 0.95; 
+      let homeScoreMean = this.league.avgGoals * (homeTeamAttackProxy/awayTeamDefendProxy) *1.05;
+      let awayScoreMean = this.league.avgGoals * (awayTeamAttackProxy/homeTeamDefendProxy) * 0.95; 
 
       // by minute simulation
       let homeScoreMean90 = homeScoreMean/90;

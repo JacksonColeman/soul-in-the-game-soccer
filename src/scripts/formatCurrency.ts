@@ -12,7 +12,7 @@ export function formatCurrency (labelValue: number) {
     // Three Zeroes for Thousands
     : Math.abs(Number(labelValue)) >= 1.0e+3
   
-    ? (Math.abs(Number(labelValue)) / 1.0e+3).toFixed(1) + "K"
+    ? (Math.abs(Number(labelValue)) / 1.0e+3).toFixed(0) + "K"
   
     : Math.abs(Number(labelValue));
   

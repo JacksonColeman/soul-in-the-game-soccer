@@ -94,9 +94,6 @@ function App() {
     // generate rosters
     generateRosters(newUniverse);
     //
-    for (const league of newUniverse.leagues){
-        league.generateWeightedAttributeTotals();
-    }
     newUniverse.saveUniverse();
     setUniverse(newUniverse);
     setGameState(GameState.Season);

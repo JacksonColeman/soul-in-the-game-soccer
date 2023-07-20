@@ -164,7 +164,7 @@ f = new Formation("4-1-2-3",f4123, s4123, dcw4123)
 formationList.push(f);
 f = new Formation("4-2-3-1",f4231, s4231, dcw4231)
 formationList.push(f);
-f = new Formation("3-5-2",f352, s352, dcw352)
-formationList.push(f);
+// f = new Formation("3-5-2",f352, s352, dcw352)
+// formationList.push(f);
 
 export {formationList};

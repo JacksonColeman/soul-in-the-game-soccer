@@ -181,8 +181,6 @@ export class Team {
       }
     }
 
-
-
     get points():number{ 
         return this.standingsInfo.wins*3 + this.standingsInfo.draws;
     }

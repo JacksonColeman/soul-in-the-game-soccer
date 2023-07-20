@@ -338,91 +338,91 @@ export class Lineup {
       }
 
       // lineup optimization
-      public optimizeLineup(): void {
-        // goalkeepers
-        const goalkeepers = this.allPlayers.filter(player => player.position == PlayerPosition.GK && !player.injured).sort((a, b) => b.overallAtPosition(PlayerPosition.GK) - a.overallAtPosition(PlayerPosition.GK));
-        if (goalkeepers.length < 2){
-          console.log(this.allPlayers[0].team?.name);
-          throw new Error("Not enough goalkeepers!")
-        };
+    public optimizeLineup(): void {
+      // goalkeepers
+      const goalkeepers = this.allPlayers.filter(player => player.position == PlayerPosition.GK && !player.injured).sort((a, b) => b.overallAtPosition(PlayerPosition.GK) - a.overallAtPosition(PlayerPosition.GK));
+      if (goalkeepers.length < 2){
+        console.log(this.allPlayers[0].team?.name);
+        throw new Error("Not enough goalkeepers!")
+      };
 
-        // if best keeper isn't the starter
-        if (this.starters.GK[0] != goalkeepers[0]){
-          this.removePlayer(this.starters.GK[0]);
-          this.addStarter(goalkeepers[0], PlayerPosition.GK);
-        }
-        // 2nd best goalkeeper on bench;
-        this.bench[0] = goalkeepers[1];
-        // Remove other goalkeepers from the bench
-
-        // outfield players
-        let swapped = false;
-        const starters = this.starterArray.filter(p => p.position != PlayerPosition.GK);
-      
-        // Iterate over each pair of starters
-        for (let i = 0; i < starters.length; i++) {
-          // check swaps with other starters
-          const player1 = starters[i];
-          for (let j = i + 1; j < starters.length; j++) {
-            if (i == j){
-              continue; // don't check same player against themselves
-            }
-            
-            const player2 = starters[j];
-      
-            // Evaluate if swapping players increases overall value
-            if (this.evaluateSwap(player1, player2) > 0) {
-              // Perform the swap
-              this.swapStarters(player1, player2);
-              swapped = true;
-            }
-          }
-          // check swaps with bench;
-          // start at index 1 to ignore keeper
-          for (let b = 1; b < this.bench.length; b++){
-            const player2 = this.bench[b];
-            if (player2.position == PlayerPosition.GK){
-              continue;
-            }
-            // Evaluate if swapping players increases overall value
-            if (this.evaluateSwap(player1, player2) > 0) {
-              // Perform the swap
-              this.swapStarterToBench(player1, player2);
-              swapped = true;
-            }
-          }
-          // check swaps with reserves
-          for (let r = 0; r < this.reserves.length; r++){
-            const player2 = this.reserves[r];
-            if (player2.position == PlayerPosition.GK){
-              continue;
-            }
-            // Evaluate if swapping players increases overall value
-            if (this.evaluateSwap(player1, player2) > 0) {
-              // Perform the swap
-              this.swapStarterToReserve(player1, player2);
-              swapped = true;
-            }
-          }
-
-        }
-        // If any swaps were performed, recursively optimize the lineup again
-        if (swapped) {
-          this.optimizeLineup();
-        }
-
-        // optimize bench
-        // get all non starting outfield players
-        const nonStarters = this.allPlayers.filter(p => !this.starterArray.includes(p) && p.position != PlayerPosition.GK).sort((a, b) => b.effectiveOverallRating - a.effectiveOverallRating);
-        for (let b = 1; b < this.maxBenchSize; b++){
-          const p = nonStarters.shift();
-          if (!p){throw new Error("not enough players!")}
-          this.bench[b] = p;
-        }
-
-        const reservePlayers = this.allPlayers.filter(p => !this.starterArray.includes(p) && !this.bench.includes(p));
-        this.reserves = reservePlayers;
+      // if best keeper isn't the starter
+      if (this.starters.GK[0] != goalkeepers[0]){
+        this.removePlayer(this.starters.GK[0]);
+        this.addStarter(goalkeepers[0], PlayerPosition.GK);
       }
+      // 2nd best goalkeeper on bench;
+      this.bench[0] = goalkeepers[1];
+      // Remove other goalkeepers from the bench
+
+      // outfield players
+      let swapped = false;
+      const starters = this.starterArray.filter(p => p.position != PlayerPosition.GK);
+    
+      // Iterate over each pair of starters
+      for (let i = 0; i < starters.length; i++) {
+        // check swaps with other starters
+        const player1 = starters[i];
+        for (let j = i + 1; j < starters.length; j++) {
+          if (i == j){
+            continue; // don't check same player against themselves
+          }
+          
+          const player2 = starters[j];
+    
+          // Evaluate if swapping players increases overall value
+          if (this.evaluateSwap(player1, player2) > 0) {
+            // Perform the swap
+            this.swapStarters(player1, player2);
+            swapped = true;
+          }
+        }
+        // check swaps with bench;
+        // start at index 1 to ignore keeper
+        for (let b = 1; b < this.bench.length; b++){
+          const player2 = this.bench[b];
+          if (player2.position == PlayerPosition.GK){
+            continue;
+          }
+          // Evaluate if swapping players increases overall value
+          if (this.evaluateSwap(player1, player2) > 0) {
+            // Perform the swap
+            this.swapStarterToBench(player1, player2);
+            swapped = true;
+          }
+        }
+        // check swaps with reserves
+        for (let r = 0; r < this.reserves.length; r++){
+          const player2 = this.reserves[r];
+          if (player2.position == PlayerPosition.GK){
+            continue;
+          }
+          // Evaluate if swapping players increases overall value
+          if (this.evaluateSwap(player1, player2) > 0) {
+            // Perform the swap
+            this.swapStarterToReserve(player1, player2);
+            swapped = true;
+          }
+        }
+
+      }
+      // If any swaps were performed, recursively optimize the lineup again
+      if (swapped) {
+        this.optimizeLineup();
+      }
+
+      // optimize bench
+      // get all non starting outfield players
+      const nonStarters = this.allPlayers.filter(p => !this.starterArray.includes(p) && p.position != PlayerPosition.GK).sort((a, b) => b.effectiveOverallRating - a.effectiveOverallRating);
+      for (let b = 1; b < this.maxBenchSize; b++){
+        const p = nonStarters.shift();
+        if (!p){throw new Error("not enough players!")}
+        this.bench[b] = p;
+      }
+
+      const reservePlayers = this.allPlayers.filter(p => !this.starterArray.includes(p) && !this.bench.includes(p));
+      this.reserves = reservePlayers;
+    }
 
      get weightedAttributeTotals(): { [key: string]: number }{
         const attributeTotals: { [key: string]: number } = {
@@ -458,6 +458,14 @@ export class Lineup {
               attributeTotals[PlayerAttribute.Physical] += p.attributes[PlayerAttribute.Physical] * 109* (p.condition/100);
               attributeTotals[PlayerAttribute.Shooting] += p.attributes[PlayerAttribute.Shooting] * 22* (p.condition/100);
               attributeTotals[PlayerAttribute.Speed] += p.attributes[PlayerAttribute.Speed] * 130* (p.condition/100);
+            }
+            if (position == PlayerPosition.LWB || position == PlayerPosition.RWB){
+              attributeTotals[PlayerAttribute.Defending] += p.attributes[PlayerAttribute.Defending] * 53 * (p.condition/100);
+              attributeTotals[PlayerAttribute.Mental] += p.attributes[PlayerAttribute.Mental] * 74 * (p.positionFamiliarity[position]/100)* (p.condition/100);
+              attributeTotals[PlayerAttribute.Passing] += p.attributes[PlayerAttribute.Passing] * 85* (p.condition/100);
+              attributeTotals[PlayerAttribute.Physical] += p.attributes[PlayerAttribute.Physical] * 117* (p.condition/100);
+              attributeTotals[PlayerAttribute.Shooting] += p.attributes[PlayerAttribute.Shooting] * 21* (p.condition/100);
+              attributeTotals[PlayerAttribute.Speed] += p.attributes[PlayerAttribute.Speed] * 149* (p.condition/100);
             }
             if (position == PlayerPosition.LM || position == PlayerPosition.RM){
               attributeTotals[PlayerAttribute.Defending] += p.attributes[PlayerAttribute.Defending] * 31* (p.condition/100);
@@ -524,11 +532,11 @@ export class Lineup {
         return attributeTotals;
       }
 
-      public changeFormation(newFormation: Formation){
-        this.clearLineup();
-        this.formation = newFormation;
-        this.buildNaiveLineup();
-        this.optimizeLineup();
-      }
+    public changeFormation(newFormation: Formation){
+      this.clearLineup();
+      this.formation = newFormation;
+      this.buildNaiveLineup();
+      this.optimizeLineup();
+    }
   }
   

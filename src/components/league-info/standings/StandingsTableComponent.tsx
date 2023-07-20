@@ -76,7 +76,7 @@ const StandingsTableComponent: React.FC<StandingsTableProps> = ({ league , userT
             <td className="stat-col">{team.goalDiff}</td>
             <td className="stat-col">{team.points}</td>
             {/* testing */}
-            <td className="stat-col">{team.reputation}</td>
+            <td className="stat-col">{Math.round(team.reputation)}</td>
           </tr>
         ))}
       </tbody>

@@ -278,9 +278,12 @@ export class Player {
 
   get value(): number{
     if (this.age > 39){
-      return (1.1 ** this.overallRating) * 1000;
+      return (1.145 ** (this.overallRating - 30)) * 1000;
     }
-    let val = (1.1 ** this.overallRating) * 1000 * (40 - this.age);
+    let val = (1.145 ** (this.overallRating - 30)) * 1000 * (40 - this.age);
+    if (val < 0){
+      val = 1000;
+    }
     return val;
   }
 

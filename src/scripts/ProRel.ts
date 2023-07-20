@@ -7,7 +7,6 @@ export function ProRel(relegatingLeague: League, promotingLeague: League, n: num
   
     relegatingLeague.playAllMatches();
     promotingLeague.playAllMatches();
-    console.log(promotingLeague);
   
     // Get the 3 lowest teams in points in the relegating league
     const relegatingTeamsSorted = [...relegatingLeague.teams].sort((a, b) => {
