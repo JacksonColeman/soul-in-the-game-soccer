@@ -171,6 +171,15 @@ export class Team {
         if (p.transferred){
           continue;
         }
+        if (p.position == PlayerPosition.GK){
+          if ((this.positionCount(PlayerPosition.GK) > 3) || (p.team.positionCount(PlayerPosition.GK) < 3)){
+            continue;
+          }
+        } else {
+          if (p.team.outfieldCount() <= 18){
+            continue;
+          }
+        }
         if (Math.random() > 0.5){
           console.log(`${this.name} sign ${p.name} (${p.position} ${p.overallRating}) from ${p.team.name} for ${formatCurrency(p.marketValue)}`)
           const t = new Transfer(p, this, p.team, p.marketValue);
@@ -189,29 +198,15 @@ export class Team {
         return this.standingsInfo.goalsFor - this.standingsInfo.goalsAgainst;
     }
 
-    attributeRatios(league: League){
-      const lgAVGWTS = league.weightedAttributeTotals;
-      const userWTS = this.lineup.weightedAttributeTotals;
-      const attributeTotals = {
-        //gk
-        [PlayerAttribute.GKAgility]: userWTS[PlayerAttribute.GKAgility] / lgAVGWTS[PlayerAttribute.GKAgility],
-        [PlayerAttribute.GKHandling]: userWTS[PlayerAttribute.GKHandling] / lgAVGWTS[PlayerAttribute.GKHandling],
-        [PlayerAttribute.GKKicking]: userWTS[PlayerAttribute.GKKicking] / lgAVGWTS[PlayerAttribute.GKKicking],
-        [PlayerAttribute.GKReach]: userWTS[PlayerAttribute.GKReach] / lgAVGWTS[PlayerAttribute.GKReach],
-        [PlayerAttribute.GKReflexes]: userWTS[PlayerAttribute.GKReflexes] / lgAVGWTS[PlayerAttribute.GKReflexes],
-        [PlayerAttribute.GKPositioning]: userWTS[PlayerAttribute.GKPositioning] / lgAVGWTS[PlayerAttribute.GKPositioning],
-        // of
-        [PlayerAttribute.Defending]: userWTS[PlayerAttribute.Defending] / lgAVGWTS[PlayerAttribute.Defending],
-        [PlayerAttribute.Mental]: userWTS[PlayerAttribute.Mental] / lgAVGWTS[PlayerAttribute.Mental],
-        [PlayerAttribute.Passing]: userWTS[PlayerAttribute.Passing] / lgAVGWTS[PlayerAttribute.Passing],
-        [PlayerAttribute.Physical]: userWTS[PlayerAttribute.Physical] / lgAVGWTS[PlayerAttribute.Physical],
-        [PlayerAttribute.Shooting]: userWTS[PlayerAttribute.Shooting] / lgAVGWTS[PlayerAttribute.Shooting],
-        [PlayerAttribute.Speed]: userWTS[PlayerAttribute.Speed] / lgAVGWTS[PlayerAttribute.Speed]
-      }
-      return attributeTotals;
-    }
-
     public getPlayerByID(id: string): Player | undefined {
       return this.roster.find((player) => player.id === id);
+    }
+
+    positionCount(position: PlayerPosition): number {
+      return this.roster.filter((player) => player.position === position).length;
+    }
+
+    outfieldCount(){
+      return this.roster.filter(player => player.position != PlayerPosition.GK).length;
     }
   }

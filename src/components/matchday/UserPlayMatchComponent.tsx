@@ -94,7 +94,7 @@ const UserPlayMatchComponent: React.FC<UserPlayMatchComponentProps> = ({ univers
       }
     homeTeam.inMatchStats.matchMinutes++;
     awayTeam.inMatchStats.matchMinutes++;
-    universe.saveUniverse();
+    // universe.saveUniverse();
     setMinute(minute + 1);
   };
 
@@ -166,38 +166,54 @@ const UserPlayMatchComponent: React.FC<UserPlayMatchComponentProps> = ({ univers
 
 
   // attribute totals
-      const homeAttributeTotals = matchup.homeTeam.lineup.weightedAttributeTotals;
-      const awayAttributeTotals = matchup.awayTeam.lineup.weightedAttributeTotals;
+      const homeAttributeAverages = matchup.homeTeam.lineup.weightedAttributeAverages;
+      const awayAttributeAverages = matchup.awayTeam.lineup.weightedAttributeAverages;
 
       // currently, goalkeeper has no impact - fix this?
 
-      const homeTeamAttackProxy = (homeAttributeTotals[PlayerAttribute.Passing] * 10 + 
-                                  homeAttributeTotals[PlayerAttribute.Shooting] * 10 +
-                                  homeAttributeTotals[PlayerAttribute.Speed] * 10 +
-                                  homeAttributeTotals[PlayerAttribute.Mental] * 10 +
-                                  homeAttributeTotals[PlayerAttribute.Physical] * 5 +
-                                  homeAttributeTotals[PlayerAttribute.Defending] * 1)/46
+      const homeTeamAttackProxy = (homeAttributeAverages[PlayerAttribute.Passing] * 10 + 
+        homeAttributeAverages[PlayerAttribute.Shooting] * 10 +
+        homeAttributeAverages[PlayerAttribute.Speed] * 10 +
+        homeAttributeAverages[PlayerAttribute.Mental] * 10 +
+        homeAttributeAverages[PlayerAttribute.Physical] * 5 +
+        homeAttributeAverages[PlayerAttribute.Defending] * 1 + 
+        homeAttributeAverages[PlayerAttribute.GKKicking] * 0.5)/46.5
 
-      const homeTeamDefendProxy = (homeAttributeTotals[PlayerAttribute.Passing] * 5 + 
-                                  homeAttributeTotals[PlayerAttribute.Shooting] * 1 +
-                                  homeAttributeTotals[PlayerAttribute.Speed] * 5 +
-                                  homeAttributeTotals[PlayerAttribute.Mental] * 8 +
-                                  homeAttributeTotals[PlayerAttribute.Physical] * 8 +
-                                  homeAttributeTotals[PlayerAttribute.Defending] * 10)/37 
+      const homeTeamDefendProxy = (homeAttributeAverages[PlayerAttribute.Passing] * 5 + 
+              homeAttributeAverages[PlayerAttribute.Shooting] * 1 +
+              homeAttributeAverages[PlayerAttribute.Speed] * 5 +
+              homeAttributeAverages[PlayerAttribute.Mental] * 8 +
+              homeAttributeAverages[PlayerAttribute.Physical] * 8 +
+              homeAttributeAverages[PlayerAttribute.Defending] * 10 + 
+              // goalkeeper
+              homeAttributeAverages[PlayerAttribute.GKAgility] * 1 +
+              homeAttributeAverages[PlayerAttribute.GKHandling] * 1 + 
+              homeAttributeAverages[PlayerAttribute.GKPositioning] * .63 +
+              homeAttributeAverages[PlayerAttribute.GKReach] * .75 +
+              homeAttributeAverages[PlayerAttribute.GKReflexes] * 1 + 
+              homeAttributeAverages[PlayerAttribute.GKKicking] * 0.5)/41.88 
 
-      const awayTeamAttackProxy = (awayAttributeTotals[PlayerAttribute.Passing] * 10 + 
-                                  awayAttributeTotals[PlayerAttribute.Shooting] * 10 +
-                                  awayAttributeTotals[PlayerAttribute.Speed] * 10 +
-                                  awayAttributeTotals[PlayerAttribute.Mental] * 10 +
-                                  awayAttributeTotals[PlayerAttribute.Physical] * 5 +
-                                  awayAttributeTotals[PlayerAttribute.Defending] * 1)/46
+      const awayTeamAttackProxy = (awayAttributeAverages[PlayerAttribute.Passing] * 10 + 
+              awayAttributeAverages[PlayerAttribute.Shooting] * 10 +
+              awayAttributeAverages[PlayerAttribute.Speed] * 10 +
+              awayAttributeAverages[PlayerAttribute.Mental] * 10 +
+              awayAttributeAverages[PlayerAttribute.Physical] * 5 +
+              awayAttributeAverages[PlayerAttribute.Defending] * 1 + 
+              awayAttributeAverages[PlayerAttribute.GKKicking] * 0.5)/46.5
 
-      const awayTeamDefendProxy = (awayAttributeTotals[PlayerAttribute.Passing] * 5 + 
-                                  awayAttributeTotals[PlayerAttribute.Shooting] * 1 +
-                                  awayAttributeTotals[PlayerAttribute.Speed] * 5 +
-                                  awayAttributeTotals[PlayerAttribute.Mental] * 8 +
-                                  awayAttributeTotals[PlayerAttribute.Physical] * 8 +
-                                  awayAttributeTotals[PlayerAttribute.Defending] * 10)/37
+      const awayTeamDefendProxy = (awayAttributeAverages[PlayerAttribute.Passing] * 5 + 
+              awayAttributeAverages[PlayerAttribute.Shooting] * 1 +
+              awayAttributeAverages[PlayerAttribute.Speed] * 5 +
+              awayAttributeAverages[PlayerAttribute.Mental] * 8 +
+              awayAttributeAverages[PlayerAttribute.Physical] * 8 +
+              awayAttributeAverages[PlayerAttribute.Defending] * 10 +
+              // goalkeeper
+              awayAttributeAverages[PlayerAttribute.GKAgility] * 1 +
+              awayAttributeAverages[PlayerAttribute.GKHandling] * 1 + 
+              awayAttributeAverages[PlayerAttribute.GKPositioning] * .63 +
+              awayAttributeAverages[PlayerAttribute.GKReach] * .75 +
+              awayAttributeAverages[PlayerAttribute.GKReflexes] * 1 + 
+              awayAttributeAverages[PlayerAttribute.GKKicking] * 0.5)/41.88 
 
       let homeScoreMean = 1.43 * (homeTeamAttackProxy/awayTeamDefendProxy) *1.05;
       let awayScoreMean = 1.43 * (awayTeamAttackProxy/homeTeamDefendProxy) * 0.95; 
@@ -210,7 +226,7 @@ const UserPlayMatchComponent: React.FC<UserPlayMatchComponentProps> = ({ univers
     let intervalId: NodeJS.Timeout;
 
     if (playPause && minute < 90) {
-      intervalId = setInterval(matchInProgress, 100);
+      intervalId = setInterval(matchInProgress, 10);
     }
 
     if (minute == 45 && half == 1){

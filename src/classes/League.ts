@@ -38,72 +38,35 @@ export class League{
       return weekMatchups;
     }
 
+    addTeam(team: Team){
+      this.teams.push(team);
+    }
+
     playWeekMatches(week: number){
       const weekMatchups = this.schedule[week - 1];
       for (const matchup of weekMatchups){
         if (!matchup.played) {
-          matchup.playMatch();
+          if (this.id > 4){ // non english leagues have simpler sim
+            matchup.playMatchSuperSimplified();
+          } else { 
+            matchup.playMatchSimplified();
+          }
         }
       }
-    }
-
-    addTeam(team: Team){
-      this.teams.push(team);
     }
 
     playAllMatches(){
       for (const week of this.schedule){
         for (const matchup of week){
           if (!matchup.played) {
-            matchup.playMatch();
+            if (this.id > 4){ // non english leagues have simpler sim
+              matchup.playMatchSuperSimplified();
+            } else { 
+              matchup.playMatchSimplified();
+            }
           }
         }
       }
-    }
-
-    public weightedAttributeTotals: { [key: string]: number } = {
-      [PlayerAttribute.Defending]: 0,
-      [PlayerAttribute.Mental]: 0,
-      [PlayerAttribute.Passing]: 0,
-      [PlayerAttribute.Physical]: 0,
-      [PlayerAttribute.Shooting]: 0,
-      [PlayerAttribute.Speed]: 0,
-      [PlayerAttribute.GKAgility]: 0,
-      [PlayerAttribute.GKHandling]: 0,
-      [PlayerAttribute.GKKicking]: 0,
-      [PlayerAttribute.GKReach]: 0,
-      [PlayerAttribute.GKReflexes]: 0,
-      [PlayerAttribute.GKPositioning]: 0
-    };
-
-    generateWeightedAttributeTotals(){
-      const attributeTotals: { [key: string]: number } = {
-        [PlayerAttribute.Defending]: 0,
-        [PlayerAttribute.Mental]: 0,
-        [PlayerAttribute.Passing]: 0,
-        [PlayerAttribute.Physical]: 0,
-        [PlayerAttribute.Shooting]: 0,
-        [PlayerAttribute.Speed]: 0,
-        [PlayerAttribute.GKAgility]: 0,
-        [PlayerAttribute.GKHandling]: 0,
-        [PlayerAttribute.GKKicking]: 0,
-        [PlayerAttribute.GKReach]: 0,
-        [PlayerAttribute.GKReflexes]: 0,
-        [PlayerAttribute.GKPositioning]: 0
-      };
-
-      for (const team of this.teams){
-        const weightedAtts = team.lineup.weightedAttributeTotals;
-        for (const attr in attributeTotals){
-          attributeTotals[attr] += weightedAtts[attr as PlayerAttribute];
-        }
-      }
-
-      for (const attr in attributeTotals){
-        attributeTotals[attr as PlayerAttribute] /= this.teams.length;
-      }
-
-      this.weightedAttributeTotals = attributeTotals;
     }
 
     generateSchedule(): Matchup[][] {

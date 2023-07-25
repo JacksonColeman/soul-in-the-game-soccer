@@ -6,6 +6,6 @@ type PositionAmounts = {
 };
 
 export class Formation {
-  constructor(public name: string, public positionRequirements: PositionAmounts, public gameStartAmounts: PositionAmounts, public depthChartWeights: DepthChartWeights) {}
+  constructor(public name: string, public positionRequirements: PositionAmounts, public gameStartAmounts: any, public depthChartWeights: DepthChartWeights) {}
 }
 

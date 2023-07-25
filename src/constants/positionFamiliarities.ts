@@ -67,6 +67,21 @@ export const getPositionFamiliarity = (position: PlayerPosition): Record<PlayerP
         positionFamiliarity[PlayerPosition.RW] = 40;
         positionFamiliarity[PlayerPosition.ST] = 30;
         break;
+      case PlayerPosition.LWB: // first vertical row = -10, each additional row = -20, moving inside/outside = -10, other side = -5
+        positionFamiliarity[PlayerPosition.LB] = 90;
+        positionFamiliarity[PlayerPosition.CB] = 80;
+        positionFamiliarity[PlayerPosition.RB] = 85; // -20 into midfield
+        positionFamiliarity[PlayerPosition.LWB] = 100;
+        positionFamiliarity[PlayerPosition.CDM] = 90;
+        positionFamiliarity[PlayerPosition.RWB] = 95;
+        positionFamiliarity[PlayerPosition.LM] = 90;
+        positionFamiliarity[PlayerPosition.CM] = 80;
+        positionFamiliarity[PlayerPosition.RM] = 85; // -20 into attacking mid
+        positionFamiliarity[PlayerPosition.LW] = 70;
+        positionFamiliarity[PlayerPosition.CAM] = 60;
+        positionFamiliarity[PlayerPosition.RW] = 65; // - 20 into striker
+        positionFamiliarity[PlayerPosition.ST] = 40;
+        break;
       case PlayerPosition.CDM:
         positionFamiliarity[PlayerPosition.LB] = 80;
         positionFamiliarity[PlayerPosition.CB] = 90;
@@ -81,6 +96,21 @@ export const getPositionFamiliarity = (position: PlayerPosition): Record<PlayerP
         positionFamiliarity[PlayerPosition.CAM] = 70;
         positionFamiliarity[PlayerPosition.RW] = 60;
         positionFamiliarity[PlayerPosition.ST] = 50;
+        break;
+      case PlayerPosition.RWB: // first vertical row = -10, each additional row = -20, moving inside/outside = -10, other side = -5
+        positionFamiliarity[PlayerPosition.LB] = 85;
+        positionFamiliarity[PlayerPosition.CB] = 80;
+        positionFamiliarity[PlayerPosition.RB] = 90; // -20 into midfield
+        positionFamiliarity[PlayerPosition.LWB] = 95;
+        positionFamiliarity[PlayerPosition.CDM] = 90;
+        positionFamiliarity[PlayerPosition.RWB] = 100;
+        positionFamiliarity[PlayerPosition.LM] = 85;
+        positionFamiliarity[PlayerPosition.CM] = 80;
+        positionFamiliarity[PlayerPosition.RM] = 90; // -20 into attacking mid
+        positionFamiliarity[PlayerPosition.LW] = 65;
+        positionFamiliarity[PlayerPosition.CAM] = 60;
+        positionFamiliarity[PlayerPosition.RW] = 70; // - 20 into striker
+        positionFamiliarity[PlayerPosition.ST] = 40;
         break;
       case PlayerPosition.LM:
         positionFamiliarity[PlayerPosition.LB] = 70;

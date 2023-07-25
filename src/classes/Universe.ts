@@ -168,24 +168,61 @@ export class Universe {
         localStorage.setItem('universe', JSON.stringify(packagedUniverse))
     }
 
+    // handle transfer listing
+    handleTransferListing(){
+        let listCount = 0;
+        let playingTime = 0;
+        let tooGood = 0;
+        for (const p of this.allPlayers){
+            if (!p.team || !p.careerStats[this.year-1]){
+                continue;
+            }
+            if (p.careerStats[this.year-1].matchesPlayed < (p.team.league.teams.length - 1) && p.careerStats[this.year-1].overall > p.team.reputation ** .98 && p.age > 22){
+                // console.log(`${p.team.name} transfer listed ${p.overallRating} ${p.position} ${p.name}, playing time`)
+                p.transferListed = true;
+                p.marketValue /= 2;
+                listCount++;
+                playingTime++;
+            }
+            else if (p.overallRating > p.team.reputation ** 1.05){
+                // console.log(`${p.team.name} transfer listed ${p.overallRating} ${p.position} ${p.name}, Team Rep: ${p.team.reputation}`)
+                p.transferListed = true;
+                p.marketValue /= 2;
+                listCount++;
+                tooGood++;
+            }
+        }
+        // console.log(`Total players transfer listed: ${listCount}`)
+        // console.log(`For playing time: ${playingTime}`)
+        // console.log(`For outgrowing club: ${tooGood}`)
+    }
+
     // transfers
     handleTransferRound(){
-        for (let i = 0; i < 50; i++){
+        const allListed = this.allPlayers.filter(p => p.transferListed);
+        for (let i = 0; i < 10; i++){
             for (const lg of this.leagues){
                 for (const tm of lg.teams){
-                tm.identifyTransferTargets(this.allPlayers);
+                    tm.identifyTransferTargets(allListed);
                 }
             }
-            for (const player of this.allPlayers){
+            for (const player of allListed){
                 player.updateMarketValue();
             }
         }
+        
         for (const lg of this.leagues){
             for (const tm of lg.teams){
-            tm.makeTransferOffers();
+                tm.identifyTransferTargets(allListed);
+                tm.makeTransferOffers();
             }
         }
     }
+
+    // create transfer tranches
+    // logic: transfers only within league for tier 2 leagues (port, ned)
+    // elite players tier: 85 overall+? for top teams
+    // wonderkids tranche: 75+ and under 21?
 }
 
 export function getStoredUniverse(): Universe{

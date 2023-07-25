@@ -47,11 +47,11 @@ function App() {
       }
       setUniverse(storedUniverse);
       setGameState(storedUniverse.gameState);
-      if (storedUniverse.gameState = GameState.Season){
+      if (storedUniverse.gameState == GameState.Season){
         navigate('/season')
         handleWeekState(storedUniverse.weekState);
       }
-      if (storedUniverse.gameState = GameState.TransferWindow){
+      if (storedUniverse.gameState == GameState.TransferWindow){
         navigate('/transfer')
       }
 

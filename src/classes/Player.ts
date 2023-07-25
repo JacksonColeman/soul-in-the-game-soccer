@@ -22,7 +22,10 @@ export class Player {
   ) {
     this.positionFamiliarity = getPositionFamiliarity(this.position);
     this.marketValue = this.value;
+    this.transferListed = false;
   }
+
+  transferListed: boolean;
 
   get name(){
     return `${this.firstName} ${this.lastName}`
@@ -42,7 +45,7 @@ export class Player {
     cleanSheets: 0
   }
 
-  careerStats: { [year: number]: { teamName: string, matchesPlayed: number, goals: number, assists: number, goalsConceded: number, cleanSheets: number } } = {};
+  careerStats: { [year: number]: { teamName: string, matchesPlayed: number, goals: number, assists: number, goalsConceded: number, cleanSheets: number, overall: number } } = {};
 
   matchStats: {minutes: number, goals: number, assists: number} = {
     minutes: 0,
@@ -79,7 +82,8 @@ export class Player {
     
     // add stats to careerStats
     const teamName = this.team?.name || '-';
-    this.careerStats[year] = { teamName, ...this.stats };
+    const overall = this.overallRating;
+    this.careerStats[year] = { teamName, ...this.stats, overall };
     // reset stats
     this.stats = {
       matchesPlayed: 0,
@@ -95,7 +99,9 @@ export class Player {
     // handle transfer stuff
     this.marketValue = this.value;
     this.transferInterest.clear();
+    this.transfer = null;
     this.transferred = false;
+    this.transferListed = false;
   }
 
   attributeProgression(): void {
@@ -278,20 +284,20 @@ export class Player {
 
   get value(): number{
     if (this.age > 39){
-      return (1.145 ** (this.overallRating - 30)) * 1000;
+      return (1.15 ** (this.overallRating - 30)) * 2000;
     }
-    let val = (1.145 ** (this.overallRating - 30)) * 1000 * (40 - this.age);
+    let val = (1.15 ** (this.overallRating - 30)) * 2000 * (40 - this.age);
     if (val < 0){
       val = 1000;
     }
     return val;
   }
 
-  marketValue: number = 0;
+  marketValue: number;
 
   updateMarketValue(){
     if (this.transferInterest.size > 0){this.marketValue *= 1.01**(this.transferInterest.size)}
-    if (this.transferInterest.size == 0 && this.marketValue > this.value){this.marketValue = Math.max(this.value, this.marketValue*0.97)}
+    // if (this.transferInterest.size == 0){this.marketValue = this.marketValue**0.99}
     this.transferInterest.clear();
   }
 

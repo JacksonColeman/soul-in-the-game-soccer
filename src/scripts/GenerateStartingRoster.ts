@@ -5,7 +5,7 @@ import { generatePlayer} from "./GeneratePlayers";
 
 export default function generateStartingRoster(team: Team): Player[]{
     const roster: Player[] = [];
-    const ability = team.reputation ** 0.98;
+    const ability = team.reputation ** 0.97;
     let player;
 
     if (team.manager == null){
@@ -15,9 +15,9 @@ export default function generateStartingRoster(team: Team): Player[]{
     const gsa = team.manager.preferredFormation.gameStartAmounts;
 
     for (const position in gsa) {
-        const times = gsa[position as PlayerPosition];
-        for (let i = 0; i < times; i++) {
-            player = generatePlayer(team, position as PlayerPosition, ability + Math.random() * 20 - 10, 17, 35)
+        const abilities = gsa[position as PlayerPosition];
+        for (let i = 0; i < abilities.length; i++) {
+            player = generatePlayer(team, position as PlayerPosition, (ability * abilities[i]) + Math.random() * 20 - 10, 17, 35)
             roster.push(player);
         }
     }

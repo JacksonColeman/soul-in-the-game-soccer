@@ -1,7 +1,7 @@
 import { PlayerPosition } from "./positions";
 import { PlayerAttribute } from "./attributes";
 
-const GKAttributesWithZeroValues = {
+export const GKAttributesWithZeroValues = {
   [PlayerAttribute.GKAgility]: 0,
   [PlayerAttribute.GKHandling]: 0,
   [PlayerAttribute.GKKicking]: 0,

@@ -48,52 +48,56 @@ export class Matchup {
       const allStarters = homeStarters.concat(awayStarters);
 
       // attribute totals
-      const homeAttributeTotals = this.homeTeam.lineup.weightedAttributeTotals;
-      const awayAttributeTotals = this.awayTeam.lineup.weightedAttributeTotals;
+      const homeAttributeAverages = this.homeLineup.weightedAttributeAverages;
+      const awayAttributeAverages = this.awayLineup.weightedAttributeAverages;
 
       // currently, goalkeeper has no impact - fix this?
 
-      const homeTeamAttackProxy = (homeAttributeTotals[PlayerAttribute.Passing] * 10 + 
-                                  homeAttributeTotals[PlayerAttribute.Shooting] * 10 +
-                                  homeAttributeTotals[PlayerAttribute.Speed] * 10 +
-                                  homeAttributeTotals[PlayerAttribute.Mental] * 10 +
-                                  homeAttributeTotals[PlayerAttribute.Physical] * 5 +
-                                  homeAttributeTotals[PlayerAttribute.Defending] * 1 + 
-                                  homeAttributeTotals[PlayerAttribute.GKKicking] * 1)/47
+      const homeTeamAttackProxy = (homeAttributeAverages[PlayerAttribute.Passing] * 10 + 
+                                  homeAttributeAverages[PlayerAttribute.Shooting] * 10 +
+                                  homeAttributeAverages[PlayerAttribute.Speed] * 10 +
+                                  homeAttributeAverages[PlayerAttribute.Mental] * 10 +
+                                  homeAttributeAverages[PlayerAttribute.Physical] * 5 +
+                                  homeAttributeAverages[PlayerAttribute.Defending] * 1 + 
+                                  homeAttributeAverages[PlayerAttribute.GKKicking] * 0.5)/46.5
 
-      const homeTeamDefendProxy = (homeAttributeTotals[PlayerAttribute.Passing] * 5 + 
-                                  homeAttributeTotals[PlayerAttribute.Shooting] * 1 +
-                                  homeAttributeTotals[PlayerAttribute.Speed] * 5 +
-                                  homeAttributeTotals[PlayerAttribute.Mental] * 8 +
-                                  homeAttributeTotals[PlayerAttribute.Physical] * 8 +
-                                  homeAttributeTotals[PlayerAttribute.Defending] * 10 + 
-                                  homeAttributeTotals[PlayerAttribute.GKAgility] * 1 +
-                                  homeAttributeTotals[PlayerAttribute.GKHandling] * 1 + 
-                                  homeAttributeTotals[PlayerAttribute.GKPositioning] * .63 +
-                                  homeAttributeTotals[PlayerAttribute.GKReach] * .75 +
-                                  homeAttributeTotals[PlayerAttribute.GKReflexes] * 1)/41.38 
+      const homeTeamDefendProxy = (homeAttributeAverages[PlayerAttribute.Passing] * 5 + 
+                                  homeAttributeAverages[PlayerAttribute.Shooting] * 1 +
+                                  homeAttributeAverages[PlayerAttribute.Speed] * 5 +
+                                  homeAttributeAverages[PlayerAttribute.Mental] * 8 +
+                                  homeAttributeAverages[PlayerAttribute.Physical] * 8 +
+                                  homeAttributeAverages[PlayerAttribute.Defending] * 10 + 
+                                  // goalkeeper
+                                  homeAttributeAverages[PlayerAttribute.GKAgility] * 1 +
+                                  homeAttributeAverages[PlayerAttribute.GKHandling] * 1 + 
+                                  homeAttributeAverages[PlayerAttribute.GKPositioning] * .63 +
+                                  homeAttributeAverages[PlayerAttribute.GKReach] * .75 +
+                                  homeAttributeAverages[PlayerAttribute.GKReflexes] * 1 + 
+                                  homeAttributeAverages[PlayerAttribute.GKKicking] * 0.5)/41.88 
 
-      const awayTeamAttackProxy = (awayAttributeTotals[PlayerAttribute.Passing] * 10 + 
-                                  awayAttributeTotals[PlayerAttribute.Shooting] * 10 +
-                                  awayAttributeTotals[PlayerAttribute.Speed] * 10 +
-                                  awayAttributeTotals[PlayerAttribute.Mental] * 10 +
-                                  awayAttributeTotals[PlayerAttribute.Physical] * 5 +
-                                  awayAttributeTotals[PlayerAttribute.Defending] * 1 + 
-                                  awayAttributeTotals[PlayerAttribute.GKKicking] * 1)/47
+      const awayTeamAttackProxy = (awayAttributeAverages[PlayerAttribute.Passing] * 10 + 
+                                  awayAttributeAverages[PlayerAttribute.Shooting] * 10 +
+                                  awayAttributeAverages[PlayerAttribute.Speed] * 10 +
+                                  awayAttributeAverages[PlayerAttribute.Mental] * 10 +
+                                  awayAttributeAverages[PlayerAttribute.Physical] * 5 +
+                                  awayAttributeAverages[PlayerAttribute.Defending] * 1 + 
+                                  awayAttributeAverages[PlayerAttribute.GKKicking] * 0.5)/46.5
 
-      const awayTeamDefendProxy = (awayAttributeTotals[PlayerAttribute.Passing] * 5 + 
-                                  awayAttributeTotals[PlayerAttribute.Shooting] * 1 +
-                                  awayAttributeTotals[PlayerAttribute.Speed] * 5 +
-                                  awayAttributeTotals[PlayerAttribute.Mental] * 8 +
-                                  awayAttributeTotals[PlayerAttribute.Physical] * 8 +
-                                  awayAttributeTotals[PlayerAttribute.Defending] * 10 +
-                                  awayAttributeTotals[PlayerAttribute.GKAgility] * 1 +
-                                  awayAttributeTotals[PlayerAttribute.GKHandling] * 1 + 
-                                  awayAttributeTotals[PlayerAttribute.GKPositioning] * .63 +
-                                  awayAttributeTotals[PlayerAttribute.GKReach] * .75 +
-                                  awayAttributeTotals[PlayerAttribute.GKReflexes] * 1)/41.38 
+      const awayTeamDefendProxy = (awayAttributeAverages[PlayerAttribute.Passing] * 5 + 
+                                  awayAttributeAverages[PlayerAttribute.Shooting] * 1 +
+                                  awayAttributeAverages[PlayerAttribute.Speed] * 5 +
+                                  awayAttributeAverages[PlayerAttribute.Mental] * 8 +
+                                  awayAttributeAverages[PlayerAttribute.Physical] * 8 +
+                                  awayAttributeAverages[PlayerAttribute.Defending] * 10 +
+                                  // goalkeeper
+                                  awayAttributeAverages[PlayerAttribute.GKAgility] * 1 +
+                                  awayAttributeAverages[PlayerAttribute.GKHandling] * 1 + 
+                                  awayAttributeAverages[PlayerAttribute.GKPositioning] * .63 +
+                                  awayAttributeAverages[PlayerAttribute.GKReach] * .75 +
+                                  awayAttributeAverages[PlayerAttribute.GKReflexes] * 1 + 
+                                  awayAttributeAverages[PlayerAttribute.GKKicking] * 0.5)/41.88 
 
-      let homeScoreMean = this.league.avgGoals * (homeTeamAttackProxy/awayTeamDefendProxy) *1.05;
+      let homeScoreMean = this.league.avgGoals * (homeTeamAttackProxy/awayTeamDefendProxy) * 1.05;
       let awayScoreMean = this.league.avgGoals * (awayTeamAttackProxy/homeTeamDefendProxy) * 0.95; 
 
       // by minute simulation
@@ -167,7 +171,219 @@ export class Matchup {
         player.matchStats.assists = 0;
       }
 
+      // update keeper stats
+      // bug check
+
+      this.homeLineup.startingGoalkeeper.stats.goalsConceded += this.awayScore;
+      this.awayLineup.startingGoalkeeper.stats.goalsConceded += this.homeScore;
+
+      if (this.awayScore === 0 && this.homeLineup.startingGoalkeeper) {
+        this.homeLineup.startingGoalkeeper.stats.cleanSheets += 1;
+      }
+
+      if (this.homeScore === 0 && this.awayLineup.startingGoalkeeper) {
+        this.awayLineup.startingGoalkeeper.stats.cleanSheets += 1;
+      }
       
+      // increment goals allowed
+      // set match to played
+
+      // reputation update
+      updateReputation(this.homeTeam, this.awayTeam, this.homeScore, this.awayScore);
+
+      this.homeTeam.inMatch = false;
+      this.awayTeam.inMatch = false;
+      this.played = true;
+    }
+
+    playMatchSimplified(): void{
+      this.homeLineup = this.homeTeam.lineup;
+      this.awayLineup = this.awayTeam.lineup;
+      // get team offense/defense ratios
+      this.homeScore=0;
+      this.awayScore=0;
+      // set inMatch to true
+      this.homeTeam.inMatch = true;
+      this.awayTeam.inMatch = true;
+      // get starters
+      const homeStarters = this.homeLineup.starterArray;
+      const awayStarters = this.awayLineup.starterArray;
+      const allStarters = homeStarters.concat(awayStarters);
+
+      // attribute totals
+      const homeAttributeAverages = this.homeLineup.weightedAttributeAverages;
+      const awayAttributeAverages = this.awayLineup.weightedAttributeAverages;
+
+      // currently, goalkeeper has no impact - fix this?
+
+      const homeTeamAttackProxy = (homeAttributeAverages[PlayerAttribute.Passing] * 10 + 
+                                  homeAttributeAverages[PlayerAttribute.Shooting] * 10 +
+                                  homeAttributeAverages[PlayerAttribute.Speed] * 10 +
+                                  homeAttributeAverages[PlayerAttribute.Mental] * 10 +
+                                  homeAttributeAverages[PlayerAttribute.Physical] * 5 +
+                                  homeAttributeAverages[PlayerAttribute.Defending] * 1 + 
+                                  homeAttributeAverages[PlayerAttribute.GKKicking] * 0.5)/46.5
+
+      const homeTeamDefendProxy = (homeAttributeAverages[PlayerAttribute.Passing] * 5 + 
+                                  homeAttributeAverages[PlayerAttribute.Shooting] * 1 +
+                                  homeAttributeAverages[PlayerAttribute.Speed] * 5 +
+                                  homeAttributeAverages[PlayerAttribute.Mental] * 8 +
+                                  homeAttributeAverages[PlayerAttribute.Physical] * 8 +
+                                  homeAttributeAverages[PlayerAttribute.Defending] * 10 + 
+                                  // goalkeeper
+                                  homeAttributeAverages[PlayerAttribute.GKAgility] * 1 +
+                                  homeAttributeAverages[PlayerAttribute.GKHandling] * 1 + 
+                                  homeAttributeAverages[PlayerAttribute.GKPositioning] * .63 +
+                                  homeAttributeAverages[PlayerAttribute.GKReach] * .75 +
+                                  homeAttributeAverages[PlayerAttribute.GKReflexes] * 1 + 
+                                  homeAttributeAverages[PlayerAttribute.GKKicking] * 0.5)/41.88 
+
+      const awayTeamAttackProxy = (awayAttributeAverages[PlayerAttribute.Passing] * 10 + 
+                                  awayAttributeAverages[PlayerAttribute.Shooting] * 10 +
+                                  awayAttributeAverages[PlayerAttribute.Speed] * 10 +
+                                  awayAttributeAverages[PlayerAttribute.Mental] * 10 +
+                                  awayAttributeAverages[PlayerAttribute.Physical] * 5 +
+                                  awayAttributeAverages[PlayerAttribute.Defending] * 1 + 
+                                  awayAttributeAverages[PlayerAttribute.GKKicking] * 0.5)/46.5
+
+      const awayTeamDefendProxy = (awayAttributeAverages[PlayerAttribute.Passing] * 5 + 
+                                  awayAttributeAverages[PlayerAttribute.Shooting] * 1 +
+                                  awayAttributeAverages[PlayerAttribute.Speed] * 5 +
+                                  awayAttributeAverages[PlayerAttribute.Mental] * 8 +
+                                  awayAttributeAverages[PlayerAttribute.Physical] * 8 +
+                                  awayAttributeAverages[PlayerAttribute.Defending] * 10 +
+                                  // goalkeeper
+                                  awayAttributeAverages[PlayerAttribute.GKAgility] * 1 +
+                                  awayAttributeAverages[PlayerAttribute.GKHandling] * 1 + 
+                                  awayAttributeAverages[PlayerAttribute.GKPositioning] * .63 +
+                                  awayAttributeAverages[PlayerAttribute.GKReach] * .75 +
+                                  awayAttributeAverages[PlayerAttribute.GKReflexes] * 1 + 
+                                  awayAttributeAverages[PlayerAttribute.GKKicking] * 0.5)/41.88 
+
+      let homeScoreMean = this.league.avgGoals * (homeTeamAttackProxy/awayTeamDefendProxy) * 1.05;
+      let awayScoreMean = this.league.avgGoals * (awayTeamAttackProxy/homeTeamDefendProxy) * 0.95; 
+
+      const hs:number = poisson(homeScoreMean);
+      const as:number = poisson(awayScoreMean);
+      this.homeScore = hs; // Random score for the home team
+      this.awayScore = as; // Random score for the away team
+
+      // generate goals
+      for (let i = 0; i < this.homeScore; i ++){
+        this.createGoal(this.homeTeam, this.homeLineup, Math.floor(Math.random() * 91));
+      }
+      for (let i = 0; i < this.awayScore; i ++){
+        this.createGoal(this.awayTeam, this.awayLineup, Math.floor(Math.random() * 91));
+      }
+
+      this.homeTeam.standingsInfo.goalsFor += this.homeScore;
+      this.awayTeam.standingsInfo.goalsFor += this.awayScore;
+      this.homeTeam.standingsInfo.goalsAgainst += this.awayScore;
+      this.awayTeam.standingsInfo.goalsAgainst += this.homeScore;
+      
+      // update standings 
+      if (this.homeScore == this.awayScore){
+        this.homeTeam.standingsInfo.draws++;
+        this.awayTeam.standingsInfo.draws++;
+      } else if (this.homeScore > this.awayScore){
+        this.homeTeam.standingsInfo.wins++;
+        this.awayTeam.standingsInfo.losses++;
+      } else {
+        this.homeTeam.standingsInfo.losses++;
+        this.awayTeam.standingsInfo.wins++;
+      }
+
+      //update player stats
+      for (const player of allStarters){
+        player.stats.matchesPlayed++;
+        player.stats.goals += player.matchStats.goals;
+        player.stats.assists += player.matchStats.assists;
+        player.matchStats.goals = 0;
+        player.matchStats.assists = 0;
+        // for simplified only - decrement condition
+        player.condition -= (Math.random() * 15 + 10);
+      }
+
+      // update keeper stats
+      // bug check
+
+      this.homeLineup.startingGoalkeeper.stats.goalsConceded += this.awayScore;
+      this.awayLineup.startingGoalkeeper.stats.goalsConceded += this.homeScore;
+
+      if (this.awayScore === 0 && this.homeLineup.startingGoalkeeper) {
+        this.homeLineup.startingGoalkeeper.stats.cleanSheets += 1;
+      }
+
+      if (this.homeScore === 0 && this.awayLineup.startingGoalkeeper) {
+        this.awayLineup.startingGoalkeeper.stats.cleanSheets += 1;
+      }
+      
+      // increment goals allowed
+      // set match to played
+
+      // reputation update
+      updateReputation(this.homeTeam, this.awayTeam, this.homeScore, this.awayScore);
+
+      this.homeTeam.inMatch = false;
+      this.awayTeam.inMatch = false;
+      this.played = true;
+    }
+
+    playMatchSuperSimplified(): void{
+      this.homeLineup = this.homeTeam.lineup;
+      this.awayLineup = this.awayTeam.lineup;
+      // get team offense/defense ratios
+      this.homeScore=0;
+      this.awayScore=0;
+
+      // get starters
+      const homeStarters = this.homeLineup.starterArray;
+      const awayStarters = this.awayLineup.starterArray;
+      const allStarters = homeStarters.concat(awayStarters);
+
+      let homeScoreMean = this.league.avgGoals * (this.homeTeam.reputation/this.awayTeam.reputation) * 1.05;
+      let awayScoreMean = this.league.avgGoals * (this.awayTeam.reputation/this.homeTeam.reputation) * 0.95; 
+
+      const hs:number = poisson(homeScoreMean);
+      const as:number = poisson(awayScoreMean);
+      this.homeScore = hs; // Random score for the home team
+      this.awayScore = as; // Random score for the away team
+
+      // generate goals
+      for (let i = 0; i < this.homeScore; i ++){
+        this.createGoal(this.homeTeam, this.homeLineup, Math.floor(Math.random() * 91));
+      }
+      for (let i = 0; i < this.awayScore; i ++){
+        this.createGoal(this.awayTeam, this.awayLineup, Math.floor(Math.random() * 91));
+      }
+
+      this.homeTeam.standingsInfo.goalsFor += this.homeScore;
+      this.awayTeam.standingsInfo.goalsFor += this.awayScore;
+      this.homeTeam.standingsInfo.goalsAgainst += this.awayScore;
+      this.awayTeam.standingsInfo.goalsAgainst += this.homeScore;
+      
+      // update standings 
+      if (this.homeScore == this.awayScore){
+        this.homeTeam.standingsInfo.draws++;
+        this.awayTeam.standingsInfo.draws++;
+      } else if (this.homeScore > this.awayScore){
+        this.homeTeam.standingsInfo.wins++;
+        this.awayTeam.standingsInfo.losses++;
+      } else {
+        this.homeTeam.standingsInfo.losses++;
+        this.awayTeam.standingsInfo.wins++;
+      }
+
+      //update player stats
+      for (const player of allStarters){
+        player.stats.matchesPlayed++;
+        player.stats.goals += player.matchStats.goals;
+        player.stats.assists += player.matchStats.assists;
+        player.matchStats.goals = 0;
+        player.matchStats.assists = 0;
+        // for simplified only - decrement condition
+        player.condition -= (Math.random() * 15 + 10);
+      }
 
       // update keeper stats
       // bug check

@@ -3,6 +3,7 @@ import { PlayerAttribute } from '../constants/attributes';
 import { PlayerPosition } from '../constants/positions';
 import { Formation } from './Formations';
 import { lineupPositionMaximums } from '../constants/lineupPositionMaximums';
+import { effectiveAttributeWeights } from '../constants/effectiveAttributeWeights';
 
 export class Lineup {
     public allPlayers: Player[];
@@ -424,113 +425,37 @@ export class Lineup {
       this.reserves = reservePlayers;
     }
 
-     get weightedAttributeTotals(): { [key: string]: number }{
-        const attributeTotals: { [key: string]: number } = {
-          [PlayerAttribute.Defending]: 0,
-          [PlayerAttribute.Mental]: 0,
-          [PlayerAttribute.Passing]: 0,
-          [PlayerAttribute.Physical]: 0,
-          [PlayerAttribute.Shooting]: 0,
-          [PlayerAttribute.Speed]: 0,
-          [PlayerAttribute.GKAgility]: 0,
-          [PlayerAttribute.GKHandling]: 0,
-          [PlayerAttribute.GKKicking]: 0,
-          [PlayerAttribute.GKReach]: 0,
-          [PlayerAttribute.GKReflexes]: 0,
-          [PlayerAttribute.GKPositioning]: 0
-        }
-        for (const position in this.starters) {
-          const players = this.starters[position as PlayerPosition];
-          for (const p of players){
-            if (position == PlayerPosition.GK) {
-              attributeTotals[PlayerAttribute.GKAgility] += p.attributes[PlayerAttribute.GKAgility] * 100 * (p.condition/100);
-              attributeTotals[PlayerAttribute.GKHandling] += p.attributes[PlayerAttribute.GKHandling] * 100 * (p.condition/100);
-              attributeTotals[PlayerAttribute.GKKicking] += p.attributes[PlayerAttribute.GKKicking] * 100 * (p.condition/100);
-              attributeTotals[PlayerAttribute.GKReach] += p.attributes[PlayerAttribute.GKReach]  * 100 * (p.condition/100);
-              attributeTotals[PlayerAttribute.GKReflexes] += p.attributes[PlayerAttribute.GKReflexes]  * 100 * (p.condition/100);
-              attributeTotals[PlayerAttribute.GKPositioning] += p.attributes[PlayerAttribute.GKPositioning] * 100 * (p.condition/100);
+    get weightedAttributeAverages(): { [key: string]: number } {
+      const attributeWeights = effectiveAttributeWeights;
+      const attributeTotals: { [key: string]: number } = {};
+      const attributeWeightSums: { [key: string]: number } = {}; // Keep track of weight sums
+    
+      for (const position in this.starters) {
+        const players = this.starters[position as PlayerPosition];
+        const weights = attributeWeights[position as PlayerPosition];
+    
+        for (const p of players) {
+          for (const attribute in p.attributes) {
+            const attr  = attribute as PlayerAttribute;
+            const weight = weights[attr];
+            // Update the calculation for mental attribute to include position familiarity
+            if (attr === PlayerAttribute.Mental) {
+              attributeTotals[attr] = (attributeTotals[attr] || 0) + p.attributes[attr] * weight * (p.positionFamiliarity[position as PlayerPosition] / 100) * (p.condition / 100);
+            } else {
+              attributeTotals[attr] = (attributeTotals[attr] || 0) + p.attributes[attr] * weight * (p.condition / 100);
             }
-            
-            if (position == PlayerPosition.LB || position == PlayerPosition.RB){
-              attributeTotals[PlayerAttribute.Defending] += p.attributes[PlayerAttribute.Defending] * 76 * (p.condition/100);
-              attributeTotals[PlayerAttribute.Mental] += p.attributes[PlayerAttribute.Mental] * 98 * (p.positionFamiliarity[position]/100)* (p.condition/100);
-              attributeTotals[PlayerAttribute.Passing] += p.attributes[PlayerAttribute.Passing] * 65* (p.condition/100);
-              attributeTotals[PlayerAttribute.Physical] += p.attributes[PlayerAttribute.Physical] * 109* (p.condition/100);
-              attributeTotals[PlayerAttribute.Shooting] += p.attributes[PlayerAttribute.Shooting] * 22* (p.condition/100);
-              attributeTotals[PlayerAttribute.Speed] += p.attributes[PlayerAttribute.Speed] * 130* (p.condition/100);
-            }
-            if (position == PlayerPosition.LWB || position == PlayerPosition.RWB){
-              attributeTotals[PlayerAttribute.Defending] += p.attributes[PlayerAttribute.Defending] * 53 * (p.condition/100);
-              attributeTotals[PlayerAttribute.Mental] += p.attributes[PlayerAttribute.Mental] * 74 * (p.positionFamiliarity[position]/100)* (p.condition/100);
-              attributeTotals[PlayerAttribute.Passing] += p.attributes[PlayerAttribute.Passing] * 85* (p.condition/100);
-              attributeTotals[PlayerAttribute.Physical] += p.attributes[PlayerAttribute.Physical] * 117* (p.condition/100);
-              attributeTotals[PlayerAttribute.Shooting] += p.attributes[PlayerAttribute.Shooting] * 21* (p.condition/100);
-              attributeTotals[PlayerAttribute.Speed] += p.attributes[PlayerAttribute.Speed] * 149* (p.condition/100);
-            }
-            if (position == PlayerPosition.LM || position == PlayerPosition.RM){
-              attributeTotals[PlayerAttribute.Defending] += p.attributes[PlayerAttribute.Defending] * 31* (p.condition/100);
-              attributeTotals[PlayerAttribute.Mental] += p.attributes[PlayerAttribute.Mental] * 83 * (p.positionFamiliarity[position]/100)* (p.condition/100);
-              attributeTotals[PlayerAttribute.Passing] += p.attributes[PlayerAttribute.Passing] * 115* (p.condition/100);
-              attributeTotals[PlayerAttribute.Physical] += p.attributes[PlayerAttribute.Physical] * 83* (p.condition/100);
-              attributeTotals[PlayerAttribute.Shooting] += p.attributes[PlayerAttribute.Shooting] * 42* (p.condition/100);
-              attributeTotals[PlayerAttribute.Speed] += p.attributes[PlayerAttribute.Speed] * 146* (p.condition/100);
-            }
-            if (position == PlayerPosition.LW || position == PlayerPosition.RW){
-              attributeTotals[PlayerAttribute.Defending] += p.attributes[PlayerAttribute.Defending] * 27* (p.condition/100);
-              attributeTotals[PlayerAttribute.Mental] += p.attributes[PlayerAttribute.Mental] * 73 * (p.positionFamiliarity[position]/100)* (p.condition/100);
-              attributeTotals[PlayerAttribute.Passing] += p.attributes[PlayerAttribute.Passing] * 91* (p.condition/100);
-              attributeTotals[PlayerAttribute.Physical] += p.attributes[PlayerAttribute.Physical] * 91* (p.condition/100);
-              attributeTotals[PlayerAttribute.Shooting] += p.attributes[PlayerAttribute.Shooting] * 36* (p.condition/100);
-              attributeTotals[PlayerAttribute.Speed] += p.attributes[PlayerAttribute.Speed] * 182* (p.condition/100);
-            }
-            if (position == PlayerPosition.CB){
-              attributeTotals[PlayerAttribute.Defending] += p.attributes[PlayerAttribute.Defending] * 127* (p.condition/100);
-              attributeTotals[PlayerAttribute.Mental] += p.attributes[PlayerAttribute.Mental] * 118 * (p.positionFamiliarity[position]/100)* (p.condition/100);
-              attributeTotals[PlayerAttribute.Passing] += p.attributes[PlayerAttribute.Passing] * 39* (p.condition/100);
-              attributeTotals[PlayerAttribute.Physical] += p.attributes[PlayerAttribute.Physical] * 88* (p.condition/100);
-              attributeTotals[PlayerAttribute.Shooting] += p.attributes[PlayerAttribute.Shooting] * 20* (p.condition/100);
-              attributeTotals[PlayerAttribute.Speed] += p.attributes[PlayerAttribute.Speed] * 108* (p.condition/100);
-            }
-            if (position == PlayerPosition.CDM){
-              attributeTotals[PlayerAttribute.Defending] += p.attributes[PlayerAttribute.Defending] * 94* (p.condition/100);
-              attributeTotals[PlayerAttribute.Mental] += p.attributes[PlayerAttribute.Mental] * 94 * (p.positionFamiliarity[position]/100);
-              attributeTotals[PlayerAttribute.Passing] += p.attributes[PlayerAttribute.Passing] * 85;
-              attributeTotals[PlayerAttribute.Physical] += p.attributes[PlayerAttribute.Physical] * 85;
-              attributeTotals[PlayerAttribute.Shooting] += p.attributes[PlayerAttribute.Shooting] * 47;
-              attributeTotals[PlayerAttribute.Speed] += p.attributes[PlayerAttribute.Speed] * 94;
-            }
-            if (position == PlayerPosition.CM){
-              attributeTotals[PlayerAttribute.Defending] += p.attributes[PlayerAttribute.Defending] * 55;
-              attributeTotals[PlayerAttribute.Mental] += p.attributes[PlayerAttribute.Mental] * 91 * (p.positionFamiliarity[position]/100)* (p.condition/100);
-              attributeTotals[PlayerAttribute.Passing] += p.attributes[PlayerAttribute.Passing] * 118* (p.condition/100);
-              attributeTotals[PlayerAttribute.Physical] += p.attributes[PlayerAttribute.Physical] * 91* (p.condition/100);
-              attributeTotals[PlayerAttribute.Shooting] += p.attributes[PlayerAttribute.Shooting] * 45* (p.condition/100);
-              attributeTotals[PlayerAttribute.Speed] += p.attributes[PlayerAttribute.Speed] * 100* (p.condition/100);
-            }
-            if (position == PlayerPosition.CAM){
-              attributeTotals[PlayerAttribute.Defending] += p.attributes[PlayerAttribute.Defending] * 28* (p.condition/100);
-              attributeTotals[PlayerAttribute.Mental] += p.attributes[PlayerAttribute.Mental] * 83 * (p.positionFamiliarity[position]/100)* (p.condition/100);
-              attributeTotals[PlayerAttribute.Passing] += p.attributes[PlayerAttribute.Passing] * 102* (p.condition/100);
-              attributeTotals[PlayerAttribute.Physical] += p.attributes[PlayerAttribute.Physical] * 83* (p.condition/100);
-              attributeTotals[PlayerAttribute.Shooting] += p.attributes[PlayerAttribute.Shooting] * 56* (p.condition/100);
-              attributeTotals[PlayerAttribute.Speed] += p.attributes[PlayerAttribute.Speed] * 148* (p.condition/100);
-            }
-            if (position == PlayerPosition.ST){
-              attributeTotals[PlayerAttribute.Defending] += p.attributes[PlayerAttribute.Defending] * 17* (p.condition/100);
-              attributeTotals[PlayerAttribute.Mental] += p.attributes[PlayerAttribute.Mental] * 95 * (p.positionFamiliarity[position]/100)* (p.condition/100);
-              attributeTotals[PlayerAttribute.Passing] += p.attributes[PlayerAttribute.Passing] * 52* (p.condition/100);
-              attributeTotals[PlayerAttribute.Physical] += p.attributes[PlayerAttribute.Physical] * 103* (p.condition/100);
-              attributeTotals[PlayerAttribute.Shooting] += p.attributes[PlayerAttribute.Shooting] * 86* (p.condition/100);
-              attributeTotals[PlayerAttribute.Speed] += p.attributes[PlayerAttribute.Speed] * 147* (p.condition/100);
-            }
+            attributeWeightSums[attr] = (attributeWeightSums[attr] || 0) + weight; // Accumulate weight sums
           }
         }
-
-        for (const attribute in attributeTotals) {
-          attributeTotals[attribute] = attributeTotals[attribute]**2;
-        }
-        return attributeTotals;
       }
+    
+      // Calculate the weighted average for each attribute
+      for (const attribute in attributeTotals) {
+        attributeTotals[attribute] /= attributeWeightSums[attribute];
+      }
+    
+      return attributeTotals;
+    }
 
     public changeFormation(newFormation: Formation){
       this.clearLineup();

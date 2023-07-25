@@ -15,7 +15,7 @@ const TransferOverviewComponent: React.FC<TransferOverviewProps> = ({ universe }
 
   const playersByPosition = positions.reduce((acc, position) => {
     acc[position] = universe.allPlayers
-      .filter((player) => player.position === position)
+      .filter((player) => player.position === position && player.transferListed == true)
       .sort((a, b) => b.value - a.value);
     return acc;
   }, {} as Record<PlayerPosition, Player[]>);
@@ -29,6 +29,11 @@ const TransferOverviewComponent: React.FC<TransferOverviewProps> = ({ universe }
     universe.saveUniverse();
     setUpdates(updates+1);
   }
+
+  useEffect(() => {
+    universe.handleTransferListing();
+  },[])
+
 
   return (
     <div>
@@ -54,7 +59,11 @@ const TransferOverviewComponent: React.FC<TransferOverviewProps> = ({ universe }
                 <th>Team</th>
                 <th>Age</th>
                 <th>Overall</th>
+                <th>MP</th>
+                <th>G</th>
+                <th>A</th>
                 <th>Value</th>
+                <th>List</th>
                 <th>Interest</th>
                 <th>Market Value</th>
                 <th>Transfer?</th>
@@ -69,7 +78,11 @@ const TransferOverviewComponent: React.FC<TransferOverviewProps> = ({ universe }
                   <td>{player.team?.name}</td>
                   <td>{player.age}</td>
                   <td>{player.overallRating}</td>
+                  <td>{player.careerStats[universe.year-1] ? player.careerStats[universe.year-1].matchesPlayed : 0}</td>
+                  <td>{player.careerStats[universe.year-1] ? player.careerStats[universe.year-1].goals : 0}</td>
+                  <td>{player.careerStats[universe.year-1] ? player.careerStats[universe.year-1].assists : 0}</td>
                   <td>{formatCurrency(player.value)}</td>
+                  <td>{player.transferListed ? "T" : "F"}</td>
                   <td>{player.transferInterest.size}</td>
                   <td>{formatCurrency(player.marketValue)}</td>
                   <td>{player.transfer ? "Y" : "N"}</td>
