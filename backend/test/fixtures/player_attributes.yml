@@ -1,0 +1,29 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  gk_agility: 1
+  gk_handling: 1
+  gk_kicking: 1
+  gk_positioning: 1
+  gk_reach: 1
+  gk_reflexes: 1
+  defending: 1
+  mental: 1
+  passing: 1
+  physical: 1
+  shooting: 1
+  speed: 1
+
+two:
+  gk_agility: 1
+  gk_handling: 1
+  gk_kicking: 1
+  gk_positioning: 1
+  gk_reach: 1
+  gk_reflexes: 1
+  defending: 1
+  mental: 1
+  passing: 1
+  physical: 1
+  shooting: 1
+  speed: 1

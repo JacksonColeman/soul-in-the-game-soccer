@@ -1,0 +1,21 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  age: 1
+  position: 1
+  first_name: MyString
+  last_name: MyString
+  condition: 1
+  injured: false
+  injury_time: 1
+  transfer_listed: false
+
+two:
+  age: 1
+  position: 1
+  first_name: MyString
+  last_name: MyString
+  condition: 1
+  injured: false
+  injury_time: 1
+  transfer_listed: false
